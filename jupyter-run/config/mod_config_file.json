@@ -1,0 +1,11 @@
+{
+    "modification": {
+        "cellIndex": 1,
+        "source": "a += \"goodbye\""
+    },
+    "file": {
+        "benchmarkFileName": "string_concat.ipynb",
+        "benchmarkFileDir": "../benchmarks/py-built-in/string_concat"
+    },
+    "downloadResultTo": "reactive_results/string_concat.ipynb"
+}
