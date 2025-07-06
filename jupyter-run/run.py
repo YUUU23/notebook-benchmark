@@ -1,58 +1,88 @@
-from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff
+from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff, get_execution_count_diff
 from utils.notebook_manager import NotebookManager
 import json, subprocess, os
 
 class BenchmarkRunner:
     config_dir = None
-    
     kernel_config_path = None
     jupyter_config_path = None
     mod_config_file = None
     default_mod_config_file_name = "mod_config_file.json"
-    
     kernel_spec = None
     
-    def __init__(self, config_dir: str):
-        # Parse config files.
+    def __init__(self, config_dir: str, spawn_ui_kernel: bool = True):
         self.config_dir = config_dir
         self._check_and_parse_config_files()
+        if spawn_ui_kernel: 
+            print("setting up kernel")
+            self._setup_ui_kernel()
     
     def run(self, nb_original: str, nb_modified: str): 
-        # Set up original notebook and modified notebook. 
+        """
+        1. Set up original notebook and modified notebook. 
+        2. Identify modification. 
+        3. Run with UI tool for reactive notebok result. 
+        4. Compare reactive notebook result to modiied notebook result ran 
+        with a fresh kernel. 
+        """
         nb_original_manager = NotebookManager(nb_path=nb_original, 
                                               kernel_config=self.kernel_spec)
         nb_modified_manager = NotebookManager(nb_path=nb_modified, 
                                               kernel_config=self.kernel_spec) 
         
-        # # Run original notebook, make modification, and save result notebook 
-        # # with UI tool. 
-        cell_idx, change = get_first_cell_source_diff(nb_original_manager.nb_obj, nb_modified_manager.nb_obj)
+        cell_idx, change = get_first_cell_source_diff(nb_original_manager.nb_json, nb_modified_manager.nb_json)
+        print(f"=== Found source diff: at cell index: {cell_idx}")
+        print(f"code: {change}\n") 
         if cell_idx > -1:
-            nb_reactive_file = f"reactive_results/{nb_original_manager.nb_file_name}" 
-            self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name, nb_original_manager.nb_dir, nb_reactive_file) 
+            nb_initial_file = f"reactive_results/initial/{nb_original_manager.nb_file_name}"
+            nb_reactive_file = f"reactive_results/reactive/{nb_original_manager.nb_file_name}" 
+            self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name, 
+                                          nb_original_manager.nb_dir, nb_reactive_file, nb_initial_file) 
             self._run_ui_to_execute_modifications() 
+        
+            nb_initial_run_manager = NotebookManager(nb_path=nb_initial_file)
+            nb_after_reactive_manager = NotebookManager(nb_path=nb_reactive_file)
+            nb_after_reactive_manager.delete_last_empty_cell() 
+            nb_expected_json = nb_modified_manager.nb_run(save_to_original_file=False) 
             
-            # Run modified notebook once, save result notebook as expected 
-            # and compare rerun modification with expected. 
-            nb_expected = nb_modified_manager.nb_run_and_update_file(save_to_original=False) 
-            nb_reactive_manager = NotebookManager(nb_path=nb_reactive_file, kernel_config=None)
-            get_all_cell_output_diff(nb_actual=nb_reactive_manager.nb_obj, nb_expected=nb_expected)
+            print("=== PRINTING DIFF: ")
+            print(get_all_cell_output_diff(nb_actual=nb_after_reactive_manager.nb_json, nb_expected=nb_expected_json))
+            
+            print(f"=== PRINTING CELLS EXECUTED:") 
+            reran_count, total_cells, cells_reran = get_execution_count_diff(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json)
+            print(f"=== {reran_count} / {total_cells} cells reran; cell indexes: {cells_reran}; modification made to cell: {cell_idx}")
         else:
             print(f'notebooks is not different after modification; no rerun will trigger')
     
 
-    def _generate_ui_config_file(self, cell_idx: int, change: str, nb_to_modify_name: str, nb_to_modify_dir: str, save_result_to: str) -> None:
+    def _setup_ui_kernel(self):
+        script_path = "./ui/ui_setup.sh"
+        try:
+            result = subprocess.run([script_path, self.jupyter_config_path], capture_output=True, text=True, check=True)
+            print(f"Output from running {script_path}: {result.stdout}") 
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing ui script: {e} \n {e.stderr}")
+         
+    def _generate_ui_config_file(self, 
+                                 cell_idx: int, 
+                                 change: str, 
+                                 nb_to_modify_name: str,
+                                 nb_to_modify_dir: str, 
+                                 save_reactive_result_to: str, 
+                                 save_initial_result_to: str) -> None:
         modification = {"cellIndex": cell_idx, "source": change}
-        file_info = {"benchmarkFileName": nb_to_modify_name, "benchmarkFileDir": nb_to_modify_dir}
-        config = {"modification": modification, "file": file_info, "downloadResultTo": save_result_to}
+        benchmark_file_info = {"benchmarkFileName": nb_to_modify_name, "benchmarkFileDir": nb_to_modify_dir}
+        config = {"modification": modification, "file": benchmark_file_info, 
+                  "downloadReactivePath": save_reactive_result_to, 
+                  "downloadInitialPath": save_initial_result_to}
         with open(self.mod_config_file, "w") as f:
             json.dump(config, f, indent=4)
         return config
-        
+    
     def _run_ui_to_execute_modifications(self) -> None: 
         script_path = "./ui/run_ui.sh"
         try:
-            result = subprocess.run([script_path, self.jupyter_config_path], capture_output=True, text=True, check=True)
+            result = subprocess.run([script_path], capture_output=True, text=True, check=True)
             print(f"Output from running {script_path}: {result.stdout}") 
         except subprocess.CalledProcessError as e:
             print(f"Error executing ui script: {e} \n {e.stderr}")
@@ -79,28 +109,3 @@ class BenchmarkRunner:
         with open(self.kernel_config_path, 'r') as f:
             config = json.load(f)
             self.kernel_spec = config['kernelspec']
-
-# b = BenchmarkRunner("./config")
-# nb_dir = "../benchmarks/py-built-in/string_concat/"
-# original_nb = nb_dir + "string_concat.ipynb"
-# modified_nb = nb_dir + "m_string_concat.ipynb"
-# b.run(original_nb, modified_nb)
-
-# b = BenchmarkRunner("./config")
-# nb_dir = "../benchmarks/py-built-in/aliasing_func/"
-# original_nb = nb_dir + "aliasing_func.ipynb"
-# modified_nb = nb_dir + "m_aliasing_func.ipynb"
-# b.run(original_nb, modified_nb)
-
-# b = BenchmarkRunner("./config")
-# nb_dir = "../benchmarks/py-built-in/list_pop/"
-# original_nb = nb_dir + "list_pop.ipynb"
-# modified_nb = nb_dir + "m_list_pop.ipynb"
-# b.run(original_nb, modified_nb)
-
-b = BenchmarkRunner("./config")
-nb_dir = "../benchmarks/py-built-in/loop_append_1/"
-original_nb = nb_dir + "loop_append_1.ipynb"
-modified_nb = nb_dir + "m_loop_append_1.ipynb"
-b.run(original_nb, modified_nb)
-            

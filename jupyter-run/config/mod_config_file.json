@@ -1,11 +1,12 @@
 {
-  "modification": {
-    "cellIndex": 1,
-    "source": "for (_, l) in x.items():\n    l.append(5)"
-  },
-  "file": {
-    "benchmarkFileName": "loop_append_1.ipynb",
-    "benchmarkFileDir": "../benchmarks/py-built-in/loop_append_1"
-  },
-  "downloadResultToDir": "reactive_results/"
+    "modification": {
+        "cellIndex": 1,
+        "source": "ll.pop(2)"
+    },
+    "file": {
+        "benchmarkFileName": "list_pop.ipynb",
+        "benchmarkFileDir": "../benchmarks/py-built-in/list_pop"
+    },
+    "downloadReactivePath": "reactive_results/reactive/list_pop.ipynb",
+    "downloadInitialPath": "reactive_results/initial/list_pop.ipynb"
 }

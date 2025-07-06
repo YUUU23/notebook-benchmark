@@ -4,7 +4,16 @@ import test_config from "../config/mod_config_file.json";
 
 const fileName = test_config.file.benchmarkFileName;
 const benchmarks_dir = test_config.file.benchmarkFileDir;
-const downloadPath = path.join(__dirname, "..", test_config.downloadResultTo);
+const downloadReactivePath = path.join(
+  __dirname,
+  "..",
+  test_config.downloadReactivePath
+);
+const downloadInitialPath = path.join(
+  __dirname,
+  "..",
+  test_config.downloadInitialPath
+);
 const modification = test_config.modification;
 
 test.use({ tmpPath: "notebook-test" });
@@ -45,6 +54,15 @@ test.describe.serial("Notebook Run", () => {
     // Run all cells
     console.log(`== RUNNING ALL CELLS`);
     await page.notebook.run();
+    await page.notebook.save();
+
+    // Download notebook (for identifying how many cells have reran later)
+    console.log(`== SAVING INITIAL RUN NOTEBOOK IN: ${downloadInitialPath}`);
+    await page.getByText("File", { exact: true }).click();
+    const downloadOriginalPathPromise = page.waitForEvent("download");
+    await page.getByRole("menuitem", { name: "Download" }).click();
+    const downloadOriginal = await downloadOriginalPathPromise;
+    await downloadOriginal.saveAs(downloadInitialPath);
 
     // Make change
     console.log(
@@ -74,13 +92,14 @@ test.describe.serial("Notebook Run", () => {
       `== MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
     );
     await page.notebook.save();
+    await page.notebook.waitForRun();
 
     // Download notebook
-    console.log(`== SAVING MODIFIED NOTEBOOK IN: ${downloadPath}`);
+    console.log(`== SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`);
     await page.getByText("File", { exact: true }).click();
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("menuitem", { name: "Download" }).click();
     const download = await downloadPromise;
-    await download.saveAs(downloadPath);
+    await download.saveAs(downloadReactivePath);
   });
 });

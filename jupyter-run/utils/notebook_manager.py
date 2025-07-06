@@ -5,7 +5,7 @@ class NotebookManager:
     nb_dir = None 
     nb_file_name = None 
     nb_path = None
-    nb_obj = None
+    nb_json = None
     ep = None
     kernel_spec = None
     
@@ -27,19 +27,27 @@ class NotebookManager:
         if set_up_processor and kernel_config: 
             self.ep = self._setup_nb_executor(kernel_name=self.kernel_spec["name"])
     
-    def nb_run_and_update_file(self, save_to_original: bool | None):
+    def nb_run(self, save_to_original_file: bool = True) -> str | None:
         if self.ep: 
-            nb_res = self.ep.preprocess(self.nb_obj)
-            if save_to_original: 
-                self.nb_obj = nb_res
+            nb_res = self.ep.preprocess(self.nb_json)
+            if save_to_original_file: 
+                self.nb_json = nb_res
                 self._write_nb_to_ipynb()
                 return None 
             else:
                 return nb_res[0]
     
+    def delete_last_empty_cell(self) -> str: 
+        nb_json_cells = self.nb_json["cells"]
+        code_cells = [c for c in nb_json_cells if c["cell_type"] == "code"] 
+        if code_cells: 
+            last_cell = code_cells[-1]
+            if last_cell["execution_count"] == None and len(last_cell["outputs"]) == 0:
+                self.nb_json = nb_json_cells[:-1]
+    
     def _change_kernel_spec(self) -> bool: 
         if self.kernel_spec:
-            self.nb_obj['metadata']['kernelspec'] = self.kernel_spec
+            self.nb_json['metadata']['kernelspec'] = self.kernel_spec
             self._write_nb_to_ipynb() 
             print(f"=== Changing kernel of {self.nb_path} to {self.kernel_spec["name"]}")
             return True 
@@ -48,11 +56,11 @@ class NotebookManager:
     def _read_nb_from_ipynb(self) -> None: 
         with open(self.nb_path) as ff:
             nb_in = nbformat.read(ff, nbformat.NO_CONVERT)
-            self.nb_obj = nb_in
+            self.nb_json = nb_in
     
     def _write_nb_to_ipynb(self) -> None: 
         with open(self.nb_path, 'w') as f:
-            nbformat.write(self.nb_obj, f)
+            nbformat.write(self.nb_json, f)
         
     def _validate_path(self) -> bool:   
         return os.path.exists(self.nb_path)
