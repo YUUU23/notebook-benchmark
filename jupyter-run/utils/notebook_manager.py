@@ -41,7 +41,7 @@ class NotebookManager:
         if self.kernel_spec:
             self.nb_obj['metadata']['kernelspec'] = self.kernel_spec
             self._write_nb_to_ipynb() 
-            print("after kernel change", self.nb_obj)
+            print(f"=== Changing kernel of {self.nb_path} to {self.kernel_spec["name"]}")
             return True 
         return False
     

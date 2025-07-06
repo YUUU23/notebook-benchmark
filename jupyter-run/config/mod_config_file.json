@@ -1,11 +1,11 @@
 {
-    "modification": {
-        "cellIndex": 1,
-        "source": "a += \"goodbye\""
-    },
-    "file": {
-        "benchmarkFileName": "string_concat.ipynb",
-        "benchmarkFileDir": "../benchmarks/py-built-in/string_concat"
-    },
-    "downloadResultTo": "reactive_results/string_concat.ipynb"
+  "modification": {
+    "cellIndex": 1,
+    "source": "for (_, l) in x.items():\n    l.append(5)"
+  },
+  "file": {
+    "benchmarkFileName": "loop_append_1.ipynb",
+    "benchmarkFileDir": "../benchmarks/py-built-in/loop_append_1"
+  },
+  "downloadResultToDir": "reactive_results/"
 }

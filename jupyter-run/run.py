@@ -26,18 +26,20 @@ class BenchmarkRunner:
         
         # # Run original notebook, make modification, and save result notebook 
         # # with UI tool. 
-        # # cell_idx, change = self.diff_checker.get_first_cell_source_diff()
-        # cell_idx = 1 
-        # change = 'a += "goodbye"'
-        nb_reactive_file = f"reactive_results/{nb_original_manager.nb_file_name}" 
-        # self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name, nb_original_manager.nb_dir, nb_reactive_file) 
-        # self._run_ui_to_execute_modifications() 
-        
-        # Run modified notebook once, save result notebook as expected 
-        # and compare rerun modification with expected. 
-        nb_expected = nb_modified_manager.nb_run_and_update_file(save_to_original=False) 
-        nb_reactive_manager = NotebookManager(nb_path=nb_reactive_file, kernel_config=None)
-        get_all_cell_output_diff(nb_actual=nb_reactive_manager.nb_obj, nb_expected=nb_expected)
+        cell_idx, change = get_first_cell_source_diff(nb_original_manager.nb_obj, nb_modified_manager.nb_obj)
+        if cell_idx > -1:
+            nb_reactive_file = f"reactive_results/{nb_original_manager.nb_file_name}" 
+            self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name, nb_original_manager.nb_dir, nb_reactive_file) 
+            self._run_ui_to_execute_modifications() 
+            
+            # Run modified notebook once, save result notebook as expected 
+            # and compare rerun modification with expected. 
+            nb_expected = nb_modified_manager.nb_run_and_update_file(save_to_original=False) 
+            nb_reactive_manager = NotebookManager(nb_path=nb_reactive_file, kernel_config=None)
+            get_all_cell_output_diff(nb_actual=nb_reactive_manager.nb_obj, nb_expected=nb_expected)
+        else:
+            print(f'notebooks is not different after modification; no rerun will trigger')
+    
 
     def _generate_ui_config_file(self, cell_idx: int, change: str, nb_to_modify_name: str, nb_to_modify_dir: str, save_result_to: str) -> None:
         modification = {"cellIndex": cell_idx, "source": change}
@@ -78,9 +80,27 @@ class BenchmarkRunner:
             config = json.load(f)
             self.kernel_spec = config['kernelspec']
 
+# b = BenchmarkRunner("./config")
+# nb_dir = "../benchmarks/py-built-in/string_concat/"
+# original_nb = nb_dir + "string_concat.ipynb"
+# modified_nb = nb_dir + "m_string_concat.ipynb"
+# b.run(original_nb, modified_nb)
+
+# b = BenchmarkRunner("./config")
+# nb_dir = "../benchmarks/py-built-in/aliasing_func/"
+# original_nb = nb_dir + "aliasing_func.ipynb"
+# modified_nb = nb_dir + "m_aliasing_func.ipynb"
+# b.run(original_nb, modified_nb)
+
+# b = BenchmarkRunner("./config")
+# nb_dir = "../benchmarks/py-built-in/list_pop/"
+# original_nb = nb_dir + "list_pop.ipynb"
+# modified_nb = nb_dir + "m_list_pop.ipynb"
+# b.run(original_nb, modified_nb)
+
 b = BenchmarkRunner("./config")
-nb_dir = "../benchmarks/py-built-in/string_concat/"
-original_nb = nb_dir + "string_concat.ipynb"
-modified_nb = nb_dir + "m_string_concat.ipynb"
+nb_dir = "../benchmarks/py-built-in/loop_append_1/"
+original_nb = nb_dir + "loop_append_1.ipynb"
+modified_nb = nb_dir + "m_loop_append_1.ipynb"
 b.run(original_nb, modified_nb)
             
