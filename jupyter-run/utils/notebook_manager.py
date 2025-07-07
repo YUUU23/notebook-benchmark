@@ -1,5 +1,6 @@
 import nbformat, os
 from nbconvert.preprocessors import ExecutePreprocessor
+from typing import Optional, Any
 
 class NotebookManager:
     nb_dir = None 
@@ -9,7 +10,7 @@ class NotebookManager:
     ep = None
     kernel_spec = None
     
-    def __init__(self, nb_path: str, kernel_config: dict | None = None, set_up_processor: bool = True): 
+    def __init__(self, nb_path: str, kernel_config: Optional[dict[str, Any]] = None, set_up_processor: bool = True): 
         # Read in notebook. 
         self.nb_path = nb_path
         if not self._validate_path(): 
@@ -27,7 +28,7 @@ class NotebookManager:
         if set_up_processor and kernel_config: 
             self.ep = self._setup_nb_executor(kernel_name=self.kernel_spec["name"])
     
-    def nb_run(self, save_to_original_file: bool = True) -> str | None:
+    def nb_run(self, save_to_original_file: bool = True) -> str:
         if self.ep: 
             nb_res = self.ep.preprocess(self.nb_json)
             if save_to_original_file: 
@@ -49,7 +50,7 @@ class NotebookManager:
         if self.kernel_spec:
             self.nb_json['metadata']['kernelspec'] = self.kernel_spec
             self._write_nb_to_ipynb() 
-            print(f"=== Changing kernel of {self.nb_path} to {self.kernel_spec["name"]}")
+            print(f"=== [RUN] Changing kernel of {self.nb_path} to {self.kernel_spec['name']}")
             return True 
         return False
     
@@ -65,7 +66,7 @@ class NotebookManager:
     def _validate_path(self) -> bool:   
         return os.path.exists(self.nb_path)
 
-    def _setup_nb_executor(self, kernel_name: str | None) -> ExecutePreprocessor: 
+    def _setup_nb_executor(self, kernel_name: Optional[str] = None) -> ExecutePreprocessor: 
         if kernel_name:
             return ExecutePreprocessor(timeout=600, kernel_name=kernel_name)
         else:

@@ -1,12 +1,12 @@
 {
     "modification": {
         "cellIndex": 1,
-        "source": "ll.pop(2)"
+        "source": "ll.pop(1)"
     },
     "file": {
-        "benchmarkFileName": "list_pop.ipynb",
-        "benchmarkFileDir": "../benchmarks/py-built-in/list_pop"
+        "benchmarkFileName": "m_list_pop.ipynb",
+        "benchmarkFileDir": "../benchmarks/list_pop_s"
     },
-    "downloadReactivePath": "reactive_results/reactive/list_pop.ipynb",
-    "downloadInitialPath": "reactive_results/initial/list_pop.ipynb"
+    "downloadReactivePath": "reactive-results/reactive/m_list_pop.ipynb",
+    "downloadInitialPath": "reactive-results/initial/m_list_pop.ipynb"
 }
