@@ -17,3 +17,5 @@ a += "goodbye"
 
  
 
+=== [CleanUp] Cleaning up kernel and result files
+=== [CleanUp] b'[JupyterServerStopApp] Shutting down server on 8888...\n'

@@ -16,7 +16,7 @@ def run_benchmarks(b: BenchmarkRunner, name:str,
         print(f"Failed to run benchamrk {name}, with files {original_nb_path} and {modified_nb_path}")
     print(f"=== [RUN] COMPLETE RUNNING {name} ===")
     print(f"============================ ")
-    print('\n \n')
+    print('\n')
         
 def validate_benchmark_directory(directory: str) -> tuple[str, str, str]:
     """
@@ -56,7 +56,7 @@ def run_cleanup():
     """
     Clean up open kernels and remove files generated through the run. 
     """
-    script_path = "./cleanup.sh"
+    script_path = "./scripts/cleanup.sh"
     try:
         print(f"=== [CleanUp] Cleaning up kernel and result files")
         res = subprocess.run([script_path], capture_output=True, text=False, check=False)
