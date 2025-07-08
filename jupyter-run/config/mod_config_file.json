@@ -1,12 +1,12 @@
 {
     "modification": {
         "cellIndex": 1,
-        "source": "ll.pop(1)"
+        "source": "for (_, l) in x.items():\n    l.append(5)"
     },
     "file": {
-        "benchmarkFileName": "m_list_pop.ipynb",
-        "benchmarkFileDir": "../benchmarks/list_pop_s"
+        "benchmarkFileName": "loop_append_1.ipynb",
+        "benchmarkFileDir": "../benchmarks/test/loop_append_1"
     },
-    "downloadReactivePath": "reactive-results/reactive/m_list_pop.ipynb",
-    "downloadInitialPath": "reactive-results/initial/m_list_pop.ipynb"
+    "downloadReactivePath": "reactive-results/reactive/loop_append_1.ipynb",
+    "downloadInitialPath": "reactive-results/initial/loop_append_1.ipynb"
 }

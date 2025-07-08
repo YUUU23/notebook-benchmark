@@ -5,6 +5,9 @@ from benchmark_runner import BenchmarkRunner
 
 def run_benchmarks(b: BenchmarkRunner, name:str, 
                    original_nb_path: str, modified_nb_path: str): 
+    """
+    Run single benchmark with benchmark runner. 
+    """
     print(f"=== [RUN] RUNNING {name} === ")
     try: 
         b.run(original_nb_path, modified_nb_path)
@@ -46,6 +49,9 @@ def validate_benchmark_directory(directory: str) -> tuple[str, str, str]:
             return [f_name] + file_paths
 
 def run_cleanup(): 
+    """
+    Clean up open kernels and remove files generated through the run. 
+    """
     script_path = "./cleanup.sh"
     try:
         print(f"=== [CleanUp] Cleaning up kernel and result files")
@@ -67,7 +73,7 @@ def main():
         print("path to config directory not received.", parser.print_help())
         return
     if args.single_benchmark == None and args.multiple_benchmarks == None: 
-        print("Notebook files to test not recieved.", parser.print_help()) 
+        print("notebook files to test not recieved.", parser.print_help()) 
         return
     
     if args.config:
@@ -91,7 +97,7 @@ def main():
             for name, original_nb_path, modified_nb_path in benchmark_to_run: 
                 run_benchmarks(b, name, original_nb_path, modified_nb_path)
         else:
-            print(f"No benchmark found under provided directory {args.single_benchmark if args.single_benchmark else args.multiple_benchmarks}")
+            print(f"no benchmark found under provided directory {args.single_benchmark if args.single_benchmark else args.multiple_benchmarks}")
         
         if args.auto_cleanup: 
             run_cleanup()
