@@ -30,9 +30,10 @@ class BenchmarkRunner:
                                               kernel_config=self.kernel_spec) 
         
         cell_idx, cell_id, change, original = get_first_cell_source_diff(nb_original_manager.nb_json, nb_modified_manager.nb_json)
-        print(f"=== [RUN] Found source diff: at cell index: {cell_idx} with cell ID: {cell_id}")
-        print(f"=== [RUN] Code of original cell {cell_idx}: \n{original}")
-        print(f"=== [RUN] Code to be changed into cell {cell_idx}: \n{change}") 
+        cell_idx_print = cell_idx + 1
+        print(f"=== [RUN] Found source diff: at cell index: {cell_idx_print} with cell ID: {cell_id}")
+        print(f"=== [RUN] Code of original cell {cell_idx_print}: \n{original}")
+        print(f"=== [RUN] Code to be changed into cell {cell_idx_print}: \n{change}") 
         if cell_idx > -1:
             nb_initial_file = f"reactive-results/initial/{nb_original_manager.nb_file_name}"
             nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}" 
@@ -50,7 +51,8 @@ class BenchmarkRunner:
             
             print(f"=== [RUN] PRINTING CELLS EXECUTED:") 
             reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json, cell_idx, cell_id)
-            print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {cells_reran}; modification made to cell: {cell_idx}")
+            cells_reran_print = [idx + 1 for idx in cells_reran]
+            print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {cells_reran_print}; modification made to cell: {cell_idx_print}")
         else:
             print(f'notebooks is not different after modification; no rerun will trigger')
     
