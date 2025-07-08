@@ -1,5 +1,8 @@
 # notebook-benchmark
 
+`benchmarks` contains various Jupyter python notebooks for reactivity services to test their reactive kernel.
+`jupyter-run` automates benchmark testing process by simulating notebook modifications with Playwright through the Jupyter Galata framework, returning results for how many cells reran and correctness diff.
+
 1. Install dependencies
 
 ```bash
