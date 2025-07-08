@@ -8,12 +8,15 @@ def run_benchmarks(b: BenchmarkRunner, name:str,
     """
     Run single benchmark with benchmark runner. 
     """
+    print(f"============================ ")
     print(f"=== [RUN] RUNNING {name} === ")
     try: 
         b.run(original_nb_path, modified_nb_path)
     except:
         print(f"Failed to run benchamrk {name}, with files {original_nb_path} and {modified_nb_path}")
-    print(f"=== [RUN] COMPLETE RUNNING {name} === \n \n")
+    print(f"=== [RUN] COMPLETE RUNNING {name} ===")
+    print(f"============================ ")
+    print('\n \n')
         
 def validate_benchmark_directory(directory: str) -> tuple[str, str, str]:
     """
@@ -26,7 +29,7 @@ def validate_benchmark_directory(directory: str) -> tuple[str, str, str]:
     this function will return [list_concat, [list_concat.ipynb, m_list_concat.ipynb]].
     """
     file_names = []
-    file_paths = []
+    file_paths = {}
     nb_extension = ".ipynb"
     modification_prefix = "m_"
     
@@ -36,8 +39,9 @@ def validate_benchmark_directory(directory: str) -> tuple[str, str, str]:
             raise IOError(f"{file_path} is not a file")
         if not f.endswith(nb_extension): 
             raise IOError(f"{f} is not a {nb_extension} notebook file")
-        file_names.append(f.split(".")[0])
-        file_paths.append(file_path)
+        name = f.split(".")[0]
+        file_names.append(name)
+        file_paths[name] = file_path
     
     if len(file_names) != 2:
         raise IOError(f"{directory} should contain notebook file and modification notebook file. Recieved: {file_names}")
@@ -46,7 +50,7 @@ def validate_benchmark_directory(directory: str) -> tuple[str, str, str]:
         if not f_name.startswith(modification_prefix): 
             if not f"m_{f_name}" in file_names:
                 raise IOError(f"{file_names} does not contain original notebook file and modification notebook file prefix with {modification_prefix}")
-            return [f_name] + file_paths
+            return [f_name] + [file_paths[f_name], file_paths[f'm_{f_name}']]
 
 def run_cleanup(): 
     """
@@ -95,6 +99,7 @@ def main():
             spawn_ui_kernel = args.start_ui_kernel
             b = BenchmarkRunner(args.config, spawn_ui_kernel=spawn_ui_kernel)
             for name, original_nb_path, modified_nb_path in benchmark_to_run: 
+                # print("name: ", name, "original_nb: ", original_nb_path, "modified_nb: ", modified_nb_path)
                 run_benchmarks(b, name, original_nb_path, modified_nb_path)
         else:
             print(f"no benchmark found under provided directory {args.single_benchmark if args.single_benchmark else args.multiple_benchmarks}")

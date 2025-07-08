@@ -149,12 +149,13 @@ def get_all_cell_output_diff(nb_expected, nb_actual) -> str:
     """
     return "\n".join(parse_and_compare(nb_expected, nb_actual, field="outputs", cell_id_must_match=True))
 
-def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> tuple[int, str]: 
+def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> tuple[int, str, str, str]: 
     """
     Find the first cell where the source (code) is different from original 
     notebook to a modified notebook. 
     
-    Return the source of the modified notebook and index of this cell. 
+    Return the source of the modified and original notebook and 
+    index and cell id of this cell. 
     Otherwise, return (-1, "") if no cell differ in source. 
     """
     original_cells = get_code_cells(nb_json_original)
@@ -162,13 +163,15 @@ def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> 
     
     for cell_i, (original_cells, modified_cells) in enumerate(zip(original_cells, modified_cells)):
         if is_cell_source_diff(original_cells, modified_cells):
-            source = modified_cells["source"]
+            change = modified_cells["source"]
+            original = original_cells["source"]
+            cell_id = original_cells["id"]
             # print("!! ORIGINAL: ", original_cells["source"])
-            return (cell_i, source)
+            return (cell_i, cell_id, change, original)
     
-    return (-1, "")
+    return (-1, "", "", "")
 
-def get_execution_count_diff(nb_json_original: str, nb_json_modified: str) -> tuple[int, int, list[int]]: 
+def get_cells_reran(nb_json_original: str, nb_json_modified: str, modified_cell_idx: int, modified_cell_id: str) -> tuple[int, int, list[int]]: 
     """
     Return execution count difference of two notebooks given, and a list of 
     cell indexes for those cells where the execution count differs. 
@@ -179,6 +182,12 @@ def get_execution_count_diff(nb_json_original: str, nb_json_modified: str) -> tu
     reran_count = 0
     cells_reran = []
     for cell_i, (original_cell, modified_cell) in enumerate(zip(original_cells, modified_cells)):
+        if cell_i == modified_cell_idx: 
+            if modified_cell["id"] != modified_cell_id: 
+                raise ValueError(f"Cell ID mismatch for modified cell {modified_cell_idx}")
+            else: 
+                continue
+            
         if original_cell["id"] != modified_cell["id"]:
             raise ValueError("Cell ID mismatch")
         

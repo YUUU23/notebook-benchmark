@@ -1,4 +1,4 @@
-from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff, get_execution_count_diff
+from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff, get_cells_reran
 from utils.notebook_manager import NotebookManager
 import json, subprocess, os
 
@@ -29,9 +29,10 @@ class BenchmarkRunner:
         nb_modified_manager = NotebookManager(nb_path=nb_modified, 
                                               kernel_config=self.kernel_spec) 
         
-        cell_idx, change = get_first_cell_source_diff(nb_original_manager.nb_json, nb_modified_manager.nb_json)
-        print(f"=== [RUN] Found source diff: at cell index: {cell_idx}")
-        print(f"=== [RUN] Code to be changed in to cell {cell_idx}: {change}\n") 
+        cell_idx, cell_id, change, original = get_first_cell_source_diff(nb_original_manager.nb_json, nb_modified_manager.nb_json)
+        print(f"=== [RUN] Found source diff: at cell index: {cell_idx} with cell ID: {cell_id}")
+        print(f"=== [RUN] Code of original cell {cell_idx}: \n{original}")
+        print(f"=== [RUN] Code to be changed into cell {cell_idx}: \n{change}") 
         if cell_idx > -1:
             nb_initial_file = f"reactive-results/initial/{nb_original_manager.nb_file_name}"
             nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}" 
@@ -48,7 +49,7 @@ class BenchmarkRunner:
             print(get_all_cell_output_diff(nb_actual=nb_after_reactive_manager.nb_json, nb_expected=nb_expected_json))
             
             print(f"=== [RUN] PRINTING CELLS EXECUTED:") 
-            reran_count, total_cells, cells_reran = get_execution_count_diff(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json)
+            reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json, cell_idx, cell_id)
             print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {cells_reran}; modification made to cell: {cell_idx}")
         else:
             print(f'notebooks is not different after modification; no rerun will trigger')
