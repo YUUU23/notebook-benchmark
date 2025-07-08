@@ -6,6 +6,7 @@
 jlpm install
 jlpm playwright install
 ```
+__Ensure the kernel you would like to use with is pre-installed!__
 
 2. Benchmark directories should be structured such that each subdirectory contains one benchmark describing one notebook modification,  
 ```
