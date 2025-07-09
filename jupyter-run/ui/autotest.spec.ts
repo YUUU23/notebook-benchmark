@@ -1,4 +1,4 @@
-import { expect, galata, test } from "@jupyterlab/galata";
+import { galata, test } from "@jupyterlab/galata";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
 
@@ -15,6 +15,7 @@ const downloadInitialPath = path.join(
   test_config.downloadInitialPath
 );
 const modification = test_config.modification;
+const datadirectory = test_config.dataDirectory;
 
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
@@ -26,11 +27,25 @@ test.describe.serial("Notebook Run", () => {
     );
     const contents = galata.newContentsHelper(request);
 
-    console.log(`== UPLOADING NOTBEOOK FROM: ${uploadFromPath}`);
+    console.log(`=== [UI] UPLOADING NOTBEOOK FROM: ${uploadFromPath}`);
     await contents.uploadFile(
       path.resolve(__dirname, `${uploadFromPath}`),
       `${tmpPath}/${fileName}`
     );
+
+    if (datadirectory) {
+      const uploadFromPath = path.join(__dirname, "..", `${datadirectory}`);
+      const contents = galata.newContentsHelper(request);
+      const targetPath = path.basename(datadirectory);
+
+      console.log(
+        `=== [UI] UPLOADING DATA DIRECTORY FROM: ${uploadFromPath} to ${targetPath}`
+      );
+      await contents.uploadDirectory(
+        path.resolve(__dirname, `${uploadFromPath}`),
+        targetPath
+      );
+    }
   });
 
   test.beforeEach(async ({ page, tmpPath }) => {
@@ -47,17 +62,19 @@ test.describe.serial("Notebook Run", () => {
     tmpPath,
   }) => {
     // Open notebook
-    console.log(`== OPENING NOTBEOOK: ${fileName}`);
+    console.log(`=== [UI] OPENING NOTBEOOK: ${fileName}`);
     await page.notebook.openByPath(`${tmpPath}/${fileName}`);
     await page.notebook.activate(fileName);
 
     // Run all cells
-    console.log(`== RUNNING ALL CELLS`);
+    console.log(`=== [UI] RUNNING ALL CELLS`);
     await page.notebook.run();
     await page.notebook.save();
 
     // Download notebook (for identifying how many cells have reran later)
-    console.log(`== SAVING INITIAL RUN NOTEBOOK IN: ${downloadInitialPath}`);
+    console.log(
+      `=== [UI] SAVING INITIAL RUN NOTEBOOK IN: ${downloadInitialPath}`
+    );
     await page.getByText("File", { exact: true }).click();
     const downloadOriginalPathPromise = page.waitForEvent("download");
     await page.getByRole("menuitem", { name: "Download" }).click();
@@ -66,12 +83,12 @@ test.describe.serial("Notebook Run", () => {
 
     // Make change
     console.log(
-      `== MAKING MODIFICATION TO CELL INDEX: ${modification.cellIndex}`
+      `=== [UI] MAKING MODIFICATION TO CELL INDEX: ${modification.cellIndex}`
     );
     const cell = await page.notebook.getCellLocator(modification.cellIndex);
     if (!cell) {
       console.log(
-        `== NO CELL WITH CELL INDEX ${modification.cellIndex} FOUND, CLOSING TEST`
+        `=== [UI] CELL WITH CELL INDEX ${modification.cellIndex} FOUND, CLOSING TEST`
       );
       return;
     }
@@ -89,17 +106,22 @@ test.describe.serial("Notebook Run", () => {
       modification.cellIndex
     );
     console.log(
-      `== MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+      `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
     );
-    await page.notebook.save();
+
     await page.notebook.waitForRun();
+    await page.notebook.save();
 
     // Download notebook
-    console.log(`== SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`);
+    console.log(
+      `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
+    );
     await page.getByText("File", { exact: true }).click();
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("menuitem", { name: "Download" }).click();
     const download = await downloadPromise;
     await download.saveAs(downloadReactivePath);
+
+    await page.pause();
   });
 });

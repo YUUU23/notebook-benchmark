@@ -30,7 +30,8 @@ class NotebookManager:
     
     def nb_run(self, save_to_original_file: bool = True) -> str:
         if self.ep: 
-            nb_res = self.ep.preprocess(self.nb_json)
+            context = {'metadata': {'path': self.nb_dir}}
+            nb_res = self.ep.preprocess(self.nb_json, context)
             if save_to_original_file: 
                 self.nb_json = nb_res
                 self._write_nb_to_ipynb()

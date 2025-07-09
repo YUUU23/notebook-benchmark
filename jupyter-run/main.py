@@ -4,16 +4,17 @@ from pathlib import Path
 from benchmark_runner import BenchmarkRunner
 
 def run_benchmarks(b: BenchmarkRunner, name:str, 
-                   original_nb_path: str, modified_nb_path: str): 
+                   original_nb_path: str, modified_nb_path: str, 
+                   data_directory: str): 
     """
     Run single benchmark with benchmark runner. 
     """
     print(f"============================ ")
     print(f"=== [RUN] RUNNING {name} === ")
     try: 
-        b.run(original_nb_path, modified_nb_path)
-    except:
-        print(f"Failed to run benchamrk {name}, with files {original_nb_path} and {modified_nb_path}")
+        b.run(original_nb_path, modified_nb_path, data_directory)
+    except Exception as e:
+        print(f"Failed to run benchamrk {name}, with files {original_nb_path} and {modified_nb_path}, {e}")
     print(f"=== [RUN] COMPLETE RUNNING {name} ===")
     print(f"============================ ")
     print('\n')
@@ -69,6 +70,7 @@ def main():
     parser.add_argument("-c", "--config", metavar="CONFIG", type=str, help="path to config directory")
     parser.add_argument("-s", "--single_benchmark", type=str, help="run single benchmark directory")
     parser.add_argument("-m", "--multiple_benchmarks", type=str, help="run entire directory holding benchmark directories")
+    parser.add_argument("-d", "--data_directory", type=str, help="additional files the benchmark may need")
     parser.add_argument("--start_ui_kernel", action="store_true", help="start UI kernel")
     parser.add_argument("--auto_cleanup", action="store_true", help="automatically cleanup after run")
     args = parser.parse_args()
@@ -83,12 +85,15 @@ def main():
     if args.config:
         benchmark_to_run = []
         nb_dir = ""
+        data_directory = args.data_directory
         if args.single_benchmark: 
             nb_dir = f"{args.single_benchmark}/"
             benchmark_to_run.append(validate_benchmark_directory(nb_dir))
         else: 
             nb_dir = args.multiple_benchmarks
             for d in os.listdir(nb_dir):
+                if data_directory and f"{nb_dir}/{d}" == data_directory: 
+                    continue
                 try: 
                     full_path = f"{nb_dir}/{d}/"
                     benchmark_to_run.append(validate_benchmark_directory(full_path))
@@ -100,7 +105,7 @@ def main():
             b = BenchmarkRunner(args.config, spawn_ui_kernel=spawn_ui_kernel)
             for name, original_nb_path, modified_nb_path in benchmark_to_run: 
                 # print("name: ", name, "original_nb: ", original_nb_path, "modified_nb: ", modified_nb_path)
-                run_benchmarks(b, name, original_nb_path, modified_nb_path)
+                run_benchmarks(b, name, original_nb_path, modified_nb_path, data_directory)
         else:
             print(f"no benchmark found under provided directory {args.single_benchmark if args.single_benchmark else args.multiple_benchmarks}")
         

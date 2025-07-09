@@ -15,7 +15,7 @@ jlpm playwright install
 2. Benchmark directories should be structured such that each subdirectory contains one benchmark describing one notebook modification,
 
 ```
-benchmarks/py_built_in/
+benchmarks/py-built-in/
 ├── list_pop/
 │   └── list_pop.ipynb/ # Original notebook
 │   └── m_list_pop.ipynb/ # Notebook containing one modification
@@ -40,14 +40,14 @@ jupyter-run/config/
 
 ```bash
 cd jupyter-run
-./main.py -c ./config -s ../benchmarks/py_built_in/list_pop --auto_cleanup --start_ui_kernel
+./main.py -c ./config -s ../benchmarks/py-built-in/list_pop --auto_cleanup --start_ui_kernel
 ```
 
 To run all benchmarks under one directory, from root, run,
 
 ```bash
 cd jupyter-run
-./main.py -c ./config -m ../benchmarks/py_built_in --auto_cleanup --start_ui_kernel
+./main.py -c ./config -m ../benchmarks/py-built-in --auto_cleanup --start_ui_kernel
 ```
 
 **The above configures such that a Jupyter kernel for UI interaction will be started automatically, and UI kernel are shutdown afterwards with intermediate testing files and configs removed.**

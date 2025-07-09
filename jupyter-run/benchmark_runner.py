@@ -16,7 +16,7 @@ class BenchmarkRunner:
         if spawn_ui_kernel: 
             self._setup_ui_kernel()
     
-    def run(self, nb_original: str, nb_modified: str): 
+    def run(self, nb_original: str, nb_modified: str, data_directory: str): 
         """
         1. Set up original notebook and modified notebook. 
         2. Identify modification. 
@@ -38,7 +38,8 @@ class BenchmarkRunner:
             nb_initial_file = f"reactive-results/initial/{nb_original_manager.nb_file_name}"
             nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}" 
             self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name, 
-                                          nb_original_manager.nb_dir, nb_reactive_file, nb_initial_file) 
+                                          nb_original_manager.nb_dir, nb_reactive_file, nb_initial_file,
+                                          data_directory) 
             self._run_ui_to_execute_modifications() 
         
             nb_initial_run_manager = NotebookManager(nb_path=nb_initial_file)
@@ -72,12 +73,14 @@ class BenchmarkRunner:
                                  nb_to_modify_name: str,
                                  nb_to_modify_dir: str, 
                                  save_reactive_result_to: str, 
-                                 save_initial_result_to: str) -> None:
+                                 save_initial_result_to: str,
+                                 data_directory: str) -> None:
         modification = {"cellIndex": cell_idx, "source": change}
         benchmark_file_info = {"benchmarkFileName": nb_to_modify_name, "benchmarkFileDir": nb_to_modify_dir}
         config = {"modification": modification, "file": benchmark_file_info, 
                   "downloadReactivePath": save_reactive_result_to, 
-                  "downloadInitialPath": save_initial_result_to}
+                  "downloadInitialPath": save_initial_result_to,
+                  "dataDirectory": data_directory}
         with open(self.mod_config_file, "w") as f:
             json.dump(config, f, indent=4)
         return config
@@ -85,8 +88,8 @@ class BenchmarkRunner:
     def _run_ui_to_execute_modifications(self) -> None: 
         script_path = "./ui/run_ui.sh"
         try:
-            subprocess.run([script_path], capture_output=True, text=True, check=True)
-            # print(f"Output from running {script_path}: {result.stdout}") 
+            result = subprocess.run([script_path], capture_output=True, text=True, check=True)
+            print(f"=== [RUN] Output from running {script_path}: {result.stdout}") 
         except subprocess.CalledProcessError as e:
             print(f"Error executing ui script: {e} \n {e.stderr}")
     
