@@ -1,0 +1,304 @@
+=== [SETUP] Executing UI SETUP script
+============================ 
+=== [RUN] RUNNING file_exists_and_write === 
+=== [RUN] Changing kernel of ../benchmarks/test1/file_exists_and_write/file_exists_and_write.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/file_exists_and_write/m_file_exists_and_write.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 4 with cell ID: eab9ebd6-82ec-403b-abcf-582114d0ab2c
+=== [RUN] Code of original cell 4: 
+d = f_dir_2
+=== [RUN] Code to be changed into cell 4: 
+d = f_dir
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/file_exists_and_write/file_exists_and_write.ipynb
+=== [UI] OPENING NOTEBOOK: file_exists_and_write.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/file_exists_and_write.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/file_exists_and_write.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (13.1s)
+
+  1 passed (16.4s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 6, cell id 51a4d5d7-d1f7-426e-9d80-4ccfddecdda2
+Output lines only in expected notebook:
+2: 'tmp2 does not exist'
+Output lines only in actual notebook:
+2: 'tmp2 exists'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 3 / 7 cells reran; reran cells are: [5, 6, 7]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING file_exists_and_write ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING file_direct_name_change === 
+=== [RUN] Changing kernel of ../benchmarks/test1/file_direct_name_change/file_direct_name_change.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/file_direct_name_change/m_file_direct_name_change.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 1 with cell ID: 1d4f7d91-ca93-4666-bd09-68d35b1976f3
+=== [RUN] Code of original cell 1: 
+path = "my_file.txt"
+=== [RUN] Code to be changed into cell 1: 
+path = "my_file_1.txt"
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/file_direct_name_change/file_direct_name_change.ipynb
+=== [UI] OPENING NOTEBOOK: file_direct_name_change.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/file_direct_name_change.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 0
+=== [UI] MODIFIED CELL (0) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/file_direct_name_change.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (10.4s)
+
+  1 passed (13.2s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Cell id has changed from original Expected cell id: 8942b610-b37a-428d-aeff-408e1bfa0e86 Actual cell id: fe8ff77b-a7e4-4bd0-9211-5ab5e262e4d1
+Expected and actual output differ for cell at index 3, cell id fe8ff77b-a7e4-4bd0-9211-5ab5e262e4d1
+Output lines only in expected notebook:
+2: 'my_file does not exist'
+3: ''
+Output lines only in actual notebook:
+2: '3beddefgiejh'
+3: 'my_file exists'
+4: ''
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 3 / 4 cells reran; reran cells are: [2, 3, 4]; modification made to cell: 1
+=== [RUN] COMPLETE RUNNING file_direct_name_change ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING file_append === 
+=== [RUN] Changing kernel of ../benchmarks/test1/file_append/file_append.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/file_append/m_file_append.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 2 with cell ID: 1f3c30c9-2e68-4710-b4f9-5848b0491fda
+=== [RUN] Code of original cell 2: 
+text = "abcdefgh"
+=== [RUN] Code to be changed into cell 2: 
+# Change text to append to file
+text = "33"
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/file_append/file_append.ipynb
+=== [UI] OPENING NOTEBOOK: file_append.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/file_append.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 1
+=== [UI] MODIFIED CELL (1) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/file_append.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.8s)
+
+  1 passed (9.4s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 3, cell id a5abd523-0fde-4474-b748-a6171e600848
+Output lines only in expected notebook:
+0: '33'
+Output lines only in actual notebook:
+0: 'abcdefgh'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 4 cells reran; reran cells are: [3]; modification made to cell: 2
+=== [RUN] COMPLETE RUNNING file_append ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING file_concat_txt_param === 
+=== [RUN] Changing kernel of ../benchmarks/test1/file_concat_txt_param/file_concat_txt_param.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/file_concat_txt_param/m_file_concat_txt_param.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 7 with cell ID: af95b07f-621f-496c-9de9-e124aa3cec0a
+=== [RUN] Code of original cell 7: 
+for f_path, t in zip(files, texts):
+    with open(f_path, 'w') as f:
+        f.write("abc")
+=== [RUN] Code to be changed into cell 7: 
+for f_path, t in zip(files, texts):
+    with open(f_path, 'w') as f:
+        f.write(t)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/file_concat_txt_param/file_concat_txt_param.ipynb
+=== [UI] OPENING NOTEBOOK: file_concat_txt_param.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/file_concat_txt_param.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 6
+=== [UI] MODIFIED CELL (6) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/file_concat_txt_param.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (9.1s)
+
+  1 passed (11.6s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 8, cell id 25300c51-7c22-48a8-afd3-c68a6b125630
+Output lines only in expected notebook:
+0: 'abcdefgh'
+Output lines only in actual notebook:
+0: 'abcabc'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 0 / 9 cells reran; reran cells are: []; modification made to cell: 7
+=== [RUN] COMPLETE RUNNING file_concat_txt_param ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING dir_mkdirs_and_walk === 
+=== [RUN] Changing kernel of ../benchmarks/test1/dir_mkdirs_and_walk/dir_mkdirs_and_walk.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/dir_mkdirs_and_walk/m_dir_mkdirs_and_walk.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 869e6564-329a-4e07-a652-7a8816fbe274
+=== [RUN] Code of original cell 3: 
+dir_1 = "388/488/588"
+=== [RUN] Code to be changed into cell 3: 
+dir_1 = "388/488/588/688"
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/dir_mkdirs_and_walk/dir_mkdirs_and_walk.ipynb
+=== [UI] OPENING NOTEBOOK: dir_mkdirs_and_walk.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/dir_mkdirs_and_walk.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/dir_mkdirs_and_walk.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (9.1s)
+
+  1 passed (13.0s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 7 cells reran; reran cells are: [1, 4, 5, 7]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING dir_mkdirs_and_walk ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING file_concat === 
+=== [RUN] Changing kernel of ../benchmarks/test1/file_concat/file_concat.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/file_concat/m_file_concat.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 4 with cell ID: a2b23ea8-c7ae-4768-8033-85060d3f9cbb
+=== [RUN] Code of original cell 4: 
+file_2_text = "efgh" 
+=== [RUN] Code to be changed into cell 4: 
+file_2_text = "efghijkl" 
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/file_concat/file_concat.ipynb
+=== [UI] OPENING NOTEBOOK: file_concat.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/file_concat.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/file_concat.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (9.4s)
+
+  1 passed (12.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 5 / 9 cells reran; reran cells are: [5, 6, 7, 8, 9]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING file_concat ===
+============================ 
+
+============================ 
+=== [RUN] RUNNING file_write === 
+=== [RUN] Changing kernel of ../benchmarks/test2/file_write/file_write.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test2/file_write/m_file_write.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 2 with cell ID: 1f3c30c9-2e68-4710-b4f9-5848b0491fda
+=== [RUN] Code of original cell 2: 
+text = "abcdef"
+=== [RUN] Code to be changed into cell 2: 
+text = "abcdefgh"
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test2/file_write/file_write.ipynb
+=== [UI] OPENING NOTEBOOK: file_write.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/file_write.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 1
+=== [UI] MODIFIED CELL (1) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/file_write.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (9.2s)
+
+  1 passed (12.9s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 3, cell id ea550d60-7a61-44c4-8554-d138253d449b
+Output lines only in expected notebook:
+0: 'abcdefgh'
+Output lines only in actual notebook:
+0: 'abcdef'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 4 cells reran; reran cells are: [3]; modification made to cell: 2
+=== [RUN] COMPLETE RUNNING file_write ===
+============================ 
+
+============================ 
+=== [RUN] RUNNING dir_rename === 
+=== [RUN] Changing kernel of ../benchmarks/test2/dir_rename/dir_rename.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test2/dir_rename/m_dir_rename.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 8efc5b86-1325-45db-9c54-7c85f82bc9b7
+=== [RUN] Code of original cell 3: 
+new = "new1"
+=== [RUN] Code to be changed into cell 3: 
+new = "new"
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test2/dir_rename/dir_rename.ipynb
+=== [UI] OPENING NOTEBOOK: dir_rename.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/dir_rename.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/dir_rename.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (8.4s)
+
+  1 passed (11.7s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 5, cell id 70cc9112-5cee-4be3-903d-69861ba73c9e
+Output lines only in expected notebook:
+0: 'new'
+1: ''
+Output lines only in actual notebook:
+0: 'new1'
+1: 'new'
+2: '.ipynb_checkpoints'
+3: ''
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 3 / 6 cells reran; reran cells are: [4, 5, 6]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING dir_rename ===
+============================ 

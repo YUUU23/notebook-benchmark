@@ -1,0 +1,504 @@
+=== [SETUP] Executing UI SETUP script
+============================ 
+=== [RUN] RUNNING df_rename === 
+=== [RUN] Changing kernel of ../benchmarks/test1/df_rename/df_rename.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/df_rename/m_df_rename.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 4 with cell ID: e086eace-433e-4e41-ab2e-0ff4014b5ff4
+=== [RUN] Code of original cell 4: 
+df.rename(columns={'tolls_amount': 'tolls_charge'}, inplace=True)
+=== [RUN] Code to be changed into cell 4: 
+df.rename(columns={'tolls_amount': 'tolls_charge',"rate_code": "rate_code_in_area"}, inplace=True)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTBEOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/df_rename/df_rename.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/data to data
+=== [UI] OPENING NOTBEOOK: df_rename.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_rename.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_rename.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (7.1s)
+
+  1 passed (10.6s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 2 / 5 cells reran; reran cells are: [3, 5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_rename ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_apply_axis === 
+=== [RUN] Changing kernel of ../benchmarks/test1/df_apply_axis/df_apply_axis.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/df_apply_axis/m_df_apply_axis.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 0a854f03-6764-495c-a8ed-efee504590aa
+=== [RUN] Code of original cell 3: 
+df = df.apply(np.sum, axis=0)
+=== [RUN] Code to be changed into cell 3: 
+df = df.apply(np.sum, axis=1) 
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTBEOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/df_apply_axis/df_apply_axis.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/data to data
+=== [UI] OPENING NOTBEOOK: df_apply_axis.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_apply_axis.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_apply_axis.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.4s)
+
+  1 passed (11.2s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 3 / 4 cells reran; reran cells are: [1, 2, 4]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING df_apply_axis ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_drop_param === 
+=== [RUN] Changing kernel of ../benchmarks/test1/df_drop_param/df_drop_param.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/df_drop_param/m_df_drop_param.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 4 with cell ID: e086eace-433e-4e41-ab2e-0ff4014b5ff4
+=== [RUN] Code of original cell 4: 
+df.drop('pickup_longitude', axis = 1, inplace = True)
+=== [RUN] Code to be changed into cell 4: 
+df.drop('pickup_longitude', axis = 1, inplace = False)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTBEOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/df_drop_param/df_drop_param.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/data to data
+=== [UI] OPENING NOTBEOOK: df_drop_param.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_drop_param.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: 
+
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+
+
+  
+    
+      
+      Unnamed: 0
+      vendor_id
+      pickup_datetime
+      dropoff_datetime
+      passenger_count
+      trip_distance
+      pickup_latitude
+      rate_code
+      store_and_fwd_flag
+      dropoff_longitude
+      dropoff_latitude
+      payment_type
+      fare_amount
+      extra
+      mta_tax
+      tip_amount
+      tolls_amount
+      imp_surcharge
+      total_amount
+    
+  
+  
+    
+      0
+      0
+      2
+      2015-07-18 11:25:58
+      2015-07-18 11:43:47
+      1
+      7.21
+      40.769028
+      1.0
+      N
+      -73.949203
+      40.722584
+      1
+      22.5
+      0.0
+      0.5
+      4.66
+      0.00
+      0.3
+      27.96
+    
+    
+      1
+      1
+      1
+      2015-03-15 12:50:01
+      2015-03-15 13:23:35
+      1
+      10.80
+      40.773727
+      NaN
+      N
+      -73.988228
+      40.765694
+      1
+      34.5
+      0.0
+      0.5
+      8.10
+      5.33
+      0.3
+      48.73
+    
+    
+      2
+      2
+      2
+      2015-04-30 12:25:44
+      2015-04-30 13:03:51
+      1
+      4.28
+      40.762341
+      NaN
+      N
+      -74.008911
+      40.710789
+      1
+      24.5
+      0.0
+      0.5
+      2.50
+      0.00
+      0.3
+      27.80
+    
+    
+      3
+      3
+      2
+      2015-05-28 08:47:56
+      2015-05-28 09:26:08
+      1
+      18.47
+      40.645302
+      NaN
+      N
+      -73.843422
+      40.852852
+      1
+      51.0
+      0.0
+      0.5
+      7.00
+      5.54
+      0.3
+      64.34
+    
+    
+      4
+      4
+      1
+      2015-06-20 19:36:17
+      2015-06-20 20:10:49
+      1
+      15.50
+      40.644947
+      NaN
+      Y
+      -73.946800
+      40.725021
+      1
+      44.5
+      0.0
+      0.5
+      9.06
+      0.00
+      0.3
+      54.36
+    
+    
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+      ...
+    
+    
+      199995
+      199995
+      2
+      2016-08-02 16:11:33
+      2016-08-02 16:35:33
+      1
+      12.69
+      NaN
+      1.0
+      N
+      NaN
+      NaN
+      2
+      36.0
+      1.0
+      0.5
+      0.00
+      0.00
+      0.3
+      37.80
+    
+    
+      199996
+      199996
+      1
+      2016-08-06 04:33:04
+      2016-08-06 05:08:03
+      1
+      8.80
+      NaN
+      1.0
+      N
+      NaN
+      NaN
+      2
+      31.5
+      0.5
+      0.5
+      0.00
+      0.00
+      0.3
+      32.80
+    
+    
+      199997
+      199997
+      2
+      2016-07-11 08:41:05
+      2016-07-11 09:26:48
+      5
+      11.43
+      NaN
+      1.0
+      N
+      NaN
+      NaN
+      2
+      39.0
+      0.0
+      0.5
+      0.00
+      0.00
+      0.3
+      39.80
+    
+    
+      199998
+      199998
+      2
+      2016-12-15 11:23:29
+      2016-12-15 11:47:11
+      2
+      10.77
+      NaN
+      1.0
+      N
+      NaN
+      NaN
+      2
+      32.0
+      0.0
+      0.5
+      0.00
+      5.54
+      0.3
+      38.34
+    
+    
+      199999
+      199999
+      2
+      2016-03-28 22:38:27
+      2016-03-28 22:38:46
+      6
+      0.08
+      40.765480
+      1.0
+      N
+      -73.962914
+      40.765018
+      3
+      -2.5
+      -0.5
+      -0.5
+      0.00
+      0.00
+      -0.3
+      -3.80
+    
+  
+
+200000 rows × 19 columns
+
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_drop_param.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.6s)
+
+  1 passed (10.6s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 2 / 5 cells reran; reran cells are: [3, 5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_drop_param ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_update === 
+=== [RUN] Changing kernel of ../benchmarks/test1/df_update/df_update.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/df_update/m_df_update.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 2301d9d3-076c-4981-9324-b57e85da3481
+=== [RUN] Code of original cell 4: 
+df2['A'] = [200,None,200]
+=== [RUN] Code to be changed into cell 4: 
+df2['A'] = [200,None,None]
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTBEOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/df_update/df_update.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/data to data
+=== [UI] OPENING NOTBEOOK: df_update.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_update.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_update.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (5.8s)
+
+  1 passed (9.2s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 6 cells reran; reran cells are: [1, 2, 5, 6]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_update ===
+============================ 
+
+
+=== [SETUP] Executing UI SETUP script
+============================ 
+=== [RUN] RUNNING df_apply_col_name === 
+=== [RUN] Changing kernel of ../benchmarks/test1/df_apply_col_name/df_apply_col_name.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/test1/df_apply_col_name/m_df_apply_col_name.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 3d2bcb09-99aa-442e-80a3-d57198f1f2a2
+=== [RUN] Code of original cell 4: 
+df['bad_tip'] = df['tip_amount'].apply(lambda x: 'Yes' if x >= 3.0 else 'No')
+=== [RUN] Code to be changed into cell 4: 
+df['bad_tip'] = df['total_amount'].apply(lambda x: 'Yes' if x >= 3.0 else 'No')
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/df_apply_col_name/df_apply_col_name.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/data to data
+=== [UI] OPENING NOTEBOOK: df_apply_col_name.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_apply_col_name.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_apply_col_name.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (17.0s)
+
+  1 passed (26.2s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 3 / 5 cells reran; reran cells are: [1, 3, 5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_apply_col_name ===
+============================ 
+
+
+=== [SETUP] Executing UI SETUP script
+============================ 
+=== [RUN] RUNNING df_del === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_del/df_del.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_del/m_df_del.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 4 with cell ID: e086eace-433e-4e41-ab2e-0ff4014b5ff4
+=== [RUN] Code of original cell 4: 
+del df['rate_code']
+=== [RUN] Code to be changed into cell 4: 
+del df['fare_amount']
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/df_del/df_del.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/test1/data to data
+=== [UI] OPENING NOTEBOOK: df_del.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_del.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_del.ipynb
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (11.0s)
+
+  1 passed (19.1s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 4, cell id be214678-89b5-4e09-9969-b6b4534b5d29
+Output lines only in expected notebook:
+2: "       'pickup_latitude', 'rate_code', 'store_and_fwd_flag',"
+3: "       'dropoff_longitude', 'dropoff_latitude', 'payment_type', 'extra',"
+4: "       'mta_tax', 'tip_amount', 'tolls_amount', 'imp_surcharge',"
+5: "       'total_amount'],"
+6: "      dtype='object')"
+7: ''
+Output lines only in actual notebook:
+2: "       'pickup_latitude', 'store_and_fwd_flag', 'dropoff_longitude',"
+3: "       'dropoff_latitude', 'payment_type', 'fare_amount', 'extra', 'mta_tax',"
+4: "       'tip_amount', 'tolls_amount', 'imp_surcharge', 'total_amount'],"
+5: "      dtype='object')"
+6: ''
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 0 / 5 cells reran; reran cells are: []; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_del ===
+============================ 

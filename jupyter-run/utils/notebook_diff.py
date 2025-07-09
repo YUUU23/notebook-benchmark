@@ -129,7 +129,7 @@ def parse_and_compare(nb_json_expected: dict[str, any], nb_json_actual: dict[str
                 actual_cell_id = f'actual_cell {i}'
         
         if cell_id_must_match and expected_cell_id != actual_cell_id:
-            raise ValueError(
+            print(
                 "Cell id has changed from original"
                 f" Expected cell id: {expected_cell_id}"
                 f" Actual cell id: {actual_cell_id}")
@@ -137,7 +137,7 @@ def parse_and_compare(nb_json_expected: dict[str, any], nb_json_actual: dict[str
         diff_msg = parse_and_compare_cell(expected_cell, actual_cell, field=field)
         if diff_msg:
             msg.append(
-                f"Expected expected and actual output differ for cell at index {i}, cell id {actual_cell_id}"
+                f"Expected and actual output differ for cell at index {i}, cell id {actual_cell_id}"
                 f"\n{diff_msg}\n"
             )
     

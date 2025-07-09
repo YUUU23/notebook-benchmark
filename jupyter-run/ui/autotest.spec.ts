@@ -27,7 +27,7 @@ test.describe.serial("Notebook Run", () => {
     );
     const contents = galata.newContentsHelper(request);
 
-    console.log(`=== [UI] UPLOADING NOTBEOOK FROM: ${uploadFromPath}`);
+    console.log(`=== [UI] UPLOADING NOTEBOOK FROM: ${uploadFromPath}`);
     await contents.uploadFile(
       path.resolve(__dirname, `${uploadFromPath}`),
       `${tmpPath}/${fileName}`
@@ -62,7 +62,7 @@ test.describe.serial("Notebook Run", () => {
     tmpPath,
   }) => {
     // Open notebook
-    console.log(`=== [UI] OPENING NOTBEOOK: ${fileName}`);
+    console.log(`=== [UI] OPENING NOTEBOOK: ${fileName}`);
     await page.notebook.openByPath(`${tmpPath}/${fileName}`);
     await page.notebook.activate(fileName);
 
@@ -94,12 +94,12 @@ test.describe.serial("Notebook Run", () => {
     }
     await cell.getByRole("textbox").press("ControlOrMeta+a");
     await cell.getByRole("textbox").press("Backspace");
-    await page.notebook.setCell(
-      modification.cellIndex,
-      "code",
-      modification.source
-    );
+    await cell.getByRole("textbox").fill(modification.source);
+    // page.notebook.setCell(modification.cellIndex, "code", code);
     await page.notebook.runCell(modification.cellIndex);
+    await page.notebook.save();
+    await page.notebook.waitForRun();
+    await page.notebook.save();
 
     // Save modified notebook output
     const cellOutput = await page.notebook.getCellTextOutput(
@@ -122,6 +122,6 @@ test.describe.serial("Notebook Run", () => {
     const download = await downloadPromise;
     await download.saveAs(downloadReactivePath);
 
-    await page.pause();
+    //await page.pause();
   });
 });
