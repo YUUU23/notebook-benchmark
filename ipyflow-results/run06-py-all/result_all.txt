@@ -392,58 +392,45 @@ Running 1 test using 1 worker
 
 ============================ 
 === [RUN] RUNNING func_multi_access === 
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/func_multi_access/func_multi_access.ipynb to ipyflow
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/func_multi_access/m_func_multi_access.ipynb to ipyflow
-=== [RUN] Found source diff: at cell index: 1 with cell ID: c5d54cec-5c3d-40d0-a857-41a3d066d91c
-=== [RUN] Code of original cell 1: 
-class my_class:
-    a = 999
-    def change_a(self):
-        class class_b():
+=== [RUN] Changing kernel of ../benchmarks/rerun/func_multi_access/func_multi_access.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/rerun/func_multi_access/m_func_multi_access.ipynb to ipyflow
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 5d9c1a9f-0253-4d55-8ef1-1946964cd9f7
+=== [RUN] Code of original cell 3: 
+def new_change_a():
+    class class_b:
             def change_val(self, l, v): 
-                l.append(v + 1)
+                l.pop(1)
                 return l
-        return class_b()
-    def change_a_2(self, v):
-        self.a = v 
-        return 
-=== [RUN] Code to be changed into cell 1: 
-class my_class:
-    a = 999
-    def change_a(self):
-        class class_b():
-            def change_val(self, l, v): 
-                l.append(v + 10)
+    return class_b
+my_class.change_a = new_change_a()
+=== [RUN] Code to be changed into cell 3: 
+def new_change_a():
+    class class_b:
+            def change_val(self, l, v):
+                l.pop()
                 return l
-        return class_b()
-    def change_a_2(self, v):
-        self.a = v 
-        return 
+    return class_b
+my_class.change_a = new_change_a()
 === [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
 
 Running 1 test using 1 worker
 
-=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/py-built-in/func_multi_access/func_multi_access.ipynb
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/rerun/func_multi_access/func_multi_access.ipynb
 === [UI] OPENING NOTEBOOK: func_multi_access.ipynb
 === [UI] RUNNING ALL CELLS
 === [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/func_multi_access.ipynb
-=== [UI] MAKING MODIFICATION TO CELL INDEX: 0
-=== [UI] MODIFIED CELL (0) OUTPUT: null
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
 === [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/func_multi_access.ipynb
-  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (4.9s)
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (7.1s)
 
-  1 passed (7.4s)
+  1 passed (11.7s)
 ~/Downloads/notebook-benchmark/jupyter-run
 
 === [RUN] PRINTING DIFF: 
-Expected and actual output differ for cell at index 4, cell id c4ead1f5-eb43-4818-823d-a13c53f1b41c
-Output lines only in expected notebook:
-0: '[3, 2]'
-Output lines only in actual notebook:
-0: '[3, 1]'
 
 === [RUN] PRINTING CELLS EXECUTED:
-=== [RUN] 4 / 5 cells reran; reran cells are: [2, 3, 4, 5]; modification made to cell: 1
+=== [RUN] 3 / 5 cells reran; reran cells are: [2, 4, 5]; modification made to cell: 3
 === [RUN] COMPLETE RUNNING func_multi_access ===
 ============================ 
 
@@ -516,8 +503,8 @@ Running 1 test using 1 worker
 
 ============================ 
 === [RUN] RUNNING list_remove === 
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/list_remove/list_remove.ipynb to ipyflow
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/list_remove/m_list_remove.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/rerun/list_remove/list_remove.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/rerun/list_remove/m_list_remove.ipynb to ipyflow
 === [RUN] Found source diff: at cell index: 1 with cell ID: 46544faa-5caa-4261-b79f-033233e0e91b
 === [RUN] Code of original cell 1: 
 a = [1,2,3]
@@ -527,24 +514,19 @@ a = [1,2,5]
 
 Running 1 test using 1 worker
 
-=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/py-built-in/list_remove/list_remove.ipynb
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/rerun/list_remove/list_remove.ipynb
 === [UI] OPENING NOTEBOOK: list_remove.ipynb
 === [UI] RUNNING ALL CELLS
 === [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/list_remove.ipynb
 === [UI] MAKING MODIFICATION TO CELL INDEX: 0
 === [UI] MODIFIED CELL (0) OUTPUT: null
 === [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/list_remove.ipynb
-  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (5.3s)
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.8s)
 
-  1 passed (7.7s)
+  1 passed (10.3s)
 ~/Downloads/notebook-benchmark/jupyter-run
 
 === [RUN] PRINTING DIFF: 
-Expected and actual output differ for cell at index 3, cell id e095a41d-ff5d-44b7-9801-2ca06f086f66
-Output lines only in expected notebook:
-0: '[[3], [2]]'
-Output lines only in actual notebook:
-0: '[[1], [2]]'
 
 === [RUN] PRINTING CELLS EXECUTED:
 === [RUN] 4 / 5 cells reran; reran cells are: [2, 3, 4, 5]; modification made to cell: 1
@@ -1355,27 +1337,27 @@ Output lines only in actual notebook:
 
 ============================ 
 === [RUN] RUNNING func_all_any_assign_val === 
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/func_all_any_assign_val/func_all_any_assign_val.ipynb to ipyflow
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/func_all_any_assign_val/m_func_all_any_assign_val.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/rerun/func_all_any_assign_val/func_all_any_assign_val.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/rerun/func_all_any_assign_val/m_func_all_any_assign_val.ipynb to ipyflow
 === [RUN] Found source diff: at cell index: 1 with cell ID: 69311c0e-9f4f-4697-87c9-f4351832eb3d
 === [RUN] Code of original cell 1: 
 l = [False,True,False,False]
 === [RUN] Code to be changed into cell 1: 
-l = [True]
+l = [False,False,False,False]
 === [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
 
 Running 1 test using 1 worker
 
-=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/py-built-in/func_all_any_assign_val/func_all_any_assign_val.ipynb
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/rerun/func_all_any_assign_val/func_all_any_assign_val.ipynb
 === [UI] OPENING NOTEBOOK: func_all_any_assign_val.ipynb
 === [UI] RUNNING ALL CELLS
 === [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/func_all_any_assign_val.ipynb
 === [UI] MAKING MODIFICATION TO CELL INDEX: 0
 === [UI] MODIFIED CELL (0) OUTPUT: null
 === [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/func_all_any_assign_val.ipynb
-  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (4.8s)
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (5.8s)
 
-  1 passed (7.1s)
+  1 passed (9.4s)
 ~/Downloads/notebook-benchmark/jupyter-run
 
 === [RUN] PRINTING DIFF: 
@@ -1697,8 +1679,8 @@ Running 1 test using 1 worker
 
 ============================ 
 === [RUN] RUNNING class_subscript === 
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/class_subscript/class_subscript.ipynb to ipyflow
-=== [RUN] Changing kernel of ../benchmarks/py-built-in/class_subscript/m_class_subscript.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/rerun/class_subscript/class_subscript.ipynb to ipyflow
+=== [RUN] Changing kernel of ../benchmarks/rerun/class_subscript/m_class_subscript.ipynb to ipyflow
 === [RUN] Found source diff: at cell index: 4 with cell ID: 3215a491-a1d9-4b32-9f97-c884ca8753f6
 === [RUN] Code of original cell 4: 
 my_class.add_k_to_b(30, 2)
@@ -1708,29 +1690,29 @@ my_class.add_k_to_b(35, 2)
 
 Running 1 test using 1 worker
 
-=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/py-built-in/class_subscript/class_subscript.ipynb
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/rerun/class_subscript/class_subscript.ipynb
 === [UI] OPENING NOTEBOOK: class_subscript.ipynb
 === [UI] RUNNING ALL CELLS
 === [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/class_subscript.ipynb
 === [UI] MAKING MODIFICATION TO CELL INDEX: 3
 === [UI] MODIFIED CELL (3) OUTPUT: null
 === [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/class_subscript.ipynb
-  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.1s)
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (7.3s)
 
-  1 passed (9.8s)
+  1 passed (11.1s)
 ~/Downloads/notebook-benchmark/jupyter-run
 
 === [RUN] PRINTING DIFF: 
 Expected and actual output differ for cell at index 4, cell id a8784a89-6fef-4150-a69d-c66f8301443b
 Output lines only in expected notebook:
-0: '7'
+0: '5 {35: 2}'
 Output lines only in actual notebook:
-0: '9'
+0: '5 {30: 2, 35: 2}'
 
 === [RUN] PRINTING CELLS EXECUTED:
 === [RUN] 1 / 5 cells reran; reran cells are: [5]; modification made to cell: 4
 === [RUN] COMPLETE RUNNING class_subscript ===
-============================ 
+============================
 
 
 ============================ 
