@@ -1,0 +1,776 @@
+error parsing directory sklearn_model_test_size, ../benchmarks/library-side-effects/sklearn_model_test_size/.ipynb_checkpoints is not a file
+=== [SETUP] Executing UI SETUP script
+============================ 
+=== [RUN] RUNNING df_apply_col_name === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_apply_col_name/df_apply_col_name.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_apply_col_name/m_df_apply_col_name.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 3d2bcb09-99aa-442e-80a3-d57198f1f2a2
+=== [RUN] Code of original cell 4: 
+df['bad_tip'] = df['tip_amount'].apply(lambda x: 'Yes' if x >= 3.0 else 'No')
+=== [RUN] Code to be changed into cell 4: 
+df['bad_tip'] = df['total_amount'].apply(lambda x: 'Yes' if x >= 3.0 else 'No')
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/df_apply_col_name/df_apply_col_name.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: df_apply_col_name.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_apply_col_name.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_apply_col_name.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (7.3s)
+
+  1 passed (11.7s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 5 cells reran; reran cells are: [5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_apply_col_name ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_rename === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_rename/df_rename.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_rename/m_df_rename.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: e086eace-433e-4e41-ab2e-0ff4014b5ff4
+=== [RUN] Code of original cell 4: 
+df.rename(columns={'tolls_amount': 'tolls_charge'}, inplace=True)
+=== [RUN] Code to be changed into cell 4: 
+df.rename(columns={'tolls_amount': 'tolls_charge',"rate_code": "rate_code_in_area"}, inplace=True)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/df_rename/df_rename.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: df_rename.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_rename.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_rename.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (6.6s)
+
+  1 passed (10.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 5 cells reran; reran cells are: [5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_rename ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_indexing === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_indexing/np_list_indexing.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_indexing/m_np_list_indexing.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 88101dac-a05a-46bc-8784-bef358d9347f
+=== [RUN] Code of original cell 3: 
+a[0] = 41
+=== [RUN] Code to be changed into cell 3: 
+a[0] = 30
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/np_list_indexing/np_list_indexing.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: np_list_indexing.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_indexing.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_indexing.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (5.8s)
+
+  1 passed (9.7s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 4 cells reran; reran cells are: [4]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_indexing ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_place === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_place/np_list_place.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_place/m_np_list_place.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: b79ec71f-83fc-4ec7-947a-21dd264f8ace
+=== [RUN] Code of original cell 3: 
+pred = a % 2 == 0
+=== [RUN] Code to be changed into cell 3: 
+pred = a % 2 != 0
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/np_list_place/np_list_place.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: np_list_place.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_place.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_place.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (5.8s)
+
+  1 passed (9.2s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 4, cell id 467ccf09-bebd-41ed-bad9-92950f71db73
+Output lines only in expected notebook:
+0: '[20  2 40  4]'
+Output lines only in actual notebook:
+0: '[20 20 40 40]'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 2 / 5 cells reran; reran cells are: [4, 5]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_place ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_del === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_del/df_del.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_del/m_df_del.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: e086eace-433e-4e41-ab2e-0ff4014b5ff4
+=== [RUN] Code of original cell 4: 
+del df['rate_code']
+=== [RUN] Code to be changed into cell 4: 
+del df['fare_amount']
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/df_del/df_del.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: df_del.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_del.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_del.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (6.6s)
+
+  1 passed (10.5s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 4, cell id be214678-89b5-4e09-9969-b6b4534b5d29
+Output lines only in expected notebook:
+0: "number of columns 19m Index(['Unnamed: 0', 'vendor_id', 'pickup_datetime', 'dropoff_datetime',"
+2: "       'pickup_latitude', 'rate_code', 'store_and_fwd_flag',"
+3: "       'dropoff_longitude', 'dropoff_latitude', 'payment_type', 'extra',"
+4: "       'mta_tax', 'tip_amount', 'tolls_amount', 'imp_surcharge',"
+5: "       'total_amount'],"
+6: "      dtype='object')"
+7: ''
+Output lines only in actual notebook:
+0: "number of columns 18m Index(['Unnamed: 0', 'vendor_id', 'pickup_datetime', 'dropoff_datetime',"
+2: "       'pickup_latitude', 'store_and_fwd_flag', 'dropoff_longitude',"
+3: "       'dropoff_latitude', 'payment_type', 'extra', 'mta_tax', 'tip_amount',"
+4: "       'tolls_amount', 'imp_surcharge', 'total_amount'],"
+5: "      dtype='object')"
+6: ''
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 5 cells reran; reran cells are: [5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_del ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_append === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_append/np_list_append.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_append/m_np_list_append.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 8b808c10-af2c-40e9-a1ac-a00141dbef50
+=== [RUN] Code of original cell 3: 
+res = np.append(a, 3, axis = None)
+=== [RUN] Code to be changed into cell 3: 
+res = np.append(a, 10, axis = None)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/np_list_append/np_list_append.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: np_list_append.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_append.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_append.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (13.8s)
+
+  1 passed (17.5s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 4 cells reran; reran cells are: [4]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_append ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_apply_axis === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_apply_axis/df_apply_axis.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_apply_axis/m_df_apply_axis.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 0a854f03-6764-495c-a8ed-efee504590aa
+=== [RUN] Code of original cell 3: 
+df = df.apply(np.sum, axis=0)
+=== [RUN] Code to be changed into cell 3: 
+df = df.apply(np.sum, axis=1) 
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/df_apply_axis/df_apply_axis.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: df_apply_axis.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_apply_axis.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: ---------------------------------------------------------------------------
+AxisError                                 Traceback (most recent call last)
+Cell In[5], line 1
+----> 1 df = df.apply(np.sum, axis=1) 
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/series.py:4935, in Series.apply(self, func, convert_dtype, args, by_row, **kwargs)
+   4800 def apply(
+   4801     self,
+   4802     func: AggFuncType,
+   (...)   4807     **kwargs,
+   4808 ) -> DataFrame | Series:
+   4809     """
+   4810     Invoke function on values of Series.
+   4811 
+   (...)   4926     dtype: float64
+   4927     """
+   4928     return SeriesApply(
+   4929         self,
+   4930         func,
+   4931         convert_dtype=convert_dtype,
+   4932         by_row=by_row,
+   4933         args=args,
+   4934         kwargs=kwargs,
+-> 4935     ).apply()
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/apply.py:1422, in SeriesApply.apply(self)
+   1419     return self.apply_compat()
+   1421 # self.func is Callable
+-> 1422 return self.apply_standard()
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/apply.py:1502, in SeriesApply.apply_standard(self)
+   1496 # row-wise access
+   1497 # apply doesn't have a `na_action` keyword and for backward compat reasons
+   1498 # we need to give `na_action="ignore"` for categorical data.
+   1499 # TODO: remove the `na_action="ignore"` when that default has been changed in
+   1500 #  Categorical (GH51645).
+   1501 action = "ignore" if isinstance(obj.dtype, CategoricalDtype) else None
+-> 1502 mapped = obj._map_values(
+   1503     mapper=curried, na_action=action, convert=self.convert_dtype
+   1504 )
+   1506 if len(mapped) and isinstance(mapped[0], ABCSeries):
+   1507     # GH#43986 Need to do list(mapped) in order to get treated as nested
+   1508     #  See also GH#25959 regarding EA support
+   1509     return obj._constructor_expanddim(list(mapped), index=obj.index)
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/base.py:925, in IndexOpsMixin._map_values(self, mapper, na_action, convert)
+    922 if isinstance(arr, ExtensionArray):
+    923     return arr.map(mapper, na_action=na_action)
+--> 925 return algorithms.map_array(arr, mapper, na_action=na_action, convert=convert)
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/algorithms.py:1743, in map_array(arr, mapper, na_action, convert)
+   1741 values = arr.astype(object, copy=False)
+   1742 if na_action is None:
+-> 1743     return lib.map_infer(values, mapper, convert=convert)
+   1744 else:
+   1745     return lib.map_infer_mask(
+   1746         values, mapper, mask=isna(values).view(np.uint8), convert=convert
+   1747     )
+
+File pandas/_libs/lib.pyx:2999, in pandas._libs.lib.map_infer()
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/apply.py:1491, in SeriesApply.apply_standard.<locals>.curried(x)
+   1490 def curried(x):
+-> 1491     return func(x, *self.args, **self.kwargs)
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/numpy/_core/fromnumeric.py:2466, in sum(a, axis, dtype, out, keepdims, initial, where)
+   2463         return out
+   2464     return res
+-> 2466 return _wrapreduction(
+   2467     a, np.add, 'sum', axis, dtype, out,
+   2468     keepdims=keepdims, initial=initial, where=where
+   2469 )
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/numpy/_core/fromnumeric.py:86, in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
+     83         else:
+     84             return reduction(axis=axis, out=out, **passkwargs)
+---> 86 return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+
+AxisError: axis 1 is out of bounds for array of dimension 0
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_apply_axis.ipynb
+  ✘  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (6.5s)
+
+
+  1) autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs ─────
+
+    Error: locator.click: Error: strict mode violation: getByText('File', { exact: true }) resolved to 10 elements:
+        1) <div class="lm-MenuBar-itemLabel">File</div> aka getByLabel('main menu').getByText('File')
+        2) <span class="ansi-cyan-fg">File </span> aka locator('pre > span:nth-child(22)')
+        3) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(92)')
+        4) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(110)')
+        5) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(171)')
+        6) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(203)')
+        7) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(238)')
+        8) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(243)')
+        9) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(272)')
+        10) <span class="ansi-cyan-fg">File </span> aka locator('span:nth-child(326)')
+
+    Call log:
+    [2m  - waiting for getByText('File', { exact: true })[22m
+
+
+      138 |       `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
+      139 |     );
+    > 140 |     await page.getByText("File", { exact: true }).click();
+          |                                                   ^
+      141 |     const downloadPromise = page.waitForEvent("download");
+      142 |     await page.getByRole("menuitem", { name: "Download" }).click();
+      143 |     const download = await downloadPromise;
+        at /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/ui/autotest-ec.spec.ts:140:51
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/autotest-ec-Notebook-Run-R-1fc6d-ly-and-capture-cell-outputs/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/autotest-ec-Notebook-Run-R-1fc6d-ly-and-capture-cell-outputs/error-context.md
+
+  1 failed
+    autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs ──────
+~/Downloads/notebook-benchmark/jupyter-run
+
+Failed to run benchamrk df_apply_axis, with files ../benchmarks/library-side-effects/df_apply_axis/df_apply_axis.ipynb and ../benchmarks/library-side-effects/df_apply_axis/m_df_apply_axis.ipynb, 
+=== [RUN] COMPLETE RUNNING df_apply_axis ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_add_all === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_add_all/np_list_add_all.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_add_all/m_np_list_add_all.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 959ac6ed-17c1-46ba-8557-0eda02e49163
+=== [RUN] Code of original cell 3: 
+a += 31
+=== [RUN] Code to be changed into cell 3: 
+a += 10
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/np_list_add_all/np_list_add_all.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: np_list_add_all.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_add_all.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_add_all.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (5.4s)
+
+  1 passed (8.9s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 3, cell id fdf1f23a-d378-47db-b431-24610293c747
+Output lines only in expected notebook:
+0: '[10 12 14 16 18]'
+Output lines only in actual notebook:
+0: '[41 43 45 47 49]'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 4 cells reran; reran cells are: [4]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_add_all ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_broadcast === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_broadcast/np_list_broadcast.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_broadcast/m_np_list_broadcast.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: cd7f57c7-eefa-4f4a-b89f-ba24b684b63c
+=== [RUN] Code of original cell 3: 
+y = np.array([[8],[5]])
+=== [RUN] Code to be changed into cell 3: 
+y = np.array([[8],[5],[9]])
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/np_list_broadcast/np_list_broadcast.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: np_list_broadcast.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_broadcast.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_broadcast.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (14.9s)
+
+  1 passed (19.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 2 / 5 cells reran; reran cells are: [4, 5]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_broadcast ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_expand_dim === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_expand_dim/np_expand_dim.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_expand_dim/m_np_expand_dim.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: dc6361b7-19bc-4505-8eab-96465c8f512f
+=== [RUN] Code of original cell 3: 
+a = a[np.newaxis, :] 
+=== [RUN] Code to be changed into cell 3: 
+a = a[:, np.newaxis] 
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/np_expand_dim/np_expand_dim.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: np_expand_dim.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_expand_dim.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_expand_dim.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (7.5s)
+
+  1 passed (11.4s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 3, cell id 63c061ac-c1ba-4e09-86bd-09d67e855ed0
+Output lines only in expected notebook:
+0: '[[1]'
+1: ' [2]'
+2: ' [4]]'
+3: ''
+Output lines only in actual notebook:
+0: '[[[1 2 4]]]'
+1: ''
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 4 cells reran; reran cells are: [4]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_expand_dim ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_drop_param === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_drop_param/df_drop_param.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_drop_param/m_df_drop_param.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: e086eace-433e-4e41-ab2e-0ff4014b5ff4
+=== [RUN] Code of original cell 4: 
+df.drop('pickup_longitude', axis = 1, inplace = True)
+=== [RUN] Code to be changed into cell 4: 
+df.drop('pickup_longitude', axis = 1, inplace = False)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/df_drop_param/df_drop_param.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: df_drop_param.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_drop_param.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: ---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+Cell In[6], line 1
+----> 1 df.drop('pickup_longitude', axis = 1, inplace = False)
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/frame.py:5588, in DataFrame.drop(self, labels, axis, index, columns, level, inplace, errors)
+   5440 def drop(
+   5441     self,
+   5442     labels: IndexLabel | None = None,
+   (...)   5449     errors: IgnoreRaise = "raise",
+   5450 ) -> DataFrame | None:
+   5451     """
+   5452     Drop specified labels from rows or columns.
+   5453 
+   (...)   5586             weight  1.0     0.8
+   5587     """
+-> 5588     return super().drop(
+   5589         labels=labels,
+   5590         axis=axis,
+   5591         index=index,
+   5592         columns=columns,
+   5593         level=level,
+   5594         inplace=inplace,
+   5595         errors=errors,
+   5596     )
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/generic.py:4807, in NDFrame.drop(self, labels, axis, index, columns, level, inplace, errors)
+   4805 for axis, labels in axes.items():
+   4806     if labels is not None:
+-> 4807         obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+   4809 if inplace:
+   4810     self._update_inplace(obj)
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/generic.py:4849, in NDFrame._drop_axis(self, labels, axis, level, errors, only_slice)
+   4847         new_axis = axis.drop(labels, level=level, errors=errors)
+   4848     else:
+-> 4849         new_axis = axis.drop(labels, errors=errors)
+   4850     indexer = axis.get_indexer(new_axis)
+   4852 # Case for non-unique axis
+   4853 else:
+
+File /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/pandas/core/indexes/base.py:7136, in Index.drop(self, labels, errors)
+   7134 if mask.any():
+   7135     if errors != "ignore":
+-> 7136         raise KeyError(f"{labels[mask].tolist()} not found in axis")
+   7137     indexer = indexer[~mask]
+   7138 return self.delete(indexer)
+
+KeyError: "['pickup_longitude'] not found in axis"
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_drop_param.ipynb
+  ✘  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (19.8s)
+
+
+  1) autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs ─────
+
+    Error: locator.click: Error: strict mode violation: getByText('File', { exact: true }) resolved to 5 elements:
+        1) <div class="lm-MenuBar-itemLabel">File</div> aka getByLabel('main menu').getByText('File')
+        2) <span class="ansi-cyan-fg">File </span> aka getByText('File', { exact: true }).nth(1)
+        3) <span class="ansi-cyan-fg">File </span> aka getByText('File', { exact: true }).nth(2)
+        4) <span class="ansi-cyan-fg">File </span> aka getByText('File', { exact: true }).nth(3)
+        5) <span class="ansi-cyan-fg">File </span> aka getByText('File', { exact: true }).nth(4)
+
+    Call log:
+    [2m  - waiting for getByText('File', { exact: true })[22m
+
+
+      138 |       `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
+      139 |     );
+    > 140 |     await page.getByText("File", { exact: true }).click();
+          |                                                   ^
+      141 |     const downloadPromise = page.waitForEvent("download");
+      142 |     await page.getByRole("menuitem", { name: "Download" }).click();
+      143 |     const download = await downloadPromise;
+        at /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/ui/autotest-ec.spec.ts:140:51
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/autotest-ec-Notebook-Run-R-1fc6d-ly-and-capture-cell-outputs/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../test-results/autotest-ec-Notebook-Run-R-1fc6d-ly-and-capture-cell-outputs/error-context.md
+
+  1 failed
+    autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs ──────
+~/Downloads/notebook-benchmark/jupyter-run
+
+Failed to run benchamrk df_drop_param, with files ../benchmarks/library-side-effects/df_drop_param/df_drop_param.ipynb and ../benchmarks/library-side-effects/df_drop_param/m_df_drop_param.ipynb, 
+=== [RUN] COMPLETE RUNNING df_drop_param ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING df_update === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_update/df_update.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/df_update/m_df_update.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 2301d9d3-076c-4981-9324-b57e85da3481
+=== [RUN] Code of original cell 4: 
+df2['A'] = [200,None,200]
+=== [RUN] Code to be changed into cell 4: 
+df2['A'] = [200,None,None]
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/df_update/df_update.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: df_update.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/df_update.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/df_update.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (6.1s)
+
+  1 passed (10.3s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 5, cell id a4fb40eb-3c31-47d8-ad48-cc0aa5d4596b
+Output lines only in expected notebook:
+3: '2    3  200'
+Output lines only in actual notebook:
+3: '2  200  200'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 2 / 6 cells reran; reran cells are: [5, 6]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING df_update ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_copyto === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_copyto/np_list_copyto.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/np_list_copyto/m_np_list_copyto.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 75785fc2-6423-4484-900c-6fbec851cf32
+=== [RUN] Code of original cell 4: 
+np.copyto(dst, src)
+=== [RUN] Code to be changed into cell 4: 
+np.copyto(src, dst)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/np_list_copyto/np_list_copyto.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: np_list_copyto.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_copyto.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_copyto.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (5.6s)
+
+  1 passed (9.2s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 4, cell id 3db37d6b-ce94-4265-911b-07d215857fe7
+Output lines only in expected notebook:
+0: '[1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.'
+1: ' 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.'
+2: ' 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.'
+3: ' 1. 1. 1. 1. 1. 1. 1. 1.]'
+Output lines only in actual notebook:
+0: '[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.'
+1: ' 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.'
+2: ' 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.'
+3: ' 0. 0. 0. 0. 0. 0. 0. 0.]'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 1 / 5 cells reran; reran cells are: [5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING np_list_copyto ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING sklearn_model_depth === 
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/sklearn_model_depth/sklearn_model_depth.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/library-side-effects/sklearn_model_depth/m_sklearn_model_depth.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 365b942d-f6a2-469a-a3db-f8238b89a61e
+=== [RUN] Code of original cell 4: 
+depths = [1,3,5,20]
+=== [RUN] Code to be changed into cell 4: 
+depths = [1,3,4,20]
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/sklearn_model_depth/sklearn_model_depth.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: sklearn_model_depth.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/sklearn_model_depth.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/sklearn_model_depth.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (8.8s)
+
+  1 passed (12.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 6, cell id ea23dc08-fd82-4c95-b3f7-87cfaf9f9c1f
+Output lines only in expected notebook:
+1: 'Decision Tree Accuracy: 0.9239766081871345'
+Output lines only in actual notebook:
+1: 'Decision Tree Accuracy: 0.9298245614035088'
+
+Expected and actual output differ for cell at index 7, cell id d378931e-a986-4e9f-950f-85ee6f141e7d
+Output lines only in expected notebook:
+5: 'Decision Tree Accuracy: 0.9590643274853801'
+8: 'Decision Tree Accuracy: 0.935672514619883'
+Output lines only in actual notebook:
+5: 'Decision Tree Accuracy: 0.9707602339181286'
+8: 'Decision Tree Accuracy: 0.9532163742690059'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 8 cells reran; reran cells are: [5, 6, 7, 8]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING sklearn_model_depth ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING sklearn_model_test_size === 
+=== [RUN] Changing kernel of ../benchmarks/rerun/sklearn_model_test_size/sklearn_model_test_size.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/rerun/sklearn_model_test_size/m_sklearn_model_test_size.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: d52e625c-811e-44a8-b860-e72dd14a483b
+=== [RUN] Code of original cell 3: 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+=== [RUN] Code to be changed into cell 3: 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.6, random_state=42)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/rerun/sklearn_model_test_size/sklearn_model_test_size.ipynb
+=== [UI] UPLOADING DATA DIRECTORY FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/library-side-effects/data to data
+=== [UI] OPENING NOTEBOOK: sklearn_model_test_size.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/sklearn_model_test_size.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/sklearn_model_test_size.ipynb
+  ✓  1 autotest-ec.spec.ts:74:7 › Notebook Run › Run notebook initially and capture cell outputs (7.8s)
+
+  1 passed (14.3s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 6, cell id ea23dc08-fd82-4c95-b3f7-87cfaf9f9c1f
+Output lines only in expected notebook:
+1: 'Decision Tree Accuracy: 0.9385964912280702'
+Output lines only in actual notebook:
+1: 'Decision Tree Accuracy: 0.9327485380116959'
+
+Expected and actual output differ for cell at index 7, cell id d378931e-a986-4e9f-950f-85ee6f141e7d
+Output lines only in expected notebook:
+5: 'Decision Tree Accuracy: 0.9444444444444444'
+8: 'Decision Tree Accuracy: 0.935672514619883'
+11: 'Decision Tree Accuracy: 0.935672514619883'
+Output lines only in actual notebook:
+5: 'Decision Tree Accuracy: 0.9415204678362573'
+8: 'Decision Tree Accuracy: 0.9385964912280702'
+11: 'Decision Tree Accuracy: 0.9415204678362573'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 5 / 8 cells reran; reran cells are: [4, 5, 6, 7, 8]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING sklearn_model_test_size ===
+============================ 
+
+

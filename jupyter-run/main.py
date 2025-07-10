@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import argparse, os, subprocess
+import argparse, os, subprocess, shutil
 from pathlib import Path
 from benchmark_runner import BenchmarkRunner
+    
 
 def run_benchmarks(b: BenchmarkRunner, name:str, 
                    original_nb_path: str, modified_nb_path: str, 
@@ -65,6 +66,16 @@ def run_cleanup():
     except subprocess.CalledProcessError as e:
         print(f"Error executing ui script: {e} \n {e.stderr}")
 
+def make_copy(src: str, dst: str):
+    """
+    Make copy of source directory passed in to destination directory. 
+    """
+    try:
+        shutil.copytree(src, dst)
+        print(f" === [RUN] '{src}' copied to be ran in '{dst}'.")
+    except Exception as e:
+        print(f"Copying error: {e}")
+
 def main():
     parser = argparse.ArgumentParser(description="Run Jupyter reactive services automatically.")
     parser.add_argument("-c", "--config", metavar="CONFIG", type=str, help="path to config directory")
@@ -72,7 +83,8 @@ def main():
     parser.add_argument("-m", "--multiple_benchmarks", type=str, help="run entire directory holding benchmark directories")
     parser.add_argument("-d", "--data_directory", type=str, help="additional files the benchmark may need")
     parser.add_argument("--start_ui_kernel", action="store_true", help="start UI kernel")
-    parser.add_argument("--auto_cleanup", action="store_true", help="automatically cleanup after run")
+    parser.add_argument("--run_in_copy", action="store_true", help="make copy of original benchmarks and run in copy directory for isolation") 
+    parser.add_argument("--auto_cleanup", action="store_true", help="automatically cleanup after run") 
     args = parser.parse_args()
     
     if args.config == None: 
@@ -89,8 +101,16 @@ def main():
         if args.single_benchmark: 
             nb_dir = f"{args.single_benchmark}/"
             benchmark_to_run.append(validate_benchmark_directory(nb_dir))
+            if args.run_in_copy: 
+                dst = args.single_benchmark + "_copy"
+                make_copy(args.single_benchmark, dst)
+                nb_dir = dst
         else: 
             nb_dir = args.multiple_benchmarks
+            if args.run_in_copy: 
+                dst = nb_dir + "-copy"
+                make_copy(nb_dir, dst)
+                nb_dir = dst
             for d in os.listdir(nb_dir):
                 if data_directory and f"{nb_dir}/{d}" == data_directory: 
                     continue

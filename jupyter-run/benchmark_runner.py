@@ -3,7 +3,9 @@ from utils.notebook_manager import NotebookManager
 import json, subprocess, os
 
 class BenchmarkRunner:
+    config_root_dir = "./config"
     config_dir = None
+    playwright_config_path = None
     kernel_config_path = None
     jupyter_config_path = None
     mod_config_file = None
@@ -88,7 +90,7 @@ class BenchmarkRunner:
     def _run_ui_to_execute_modifications(self) -> None: 
         script_path = "./ui/run_ui.sh"
         try:
-            result = subprocess.run([script_path], capture_output=True, text=True, check=True)
+            result = subprocess.run([script_path, self.playwright_config_path], capture_output=True, text=True, check=True)
             print(f"=== [RUN] Output from running {script_path}: {result.stdout}") 
         except subprocess.CalledProcessError as e:
             print(f"Error executing ui script: {e} \n {e.stderr}")
@@ -99,14 +101,16 @@ class BenchmarkRunner:
             path = f"{self.config_dir}/{file}"
             if "jupyter" in file:
                 self.jupyter_config_path = path
+            elif "playwright" in file:
+                self.playwright_config_path = path
             elif "kernel" in file:
                 self.kernel_config_path = path
                 self._get_kernelspec()  # Read and set kernel spec. 
             elif "mod" in file:
-                self.mod_config_file = path
+                self.mod_config_file = f"{self.config_root_dir}/{file}"
         
         if self.mod_config_file == None:
-            self.mod_config_file = f"{self.config_dir}/{self.default_mod_config_file_name}"
+            self.mod_config_file = f"{self.config_root_dir}/{self.default_mod_config_file_name}"
         
         if self.jupyter_config_path == None or self.kernel_config_path == None or self.mod_config_file == None:
             raise FileNotFoundError(f"config file not sufficient, jupyter: {self.jupyter_config_path}, kernel: {self.kernel_config_path}")

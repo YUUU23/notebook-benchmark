@@ -20,6 +20,20 @@ const datadirectory = test_config.dataDirectory;
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
   test.beforeAll(async ({ request, tmpPath }) => {
+    const fileName = test_config.file.benchmarkFileName;
+    const benchmarks_dir = test_config.file.benchmarkFileDir;
+    const downloadReactivePath = path.join(
+      __dirname,
+      "..",
+      test_config.downloadReactivePath
+    );
+    const downloadInitialPath = path.join(
+      __dirname,
+      "..",
+      test_config.downloadInitialPath
+    );
+    const modification = test_config.modification;
+    const datadirectory = test_config.dataDirectory;
     const uploadFromPath = path.join(
       __dirname,
       "..",
@@ -81,6 +95,12 @@ test.describe.serial("Notebook Run", () => {
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
+    // Enable execution count based rerun
+    await page.getByText("✅ Activate Rerun EC").click();
+    await expect(
+      page.getByRole("button", { name: "✅ Activate Rerun EC" })
+    ).toBeVisible();
+
     // Make change
     console.log(
       `=== [UI] MAKING MODIFICATION TO CELL INDEX: ${modification.cellIndex}`
@@ -95,7 +115,10 @@ test.describe.serial("Notebook Run", () => {
     await cell.getByRole("textbox").press("ControlOrMeta+a");
     await cell.getByRole("textbox").press("Backspace");
     await cell.getByRole("textbox").fill(modification.source);
+    // await page.pause();
+    // page.notebook.setCell(modification.cellIndex, "code", code);
     await page.notebook.runCell(modification.cellIndex, true);
+    await page.notebook.save();
     await page.notebook.waitForRun();
     await page.notebook.save();
 
