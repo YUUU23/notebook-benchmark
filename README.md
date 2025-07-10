@@ -33,13 +33,18 @@ benchmarks/library-side-effects/
 
 Provide a directory containing notebooks to `jupyter-run/scripts/preprocess.sh` to generate subdirectories as above. **Modification to notebooks still need to be edited manually before running benchmarks!**
 
-3. Configuration files can be edited in `jupyter-run/config/`
+3. Configuration files can be added/edited in `jupyter-run/config/`, each reactive service should maintain its own config directories, 
 
 ```
 jupyter-run/config/
-├── jupyter_server_test_config.py # Configure kernel jupyter notebooks in UI are ran with
-├── kernel_config.json/ # Modify kernel notebooks should be ran with
-├── playwright.config.js/ # Playwright config
+├── ec/ # Config for execution count reactive service
+│   └── jupyter_server_test_config.py # Configure kernel jupyter notebooks in UI are ran with
+│   └── kernel_config.json/ # Modify kernel notebooks should be ran with
+│   └── playwright.config.js/ # Playwright config 
+├── ipyflow/ # Config for ipyflow reactive service
+│   └── jupyter_server_test_config.py 
+│   └── kernel_config.json/ 
+│   └── playwright.config.js/
 ```
 
 4. To run one benchmark, from root, run,
