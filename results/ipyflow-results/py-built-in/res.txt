@@ -1261,11 +1261,11 @@ Running 1 test using 1 worker
 === [RUN] RUNNING list_sort_order === 
 === [RUN] Changing kernel of ../benchmarks/py-built-in/list_sort_order/list_sort_order.ipynb to ipyflow
 === [RUN] Changing kernel of ../benchmarks/py-built-in/list_sort_order/m_list_sort_order.ipynb to ipyflow
-=== [RUN] Found source diff: at cell index: 1 with cell ID: 04eeb982-b34c-4afb-9efe-2dceb8038af7
-=== [RUN] Code of original cell 1: 
-a = ['c', 'bbbb', 'ca'] 
-=== [RUN] Code to be changed into cell 1: 
-a = ['c', 'bbbb', 'da'] 
+=== [RUN] Found source diff: at cell index: 2 with cell ID: a13cbfcc-a1c9-4148-ac24-34311d9be626
+=== [RUN] Code of original cell 2: 
+a.sort()
+=== [RUN] Code to be changed into cell 2: 
+a.sort(key=len)
 === [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
 
 Running 1 test using 1 worker
@@ -1274,23 +1274,18 @@ Running 1 test using 1 worker
 === [UI] OPENING NOTEBOOK: list_sort_order.ipynb
 === [UI] RUNNING ALL CELLS
 === [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/list_sort_order.ipynb
-=== [UI] MAKING MODIFICATION TO CELL INDEX: 0
-=== [UI] MODIFIED CELL (0) OUTPUT: null
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 1
+=== [UI] MODIFIED CELL (1) OUTPUT: null
 === [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/list_sort_order.ipynb
-  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (4.6s)
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (5.5s)
 
-  1 passed (6.5s)
+  1 passed (9.4s)
 ~/Downloads/notebook-benchmark/jupyter-run
 
 === [RUN] PRINTING DIFF: 
-Expected and actual output differ for cell at index 2, cell id a1b5ef7c-2048-486a-a905-57c28dcda14e
-Output lines only in expected notebook:
-0: 'bbbb'
-Output lines only in actual notebook:
-0: 'da'
 
 === [RUN] PRINTING CELLS EXECUTED:
-=== [RUN] 2 / 3 cells reran; reran cells are: [2, 3]; modification made to cell: 1
+=== [RUN] 2 / 3 cells reran; reran cells are: [1, 3]; modification made to cell: 2
 === [RUN] COMPLETE RUNNING list_sort_order ===
 ============================ 
 
