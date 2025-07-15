@@ -1,0 +1,565 @@
+ === [RUN] '../benchmarks/new' copied to be ran in '../benchmarks/new-copy'.
+=== [SETUP] Executing UI SETUP script
+============================ 
+=== [RUN] RUNNING pickleDB_interact_1 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/pickleDB_interact_1/pickleDB_interact_1.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/pickleDB_interact_1/m_pickleDB_interact_1.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: a7206c11-ca59-4c7d-8d4d-63c1a08358c8
+=== [RUN] Code of original cell 3: 
+db.set('k1', 'v2')
+=== [RUN] Code to be changed into cell 3: 
+db.set('k2', 'v2')
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/pickleDB_interact_1/pickleDB_interact_1.ipynb
+=== [UI] OPENING NOTEBOOK: pickleDB_interact_1.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/pickleDB_interact_1.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: True
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/pickleDB_interact_1.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (7.9s)
+
+  1 passed (13.6s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 5 cells reran; reran cells are: [1, 2, 4, 5]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING pickleDB_interact_1 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_slicing_2 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_slicing_2/np_list_slicing_2.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_slicing_2/m_np_list_slicing_2.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 7005c6e8-f245-4710-9d65-0a0accdab522
+=== [RUN] Code of original cell 3: 
+x[0] = 11
+=== [RUN] Code to be changed into cell 3: 
+x[0] = 10 
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/np_list_slicing_2/np_list_slicing_2.ipynb
+=== [UI] OPENING NOTEBOOK: np_list_slicing_2.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_slicing_2.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_slicing_2.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (12.7s)
+
+  1 passed (18.3s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 5 cells reran; reran cells are: [1, 2, 4, 5]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_slicing_2 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING rpy2_ggplot === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/rpy2_ggplot/rpy2_ggplot.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/rpy2_ggplot/m_rpy2_ggplot.ipynb to python3
+=== [RUN] Found source diff: at cell index: 5 with cell ID: fbcdcfde
+=== [RUN] Code of original cell 5: 
+with localconverter(robjects.default_converter + pandas2ri.converter):
+    rdf = robjects.conversion.py2rpy(df)
+=== [RUN] Code to be changed into cell 5: 
+with localconverter(robjects.default_converter + pandas2ri.converter):
+    rdf = robjects.conversion.py2rpy(df2)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/rpy2_ggplot/rpy2_ggplot.ipynb
+=== [UI] OPENING NOTEBOOK: rpy2_ggplot.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/rpy2_ggplot.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 4
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (4) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/rpy2_ggplot.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (11.1s)
+
+  1 passed (16.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 0, cell id 0f714e2e
+Output lines only in expected notebook:
+0: 'Error importing in API mode: ImportError("dlopen(/opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/_rinterface_cffi_api.abi3.so, 0x0002): Library not loaded: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\\n  Referenced from: <668E1903-F0E7-30D5-BA27-15F8287F87F7> /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/_rinterface_cffi_api.abi3.so\\n  Reason: tried: \'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\' (no such file), \'/System/Volumes/Preboot/Cryptexes/OS/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\' (no such file), \'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\' (no such file)")'
+1: ''
+0: 'Trying to import in ABI mode.'
+1: ''
+0: '/opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/rpy2/rinterface/__init__.py:1211: UserWarning: Environment variable "PWD" redefined by R and overriding existing variable. Current: "/Users/happy2na/Downloads/notebook-benchmark/jupyter-run", R: "/Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/rpy2_ggplot"'
+1: '  warnings.warn('
+2: ''
+0: '/opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/rpy2/rinterface/__init__.py:1211: UserWarning: Environment variable "R_SESSION_TMPDIR" redefined by R and overriding existing variable. Current: "/var/folders/6m/f47m_fzj7cb6grp4vc8q8h880000gn/T//RtmpAi4ied", R: "/var/folders/6m/f47m_fzj7cb6grp4vc8q8h880000gn/T//RtmpTKdZhm"'
+1: '  warnings.warn('
+2: ''
+Output lines only in actual notebook:
+0: ''
+0: ''
+0: ''
+0: ''
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 6 / 7 cells reran; reran cells are: [1, 2, 3, 4, 6, 7]; modification made to cell: 5
+=== [RUN] COMPLETE RUNNING rpy2_ggplot ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING list_access_before === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_access_before/list_access_before.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_access_before/m_list_access_before.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: a32aa388-5910-4e63-a47f-c55c1486e37a
+=== [RUN] Code of original cell 3: 
+y = x[2]
+=== [RUN] Code to be changed into cell 3: 
+y = x[1]
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/list_access_before/list_access_before.ipynb
+=== [UI] OPENING NOTEBOOK: list_access_before.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/list_access_before.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/list_access_before.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.2s)
+
+  1 passed (9.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 3 / 4 cells reran; reran cells are: [1, 2, 4]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING list_access_before ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_access_after_1 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_access_after_1/np_list_access_after_1.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_access_after_1/m_np_list_access_after_1.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: fc33ff6a
+=== [RUN] Code of original cell 3: 
+a = 1
+=== [RUN] Code to be changed into cell 3: 
+a = 2
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/np_list_access_after_1/np_list_access_after_1.ipynb
+=== [UI] OPENING NOTEBOOK: np_list_access_after_1.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_access_after_1.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_access_after_1.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (10.0s)
+
+  1 passed (13.3s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 5 / 6 cells reran; reran cells are: [1, 2, 4, 5, 6]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_access_after_1 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING list_slicing === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_slicing/list_slicing.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_slicing/m_list_slicing.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: ddf1300b-d9aa-49ce-98a1-14c6f0ee7bc8
+=== [RUN] Code of original cell 3: 
+z[0] = 10
+=== [RUN] Code to be changed into cell 3: 
+z[0] = 12
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/list_slicing/list_slicing.ipynb
+=== [UI] OPENING NOTEBOOK: list_slicing.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/list_slicing.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/list_slicing.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.9s)
+
+  1 passed (11.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 5 cells reran; reran cells are: [1, 2, 4, 5]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING list_slicing ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING list_index_arg_edit_1 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_index_arg_edit_1/list_index_arg_edit_1.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_index_arg_edit_1/m_list_index_arg_edit_1.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: cd7b6f6b-8b75-4054-bdd8-9b7b7fb679de
+=== [RUN] Code of original cell 3: 
+x.append(a)
+=== [RUN] Code to be changed into cell 3: 
+x.append(a + 2)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/list_index_arg_edit_1/list_index_arg_edit_1.ipynb
+=== [UI] OPENING NOTEBOOK: list_index_arg_edit_1.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/list_index_arg_edit_1.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/list_index_arg_edit_1.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.5s)
+
+  1 passed (9.4s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Cell id has changed from original Expected cell id: c40b517e-49df-4b7a-9a8d-9c0a067ea895 Actual cell id: ed53eb69-ecda-4baf-8d81-497b5befab00
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 3 / 4 cells reran; reran cells are: [1, 2, 4]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING list_index_arg_edit_1 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING pickleDB_interact_2 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/pickleDB_interact_2/pickleDB_interact_2.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/pickleDB_interact_2/m_pickleDB_interact_2.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 69e629a6-80f5-437f-95bc-eecd9ee223c8
+=== [RUN] Code of original cell 3: 
+k = 'k2'
+=== [RUN] Code to be changed into cell 3: 
+k = 'k1'
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/pickleDB_interact_2/pickleDB_interact_2.ipynb
+=== [UI] OPENING NOTEBOOK: pickleDB_interact_2.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/pickleDB_interact_2.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/pickleDB_interact_2.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.7s)
+
+  1 passed (10.8s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Cell id has changed from original Expected cell id: f3c2ddb4-43d8-4210-ab1a-be6ce3ca149d Actual cell id: 69e629a6-80f5-437f-95bc-eecd9ee223c8
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 5 / 6 cells reran; reran cells are: [1, 2, 4, 5, 6]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING pickleDB_interact_2 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_slicing_1 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_slicing_1/np_list_slicing_1.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_slicing_1/m_np_list_slicing_1.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 81dd29a7-7aeb-4b2f-a720-2e6129055279
+=== [RUN] Code of original cell 4: 
+z[0] = 20
+=== [RUN] Code to be changed into cell 4: 
+z[0] = 10
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/np_list_slicing_1/np_list_slicing_1.ipynb
+=== [UI] OPENING NOTEBOOK: np_list_slicing_1.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_slicing_1.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_slicing_1.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.1s)
+
+  1 passed (9.3s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 5 / 6 cells reran; reran cells are: [1, 2, 3, 5, 6]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING np_list_slicing_1 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING matplotlib_basic === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/matplotlib_basic_copy/matplotlib_basic.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/matplotlib_basic_copy/m_matplotlib_basic.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 3aeb9791-0b02-47e1-8a0f-529c6d7f7896
+=== [RUN] Code of original cell 4: 
+x_axis = np.array([10,20,80,100])
+=== [RUN] Code to be changed into cell 4: 
+x_axis = np.array([1,2,8,9])
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/matplotlib_basic_copy/matplotlib_basic.ipynb
+=== [UI] OPENING NOTEBOOK: matplotlib_basic.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/matplotlib_basic.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/matplotlib_basic.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (7.5s)
+
+  1 passed (10.5s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 5, cell id bb14fbff-7786-42cd-98b0-ae0139e5aead
+Output lines only in expected notebook:
+0: '[<matplotlib.lines.Line2D at 0x105f18a50>]'
+Output lines only in actual notebook:
+0: '[<matplotlib.lines.Line2D at 0x107dfd090>]'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 5 / 6 cells reran; reran cells are: [1, 2, 3, 5, 6]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING matplotlib_basic ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_access_before === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_access_before/np_list_access_before.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_access_before/m_np_list_access_before.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 82d89a49-467e-43ab-9013-bbd293e32ac8
+=== [RUN] Code of original cell 4: 
+y = x[1]
+=== [RUN] Code to be changed into cell 4: 
+y = x[2]
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/np_list_access_before/np_list_access_before.ipynb
+=== [UI] OPENING NOTEBOOK: np_list_access_before.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_access_before.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_access_before.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.3s)
+
+  1 passed (9.1s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 5 cells reran; reran cells are: [1, 2, 3, 5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING np_list_access_before ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING np_list_access_after_2 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_access_after_2/np_list_access_after_2.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/np_list_access_after_2/m_np_list_access_after_2.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 5170629b-b6d9-4471-8eff-e5380921fac8
+=== [RUN] Code of original cell 3: 
+y = x[1]
+=== [RUN] Code to be changed into cell 3: 
+y = x[2]
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/np_list_access_after_2/np_list_access_after_2.ipynb
+=== [UI] OPENING NOTEBOOK: np_list_access_after_2.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/np_list_access_after_2.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/np_list_access_after_2.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.6s)
+
+  1 passed (9.5s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 5 cells reran; reran cells are: [1, 2, 4, 5]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING np_list_access_after_2 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING rpy2_get_mean === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/rpy2_get_mean/rpy2_get_mean.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/rpy2_get_mean/m_rpy2_get_mean.ipynb to python3
+=== [RUN] Found source diff: at cell index: 3 with cell ID: 0e4decd3-9b26-4fe2-916f-07d4234726a0
+=== [RUN] Code of original cell 3: 
+arr = [1,2,3,8,5]
+assign_var = 'x'
+=== [RUN] Code to be changed into cell 3: 
+arr = [1,2,3,8,200]
+assign_var = 'y'
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/rpy2_get_mean/rpy2_get_mean.ipynb
+=== [UI] OPENING NOTEBOOK: rpy2_get_mean.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/rpy2_get_mean.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 2
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (2) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/rpy2_get_mean.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (8.2s)
+
+  1 passed (14.0s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 0, cell id 62ce48fa-56bd-42d7-a401-0445e884974c
+Output lines only in expected notebook:
+0: 'Error importing in API mode: ImportError("dlopen(/opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/_rinterface_cffi_api.abi3.so, 0x0002): Library not loaded: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\\n  Referenced from: <668E1903-F0E7-30D5-BA27-15F8287F87F7> /opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/_rinterface_cffi_api.abi3.so\\n  Reason: tried: \'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\' (no such file), \'/System/Volumes/Preboot/Cryptexes/OS/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\' (no such file), \'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.dylib\' (no such file)")'
+1: ''
+0: 'Trying to import in ABI mode.'
+1: ''
+0: '/opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/rpy2/rinterface/__init__.py:1211: UserWarning: Environment variable "PWD" redefined by R and overriding existing variable. Current: "/Users/happy2na/Downloads/notebook-benchmark/jupyter-run", R: "/Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/rpy2_get_mean"'
+1: '  warnings.warn('
+2: ''
+0: '/opt/anaconda3/envs/jlab-e2/lib/python3.13/site-packages/rpy2/rinterface/__init__.py:1211: UserWarning: Environment variable "R_SESSION_TMPDIR" redefined by R and overriding existing variable. Current: "/var/folders/6m/f47m_fzj7cb6grp4vc8q8h880000gn/T//RtmpNAV8di", R: "/var/folders/6m/f47m_fzj7cb6grp4vc8q8h880000gn/T//Rtmplyv2ys"'
+1: '  warnings.warn('
+2: ''
+Output lines only in actual notebook:
+0: ''
+0: ''
+0: ''
+0: ''
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 6 / 7 cells reran; reran cells are: [1, 2, 4, 5, 6, 7]; modification made to cell: 3
+=== [RUN] COMPLETE RUNNING rpy2_get_mean ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING list_index_arg_edit_2 === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_index_arg_edit_2/list_index_arg_edit_2.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/list_index_arg_edit_2/m_list_index_arg_edit_2.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 293431d5-c00e-4591-8f60-5dd746b26e53
+=== [RUN] Code of original cell 4: 
+x.append(a + 2)
+=== [RUN] Code to be changed into cell 4: 
+x.append(a + 8)
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/list_index_arg_edit_2/list_index_arg_edit_2.ipynb
+=== [UI] OPENING NOTEBOOK: list_index_arg_edit_2.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/list_index_arg_edit_2.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/list_index_arg_edit_2.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (8.2s)
+
+  1 passed (11.1s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Cell id has changed from original Expected cell id: 2c435e6d-9c4d-47b6-90ce-6e04c9b55943 Actual cell id: cd7b6f6b-8b75-4054-bdd8-9b7b7fb679de
+Cell id has changed from original Expected cell id: cd7b6f6b-8b75-4054-bdd8-9b7b7fb679de Actual cell id: 293431d5-c00e-4591-8f60-5dd746b26e53
+Cell id has changed from original Expected cell id: c40b517e-49df-4b7a-9a8d-9c0a067ea895 Actual cell id: ed53eb69-ecda-4baf-8d81-497b5befab00
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 4 / 5 cells reran; reran cells are: [1, 2, 3, 5]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING list_index_arg_edit_2 ===
+============================ 
+
+
+============================ 
+=== [RUN] RUNNING matplotlib_basic === 
+=== [RUN] Changing kernel of ../benchmarks/new-copy/matplotlib_basic/matplotlib_basic.ipynb to python3
+=== [RUN] Changing kernel of ../benchmarks/new-copy/matplotlib_basic/m_matplotlib_basic.ipynb to python3
+=== [RUN] Found source diff: at cell index: 4 with cell ID: 3aeb9791-0b02-47e1-8a0f-529c6d7f7896
+=== [RUN] Code of original cell 4: 
+x_axis = np.array([10,20,80,100])
+=== [RUN] Code to be changed into cell 4: 
+x_axis = np.array([1,2,8,9])
+=== [RUN] Output from running ./ui/run_ui.sh: ~/Downloads/notebook-benchmark/jupyter-run/ui ~/Downloads/notebook-benchmark/jupyter-run
+
+Running 1 test using 1 worker
+
+=== [UI] UPLOADING NOTEBOOK FROM: /Users/happy2na/Downloads/notebook-benchmark/benchmarks/new-copy/matplotlib_basic/matplotlib_basic.ipynb
+=== [UI] OPENING NOTEBOOK: matplotlib_basic.ipynb
+=== [UI] RUNNING ALL CELLS
+=== [UI] SAVING INITIAL RUN NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/initial/matplotlib_basic.ipynb
+=== [UI] MAKING MODIFICATION TO CELL INDEX: 3
+=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS
+=== [UI] MODIFIED CELL (3) OUTPUT: null
+=== [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/matplotlib_basic.ipynb
+  ✓  1 autotest-rerun-all.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (6.7s)
+
+  1 passed (10.2s)
+~/Downloads/notebook-benchmark/jupyter-run
+
+=== [RUN] PRINTING DIFF: 
+Expected and actual output differ for cell at index 5, cell id bb14fbff-7786-42cd-98b0-ae0139e5aead
+Output lines only in expected notebook:
+0: '[<matplotlib.lines.Line2D at 0x110218a50>]'
+Output lines only in actual notebook:
+0: '[<matplotlib.lines.Line2D at 0x107d19090>]'
+
+=== [RUN] PRINTING CELLS EXECUTED:
+=== [RUN] 5 / 6 cells reran; reran cells are: [1, 2, 3, 5, 6]; modification made to cell: 4
+=== [RUN] COMPLETE RUNNING matplotlib_basic ===
+============================ 
+
+

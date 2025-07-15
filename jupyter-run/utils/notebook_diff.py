@@ -41,7 +41,6 @@ def create_diff(expected: str, actual: str) -> tuple[list[str], list[str]]:
         elif act != exp:
             expected_only_lines.append(f"{line_num}: {repr(exp)}")
             actual_only_lines.append(f"{line_num}: {repr(act)}")
-    
     return expected_only_lines, actual_only_lines
 
 def format_diff_msg(expected_only_lines: list[str], actual_only_lines: list[str]) -> str:
@@ -95,7 +94,13 @@ def parse_and_compare_cell(
     expected_only_lines, actual_only_lines = [], []
     for exp_output, act_output in zip_longest(exp_outputs, act_outputs, fillvalue={}):
         # TODO: make sure it can register text/plain also. 
-        exp_only, act_only = create_diff(exp_output.get("text", ""), act_output.get("text", ""))
+        exp_text = exp_output.get("text", "")
+        act_text = act_output.get("text", "")
+        if exp_text == "" and exp_output.get("data"): 
+            exp_text = exp_output.get("data").get('text/plain', "")
+        if act_text == "" and act_output.get("data"): 
+            act_text = act_output.get("data").get("text/plain", "")
+        exp_only, act_only = create_diff(exp_text, act_text)
         expected_only_lines.extend(exp_only)
         actual_only_lines.extend(act_only)
         
