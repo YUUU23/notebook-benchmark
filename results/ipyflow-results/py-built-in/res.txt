@@ -1047,6 +1047,8 @@ Running 1 test using 1 worker
 
 
 ============================ 
+=== [SETUP] Executing UI SETUP script
+============================ 
 === [RUN] RUNNING map_subscript_append === 
 === [RUN] Changing kernel of ../benchmarks/py-built-in/map_subscript_append/map_subscript_append.ipynb to ipyflow
 === [RUN] Changing kernel of ../benchmarks/py-built-in/map_subscript_append/m_map_subscript_append.ipynb to ipyflow
@@ -1066,21 +1068,25 @@ Running 1 test using 1 worker
 === [UI] MAKING MODIFICATION TO CELL INDEX: 1
 === [UI] MODIFIED CELL (1) OUTPUT: null
 === [UI] SAVING MODIFIED NOTEBOOK IN: /Users/happy2na/Downloads/notebook-benchmark/jupyter-run/reactive-results/reactive/map_subscript_append.ipynb
-  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (4.3s)
+  ✓  1 autotest.spec.ts:60:7 › Notebook Run › Run notebook initially and capture cell outputs (5.4s)
 
-  1 passed (6.0s)
+  1 passed (12.5s)
 ~/Downloads/notebook-benchmark/jupyter-run
 
 === [RUN] PRINTING DIFF: 
 Expected and actual output differ for cell at index 3, cell id df73b1fb-6bd3-46a8-a540-426ab29b71d5
 Output lines only in expected notebook:
-0: '[1]'
+0: "{'a': [], 'b': [1]} [1]"
 Output lines only in actual notebook:
-0: '[]'
+0: "{'a': [1], 'b': [1]} [1]"
 
 === [RUN] PRINTING CELLS EXECUTED:
-=== [RUN] 0 / 4 cells reran; reran cells are: []; modification made to cell: 2
+=== [RUN] 1 / 4 cells reran; reran cells are: [4]; modification made to cell: 2
 === [RUN] COMPLETE RUNNING map_subscript_append ===
+============================ 
+
+
+
 ============================ 
 
 
