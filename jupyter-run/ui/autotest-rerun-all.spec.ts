@@ -1,6 +1,7 @@
 import { expect, galata, test } from "@jupyterlab/galata";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
+import { ContentsHelper } from "@jupyterlab/galata/lib/contents";
 
 const fileName = test_config.file.benchmarkFileName;
 const benchmarks_dir = test_config.file.benchmarkFileDir;
@@ -60,6 +61,7 @@ test.describe.serial("Notebook Run", () => {
   test("Run notebook initially and capture cell outputs", async ({
     page,
     tmpPath,
+    request,
   }) => {
     // Open notebook
     console.log(`=== [UI] OPENING NOTEBOOK: ${fileName}`);
@@ -99,6 +101,32 @@ test.describe.serial("Notebook Run", () => {
     // await page.notebook.waitForRun();
     await page.notebook.save();
 
+    // Reset FS by deleting all files excluding uploaded one
+    const contents = galata.newContentsHelper(request);
+    const dirContent = await contents.getContentMetadata(tmpPath, "directory");
+    if (!(dirContent && dirContent.type === "directory")) {
+      console.log("DIR NOT FOUND!!");
+    } else {
+      let anyFailed = false;
+      // delete directory contents first
+      for (const item of dirContent.content) {
+        console.log("DELETING THIS: ", item);
+        if (item.name.endsWith(".ipynb")) {
+          continue;
+        } else {
+          if (item.type === "directory") {
+            if (!(await contents.deleteDirectory(item.path))) {
+              console.log("deleting failed for: ", item.name);
+            }
+          } else {
+            if (!(await contents.deleteFile(item.path))) {
+              console.log("deleting failed for: ", item.name);
+            }
+          }
+        }
+      }
+    }
+
     // Rerun entire notebook again
     console.log(`=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS`);
     await page.notebook.run();
@@ -124,5 +152,6 @@ test.describe.serial("Notebook Run", () => {
     await page.getByRole("menuitem", { name: "Download" }).click();
     const download = await downloadPromise;
     await download.saveAs(downloadReactivePath);
+    await page.pause();
   });
 });
