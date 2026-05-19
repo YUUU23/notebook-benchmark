@@ -1,5 +1,6 @@
 from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff, get_cells_reran
 from utils.notebook_manager import NotebookManager
+from utils.supporting_scripts import find_supporting_scripts
 import json, subprocess, os
 
 class BenchmarkRunner:
@@ -39,9 +40,10 @@ class BenchmarkRunner:
         if cell_idx > -1:
             nb_initial_file = f"reactive-results/initial/{nb_original_manager.nb_file_name}"
             nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}" 
-            self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name, 
+            supporting_scripts = find_supporting_scripts(nb_original_manager.nb_json, nb_original_manager.nb_dir)
+            self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name,
                                           nb_original_manager.nb_dir, nb_reactive_file, nb_initial_file,
-                                          data_directory) 
+                                          data_directory, supporting_scripts)
             self._run_ui_to_execute_modifications() 
         
             nb_initial_run_manager = NotebookManager(nb_path=nb_initial_file)
@@ -76,13 +78,15 @@ class BenchmarkRunner:
                                  nb_to_modify_dir: str, 
                                  save_reactive_result_to: str, 
                                  save_initial_result_to: str,
-                                 data_directory: str) -> None:
+                                 data_directory: str,
+                                 supporting_scripts: list = None) -> None:
         modification = {"cellIndex": cell_idx, "source": change}
         benchmark_file_info = {"benchmarkFileName": nb_to_modify_name, "benchmarkFileDir": nb_to_modify_dir}
         config = {"modification": modification, "file": benchmark_file_info, 
                   "downloadReactivePath": save_reactive_result_to, 
                   "downloadInitialPath": save_initial_result_to,
-                  "dataDirectory": data_directory}
+                  "dataDirectory": data_directory, 
+                  "supportingScripts": supporting_scripts or []}
         with open(self.mod_config_file, "w") as f:
             json.dump(config, f, indent=4)
         return config

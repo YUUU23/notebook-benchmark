@@ -16,6 +16,8 @@ const downloadInitialPath = path.join(
 );
 const modification = test_config.modification;
 const datadirectory = test_config.dataDirectory;
+const supportingScripts: { sourcePath: string; targetRelPath: string; isDirectory: boolean }[] =
+  (test_config as any).supportingScripts ?? [];
 
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
@@ -45,6 +47,19 @@ test.describe.serial("Notebook Run", () => {
         path.resolve(__dirname, `${uploadFromPath}`),
         targetPath
       );
+    }
+
+    for (const script of supportingScripts) {
+      const localPath = path.resolve(__dirname, "..", script.sourcePath);
+      const uploadTarget = path.normalize(path.join(tmpPath, script.targetRelPath));
+      console.log(
+        `=== [UI] UPLOADING SUPPORTING SCRIPT FROM: ${localPath} to ${uploadTarget}`
+      );
+      if (script.isDirectory) {
+        await contents.uploadDirectory(localPath, uploadTarget);
+      } else {
+        await contents.uploadFile(localPath, uploadTarget);
+      }
     }
   });
 
