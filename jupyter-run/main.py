@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, os, subprocess, shutil
+import argparse, os, re, subprocess, shutil
 from pathlib import Path
 from benchmark_runner import BenchmarkRunner
     
@@ -20,39 +20,73 @@ def run_benchmarks(b: BenchmarkRunner, name:str,
     print(f"============================ ")
     print('\n')
         
-def validate_benchmark_directory(directory: str) -> tuple[str, str, str]:
+_NUMBERED_MOD_RE = re.compile(r'^m(\d+)_(.+)$')
+_LEGACY_MOD_RE  = re.compile(r'^m_(.+)$')
+
+
+def validate_benchmark_directory(directory: str) -> tuple[str, list[tuple[str, str]]]:
     """
-    Given valid benchmark directory, return suggested name to original notebook 
-    and modified notebook file paths 
-    if the benchmark directory contains valid files only.  
-    
-    A valid benchmark directory looks like, 
-    list_concat.ipynb and m_list_concat.ipynb, 
-    this function will return [list_concat, [list_concat.ipynb, m_list_concat.ipynb]].
+    Discover the original notebook and all ordered modification notebooks in a
+    benchmark directory and return an ordered chain of (original, modified) step pairs.
+
+    Naming conventions supported:
+      Numbered: example.ipynb, m1_example.ipynb, m2_example.ipynb, ...
+        Step 1 applies the diff between example and m1.
+        Step 2 applies the diff between m1 and m2.  (and so on)
+      Legacy: example.ipynb, m_example.ipynb
+        Treated as a single step equivalent to m1.
+
+    Returns (base_name, steps) where steps is a list of (original_path, modified_path).
     """
-    file_names = []
-    file_paths = {}
     nb_extension = ".ipynb"
-    modification_prefix = "m_"
-    
+    nb_stems: dict[str, str] = {}  # stem → full path
+
     for f in os.listdir(directory): 
         file_path = f"{directory}{f}"
         if not Path(file_path).is_file(): 
-            raise IOError(f"{file_path} is not a file")
+            continue 
         if not f.endswith(nb_extension): 
-            raise IOError(f"{f} is not a {nb_extension} notebook file")
-        name = f.split(".")[0]
-        file_names.append(name)
-        file_paths[name] = file_path
-    
-    if len(file_names) != 2:
-        raise IOError(f"{directory} should contain notebook file and modification notebook file. Recieved: {file_names}")
-    
-    for f_name in file_names: 
-        if not f_name.startswith(modification_prefix): 
-            if not f"m_{f_name}" in file_names:
-                raise IOError(f"{file_names} does not contain original notebook file and modification notebook file prefix with {modification_prefix}")
-            return [f_name] + [file_paths[f_name], file_paths[f'm_{f_name}']]
+            continue
+        stem = f[: -len(nb_extension)]
+        nb_stems[stem] = file_path
+
+    def _is_modification(stem: str) -> bool:
+        return bool(_NUMBERED_MOD_RE.match(stem) or _LEGACY_MOD_RE.match(stem))
+
+    base_stems = [s for s in nb_stems if not _is_modification(s)]
+    if len(base_stems) != 1: 
+        raise IOError(
+            f"{directory}: expected exactly one base notebook, found: {base_stems}"
+        )
+    base = base_stems[0]
+
+    # Collect numbered modifications: m1_base, m2_base, ...
+    mods: dict[int, str] = {}
+    for stem, path in nb_stems.items():
+        m = _NUMBERED_MOD_RE.match(stem)
+        if m and m.group(2) == base:
+            mods[int(m.group(1))] = path
+
+    # Fall back to legacy m_base when no numbered modifications are found
+    if not mods:
+        legacy_stem = f"m_{base}"
+        if legacy_stem in nb_stems:
+            mods[1] = nb_stems[legacy_stem]
+
+    if not mods:
+        raise IOError(f"{directory}: no modification notebooks found for '{base}'")
+
+    ordered = sorted(mods.items())  # [(1, path), (2, path), ...]
+    indices = [x for x, _ in ordered]
+    if indices != list(range(1, len(indices) + 1)):
+        raise IOError(
+            f"{directory}: modification indices are not consecutive starting from 1: {indices}"
+        )
+
+    # Build step chain: base → m1 → m2 → ...
+    chain = [nb_stems[base]] + [path for _, path in ordered]
+    steps = [(chain[i], chain[i + 1]) for i in range(len(ordered))]
+    return (base, steps)
 
 def run_cleanup(): 
     """
@@ -123,9 +157,10 @@ def main():
         if benchmark_to_run: 
             spawn_ui_kernel = args.start_ui_kernel
             b = BenchmarkRunner(args.config, spawn_ui_kernel=spawn_ui_kernel)
-            for name, original_nb_path, modified_nb_path in benchmark_to_run: 
-                # print("name: ", name, "original_nb: ", original_nb_path, "modified_nb: ", modified_nb_path)
-                run_benchmarks(b, name, original_nb_path, modified_nb_path, data_directory)
+            for name, steps in benchmark_to_run:
+                for i, (original_nb_path, modified_nb_path) in enumerate(steps):
+                    step_label = f"{name} (step {i + 1}/{len(steps)})" if len(steps) > 1 else name
+                    run_benchmarks(b, step_label, original_nb_path, modified_nb_path, data_directory)
         else:
             print(f"no benchmark found under provided directory {args.single_benchmark if args.single_benchmark else args.multiple_benchmarks}")
         
