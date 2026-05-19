@@ -65,6 +65,32 @@ def format_diff_msg(expected_only_lines: list[str], actual_only_lines: list[str]
         )
     return msg
 
+def _collect_output_text(outputs: list) -> str:
+    """
+    Concatenate text from all output objects in a cell into a single normalized
+    string.  Normalization:
+      - output objects are joined in order (boundaries between objects ignored)
+      - each line is right-stripped of whitespace
+      - blank lines are removed
+
+    This removes spurious diffs caused by the kernel splitting identical text
+    across different numbers of output objects (common when comparing a
+    nbconvert-run notebook against a JupyterLab-run notebook) and by trailing
+    newlines being present or absent at the end of individual output objects.
+    """
+    parts = []
+    for output in outputs:
+        text = output.get("text", "")
+        if not text and output.get("data"):
+            text = output.get("data").get("text/plain", "")
+        if isinstance(text, list):
+            text = "".join(text)
+        parts.append(text)
+    combined = "".join(parts)
+    non_blank = [line.rstrip() for line in combined.splitlines() if line.strip()]
+    return "\n".join(non_blank)
+
+
 def parse_and_compare_cell(
         expected_cell_json: dict[str, any],
         actual_cell_json: dict[str, any], 
@@ -72,39 +98,31 @@ def parse_and_compare_cell(
     """
     Parse and compare cell from expected notebook and actual notebook 
     based on notebook metadata field. 
-    
-    Deatils returns result of diff with metadata such as line numbers. 
-    Without deatils, the diff is returned directly without metadata. 
+
+    All output objects for each cell are merged into a single normalized string
+    before diffing, so differences that only arise from blank lines or from the
+    kernel splitting output across different numbers of stream objects are
+    suppressed.
     """
-    if field == None:
+    if field is None:
         raise ValueError(f'field not provided for comparing cells')
-    
-    exp_outputs = expected_cell_json[field]
+
+    exp_outputs = expected_cell_json.get(field)
     if exp_outputs is None:
         raise ValueError(
-            f"{field} field of orig cell {expected_cell_json['id', '']} is missing"
-        )
-    
-    act_outputs = actual_cell_json[field]
-    if act_outputs is None:
-        raise ValueError(
-            f"{field} field of rerun cell {actual_cell_json['id', '']} is missing"
+            f"{field} field of expected cell {expected_cell_json.get('id', '')} is missing"
         )
 
-    expected_only_lines, actual_only_lines = [], []
-    for exp_output, act_output in zip_longest(exp_outputs, act_outputs, fillvalue={}):
-        # TODO: make sure it can register text/plain also. 
-        exp_text = exp_output.get("text", "")
-        act_text = act_output.get("text", "")
-        if exp_text == "" and exp_output.get("data"): 
-            exp_text = exp_output.get("data").get('text/plain', "")
-        if act_text == "" and act_output.get("data"): 
-            act_text = act_output.get("data").get("text/plain", "")
-        exp_only, act_only = create_diff(exp_text, act_text)
-        expected_only_lines.extend(exp_only)
-        actual_only_lines.extend(act_only)
-        
-    return format_diff_msg(expected_only_lines, actual_only_lines)
+    act_outputs = actual_cell_json.get(field)
+    if act_outputs is None:
+        raise ValueError(
+            f"{field} field of actual cell {actual_cell_json.get('id', '')} is missing"
+        )
+
+    exp_text = _collect_output_text(exp_outputs)
+    act_text = _collect_output_text(act_outputs)
+    exp_only, act_only = create_diff(exp_text, act_text)
+    return format_diff_msg(exp_only, act_only)
 
 def parse_and_compare(nb_json_expected: dict[str, any], nb_json_actual: dict[str, any], field: str, cell_id_must_match: int):
     """
@@ -119,20 +137,20 @@ def parse_and_compare(nb_json_expected: dict[str, any], nb_json_actual: dict[str
     
     msg = []
     for i, (expected_cell, actual_cell) in enumerate(zip_longest(expected_code_cells, actual_code_cells, fillvalue={})):
-        expected_cell_id = expected_cell["id"]
+        expected_cell_id = expected_cell.get("id")
         if expected_cell_id is None:
             if cell_id_must_match: 
                 raise ValueError(f"cell in expected notebook at index {i} does not have a valid cell id")
             else: 
                 expected_cell_id = f'expected_cell {i}'
-        
-        actual_cell_id = actual_cell["id"]
+
+        actual_cell_id = actual_cell.get("id")
         if actual_cell_id is None:
-            if cell_id_must_match: 
+            if cell_id_must_match:
                 raise ValueError(f"cell in actual notebook at index {i} does not have a valid cell id")
             else: 
                 actual_cell_id = f'actual_cell {i}'
-        
+
         if cell_id_must_match and expected_cell_id != actual_cell_id:
             print(
                 "Cell id has changed from original"
@@ -151,8 +169,13 @@ def parse_and_compare(nb_json_expected: dict[str, any], nb_json_actual: dict[str
 def get_all_cell_output_diff(nb_expected, nb_actual) -> str: 
     """
     Print diff of two notebook outputs. 
+
+    Uses cell-ID-based matching when the notebooks carry cell IDs (nbformat >= 4.5).
+    Falls back to position-based matching for older notebooks that lack cell IDs.
     """
-    return "\n".join(parse_and_compare(nb_expected, nb_actual, field="outputs", cell_id_must_match=True))
+    expected_cells = get_code_cells(nb_expected)
+    has_ids = bool(expected_cells) and expected_cells[0].get("id") is not None
+    return "\n".join(parse_and_compare(nb_expected, nb_actual, field="outputs", cell_id_must_match=has_ids))
 
 def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> tuple[int, str, str, str]: 
     """
@@ -170,8 +193,7 @@ def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> 
         if is_cell_source_diff(original_cells, modified_cells):
             change = modified_cells["source"]
             original = original_cells["source"]
-            cell_id = original_cells["id"]
-            # print("!! ORIGINAL: ", original_cells["source"])
+            cell_id = original_cells.get("id", "")
             return (cell_i, cell_id, change, original)
     
     return (-1, "", "", "")
@@ -188,12 +210,15 @@ def get_cells_reran(nb_json_original: str, nb_json_modified: str, modified_cell_
     cells_reran = []
     for cell_i, (original_cell, modified_cell) in enumerate(zip(original_cells, modified_cells)):
         if cell_i == modified_cell_idx: 
-            if modified_cell["id"] != modified_cell_id: 
+            orig_id = modified_cell.get("id")
+            if orig_id and modified_cell_id and orig_id != modified_cell_id:
                 raise ValueError(f"Cell ID mismatch for modified cell {modified_cell_idx}")
             else: 
                 continue
-            
-        if original_cell["id"] != modified_cell["id"]:
+
+        orig_id = original_cell.get("id")
+        mod_id = modified_cell.get("id")
+        if orig_id and mod_id and orig_id != mod_id:
             raise ValueError("Cell ID mismatch")
         
         if original_cell["execution_count"] != modified_cell["execution_count"]:
