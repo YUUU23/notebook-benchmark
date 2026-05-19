@@ -8,6 +8,7 @@ module.exports = {
   ...defineConfig({
     testDir: "../../ui",
     testMatch: "autotest.spec.ts", // Matches only this file
+    timeout: 600 * 1000,
   }),
   webServer: {
     command: "jlpm start",

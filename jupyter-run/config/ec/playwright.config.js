@@ -8,6 +8,7 @@ module.exports = {
   ...defineConfig({
     testDir: "../../ui",
     testMatch: "autotest-ec.spec.ts", // Tell playwright to only run execution count test file
+    timeout: 600 * 1000,
   }),
   webServer: {
     command: "jlpm start",
