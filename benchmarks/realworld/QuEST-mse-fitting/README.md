@@ -1,16 +1,9 @@
-# forecasting-gmm
+# QuEST-mse-fitting
 Original notebook from ICML '24 paper: QuEST: Stable Training of LLMs with 1-Bit Weights and Activations
 [Github](https://github.com/IST-DASLab/QuEST/blob/main/notebooks/mse_fitting.ipynb)
 
-## Changes made to the original notebook 
-
-For precise diffs
-- print statements that will produce undeterministic results (e.g., time) are commented out 
-
 ## Modifications
 
-### plot
-Dir: [plot](./plot)
 **ipyflow** \
 1. Run-all (execution count 1-7)
 2. Direct assignment (m1): ipyflow reruns cell 2,3,4,5
