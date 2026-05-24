@@ -8,3 +8,6 @@ node_modules
 jupyter-run/reactive-results/
 test-results/
 jupyter-run/config/mod_config_file.json
+
+**/*.npy
+**/*.pth
