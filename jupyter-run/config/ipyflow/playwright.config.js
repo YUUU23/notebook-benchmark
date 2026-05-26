@@ -10,7 +10,7 @@ module.exports = {
     testMatch: "autotest.spec.ts", // Matches only this file
     timeout: 600 * 1000,
   }),
-  webServer: {
+  webServer: process.env.PW_LIST ? undefined : {
     command: "jlpm start",
     url: "http://localhost:8888/lab",
     timeout: 120 * 1000,

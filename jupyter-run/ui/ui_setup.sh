@@ -8,4 +8,15 @@ if [[ ! -f "$JUPYTER_CONFIG_PATH" ]]; then
 fi
 
 jupyter lab --config "$JUPYTER_CONFIG_PATH" >/dev/null 2>&1 &
+
+# Wait for server to be ready (up to 60s)
+echo "Waiting for JupyterLab to start..."
+for i in $(seq 1 30); do
+    if curl -s "http://localhost:8888/api" >/dev/null 2>&1; then
+        echo "JupyterLab ready."
+        break
+    fi
+    sleep 2
+done
+
 cd .. || exit 1
