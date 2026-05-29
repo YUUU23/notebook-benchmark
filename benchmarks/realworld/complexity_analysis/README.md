@@ -21,19 +21,14 @@ largest = 10
 smallest = 10
 largest = 20
 ```
-3. Mutation (m2): ipyflow does not cascade to cell 3-5
+3. Mutation (m2): ipyflow does not rerun any cell automatically and suggested 3,4,5. While rerunning, all cells got triggered to rerun.
 ```python
 # new standalone cell added between cell 2 and 3, run as execution count 6
 # for scenario when the user wants to append more graphs without having to rerun previous cell
 graphs.append(utils.get_cct(12))
 ```
-4. Mutation (m3): ipyflow reruns all cells (where cell 1 is unnecessary) 
-   - run-all m2 (execution count 1-6), then modify the new cell and run as execution count 7
-   - if there is no m2, and **add** this list comprehension, then ipyflow does not rerun any cell 
+4. Mutation (m3): ipyflow does not rerun any cell automatically and suggested 3,4,5. While rerunning, all cells got triggered to rerun.
 ```python
-# original added cell 3
-graphs.append(utils.get_cct(12))
-
-# modified
+# added between cell 2 and 3
 graphs[:] = [g for i, g in enumerate(graphs) if i % 2 == 0]
 ```
