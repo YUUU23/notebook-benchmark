@@ -3,6 +3,7 @@ Original notebook from
 [Github](https://github.com/vsitzmann/siren/blob/master/explore_siren.ipynb)
 
 ## Modification made to the original notebook as the baseline
+- added `torch.manual_seed(0)` to cell 6,12,17 to avoid randomness across runs
 - downsize `total_steps` from `500`/`1000` to `10` for image fitting, audio fitting and Poisson equation
 - downsize `hidden_features` for Siren class from `256` to `16`
 ## Modification
@@ -40,9 +41,9 @@ Original notebook from
     ```
 
     Overly conservative. Rerun that is unnecessary: 1(library import), 5(ImageFitting def), 8(sines plot), 10(wavfile import), 11(AudioFile class), 16(PoissonEqn class that does not use Siren) + cell 12 where the default init value for `first_omega_0` is not used plus its downstream dependencies cell 13-15. 
-5. Mutation(m4): ipyflow does not rerun any cells (but seems to rerun all after I rerun the same cell 3 times)
+5. Mutation(m4): ipyflow does not rerun any cells automatically and suggested cell 9. After rerunning cell 9, cell 1,2,5-17,19,21,22 also got rerun 
     ```python
-    # Perturb trained weights to probe loss landscape
+    # between cell 7 and 8
     with torch.no_grad():
         for p in img_siren.parameters():
             p.add_(torch.randn_like(p) * 0.05)
