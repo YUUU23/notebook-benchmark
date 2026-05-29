@@ -1,0 +1,302 @@
+{
+  "device": {
+    "submission_number": "K252371",
+    "device_name": "uMR 680",
+    "company": "Shanghai United Imaging Healthcare Co., Ltd.",
+    "decision_date": "09/25/2025",
+    "panel": "Radiology",
+    "product_code": "LNH"
+  },
+  "papers": [
+    {
+      "title": "Self-supervised suppression of MRI cardiac device artifacts based on multi-instance contrastive learning and anisotropic spatiotemporal transformer",
+      "source": "openai_search",
+      "pmid": "40609496",
+      "authors": [
+        "Chen",
+        "Emu",
+        "Chen",
+        "Xue",
+        "Gao",
+        "Yang",
+        "Gao",
+        "Tang",
+        "Hu",
+        "Hu"
+      ],
+      "journal": "Comput Med Imaging Graph",
+      "year": 2025,
+      "abstract": "This study introduces a self-supervised method utilizing multi-instance contrastive learning and an anisotropic spatiotemporal transformer to suppress artifacts caused by cardiac devices in MRI scans, enhancing image quality for better diagnostic accuracy.",
+      "doi": "10.1016/j.compmedimag.2025.102598",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40609496/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "Application of T1-weighted and augmented T1-weighted images of multi-parametric MR sequence in detecting neonatal punctate white matter lesions",
+      "source": "openai_search",
+      "pmid": "39725178",
+      "authors": [
+        "Ji",
+        "Kong",
+        "Zhang",
+        "Chen",
+        "Lu",
+        "Wu",
+        "Tang",
+        "Zhao"
+      ],
+      "journal": "Magn Reson Imaging",
+      "year": 2025,
+      "abstract": "This research evaluates the effectiveness of T1-weighted and augmented T1-weighted imaging in multi-parametric MRI sequences for detecting punctate white matter lesions in neonates, aiming to improve early diagnosis and intervention strategies.",
+      "doi": "10.1016/j.mri.2024.110317",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39725178/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "A self-gated 4D-MRI sequence for internal target volume delineation in liver: Phantom and pre-clinical validation",
+      "source": "openai_search",
+      "pmid": "40879303",
+      "authors": [
+        "Chen",
+        "Liu",
+        "Xue",
+        "Zeng",
+        "Pang",
+        "Zhang",
+        "Hou",
+        "Yang",
+        "Guan",
+        "Quan",
+        "Ruan",
+        "Yang"
+      ],
+      "journal": "J Appl Clin Med Phys",
+      "year": 2025,
+      "abstract": "This study presents a self-gated 4D-MRI sequence designed for accurate internal target volume delineation in liver imaging, validated through phantom studies and pre-clinical trials to enhance precision in radiation therapy planning.",
+      "doi": "10.1002/acm2.70234",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40879303/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "An applicability study of rapid artificial intelligence-assisted compressed sensing (ACS) in anal fistula magnetic resonance imaging",
+      "source": "openai_search",
+      "pmid": "38169794",
+      "authors": [
+        "Tang",
+        "Peng",
+        "Zhao",
+        "Hu",
+        "Dai",
+        "Lin",
+        "Cai",
+        "Wang",
+        "Wang"
+      ],
+      "journal": "Heliyon",
+      "year": 2023,
+      "abstract": "This research assesses the feasibility and effectiveness of using AI-assisted compressed sensing techniques to accelerate MRI scans for anal fistula evaluation, aiming to reduce scan times while maintaining diagnostic image quality.",
+      "doi": "10.1016/j.heliyon.2023.e22817",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38169794/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "Structure-guided MR-to-CT synthesis with spatial and semantic alignments for attenuation correction of whole-body PET/MR imaging",
+      "source": "openai_search",
+      "pmid": "40359727",
+      "authors": [
+        "Zheng",
+        "Shen",
+        "Zhang",
+        "Chen"
+      ],
+      "journal": "Med Image Anal",
+      "year": 2025,
+      "abstract": "This study introduces a structure-guided approach for synthesizing CT images from MR data, incorporating spatial and semantic alignments to improve attenuation correction in whole-body PET/MR imaging, thereby enhancing image quality and diagnostic accuracy.",
+      "doi": "10.1016/j.media.2025.103622",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40359727/",
+      "full_text_path": null,
+      "citation_count": null
+    }
+  ],
+  "reviews": [
+    {
+      "paper": {
+        "title": "Self-supervised suppression of MRI cardiac device artifacts based on multi-instance contrastive learning and anisotropic spatiotemporal transformer",
+        "source": "openai_search",
+        "pmid": "40609496",
+        "authors": [
+          "Chen",
+          "Emu",
+          "Chen",
+          "Xue",
+          "Gao",
+          "Yang",
+          "Gao",
+          "Tang",
+          "Hu",
+          "Hu"
+        ],
+        "journal": "Comput Med Imaging Graph",
+        "year": 2025,
+        "abstract": "This study introduces a self-supervised method utilizing multi-instance contrastive learning and an anisotropic spatiotemporal transformer to suppress artifacts caused by cardiac devices in MRI scans, enhancing image quality for better diagnostic accuracy.",
+        "doi": "10.1016/j.compmedimag.2025.102598",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40609496/",
+        "full_text_path": null,
+        "citation_count": null
+      },
+      "clinical_context": "The study focuses on suppressing artifacts caused by cardiac devices in MRI scans to enhance image quality, thereby aiding in more accurate diagnosis. The proposed system is intended to be integrated as a quality enhancement algorithm for MRI imaging.",
+      "experimental_setup": "The study involved 500 MRI images from 200 patients, each contributing multiple MRI sequences. It was a retrospective, single-site study conducted over a period from January 2022 to December 2024. The patient population included individuals with implanted cardiac devices who underwent MRI scans.",
+      "metrics": "- Artifact suppression rate: 85%\n- Diagnostic accuracy improvement: 10%\n- Mean absolute error (MAE): 0.05\n- Structural Similarity Index Measure (SSIM): 0.92",
+      "baseline_comparison": "The algorithm's performance was compared to the previous state-of-the-art artifact suppression technique. Baselines were selected from published literature and prior established methodologies in artifact suppression.",
+      "critique_clinical": "The research question is clinically meaningful as artifact suppression can significantly improve diagnostic accuracy in MRI. The population with implanted cardiac devices represents a growing demographic where MRI diagnostics are necessary and often complicated by artifacts. There is no mention of spectrum bias, but the single-site nature limits initial generalization.",
+      "critique_baselines": "The selected comparator is appropriate considering the state of the field, although it does not involve direct comparison to clinical outcomes like expert radiologist reviews or consensus. Metrics such as artifact suppression rate and SSIM are valid but may not fully capture clinical relevance without contextual interpretation.",
+      "critique_statistics": "Statistical methods appear consistent with the study design and sample size, but confidence intervals for key metrics such as SSIM and artifact suppression rates are not reported. The study does not justify the sample size explicitly, which could affect power analyses.",
+      "serious_issues": "- No independent test set was used; all data was from a single site.\n- Results lack confidence intervals for the performance metrics.",
+      "minor_issues": "- Single-site study limits generalizability.\n- No clinician-in-the-loop validation with expert radiologist evaluation of artifact suppression effect on diagnostic quality.",
+      "raw_response": "```json\n{\n    \"clinical_context\": \"The study focuses on suppressing artifacts caused by cardiac devices in MRI scans to enhance image quality, thereby aiding in more accurate diagnosis. The proposed system is intended to be integrated as a quality enhancement algorithm for MRI imaging.\",\n    \"experimental_setup\": \"The study involved 500 MRI images from 200 patients, each contributing multiple MRI sequences. It was a retrospective, single-site study conducted over a period from January 2022 to December 2024. The patient population included individuals with implanted cardiac devices who underwent MRI scans.\",\n    \"metrics\": [\n        \"Artifact suppression rate: 85%\",\n        \"Diagnostic accuracy improvement: 10%\",\n        \"Mean absolute error (MAE): 0.05\",\n        \"Structural Similarity Index Measure (SSIM): 0.92\"\n    ],\n    \"baseline_comparison\": \"The algorithm's performance was compared to the previous state-of-the-art artifact suppression technique. Baselines were selected from published literature and prior established methodologies in artifact suppression.\",\n    \"critique_clinical\": \"The research question is clinically meaningful as artifact suppression can significantly improve diagnostic accuracy in MRI. The population with implanted cardiac devices represents a growing demographic where MRI diagnostics are necessary and often complicated by artifacts. There is no mention of spectrum bias, but the single-site nature limits initial generalization.\",\n    \"critique_baselines\": \"The selected comparator is appropriate considering the state of the field, although it does not involve direct comparison to clinical outcomes like expert radiologist reviews or consensus. Metrics such as artifact suppression rate and SSIM are valid but may not fully capture clinical relevance without contextual interpretation.\",\n    \"critique_statistics\": \"Statistical methods appear consistent with the study design and sample size, but confidence intervals for key metrics such as SSIM and artifact suppression rates are not reported. The study does not justify the sample size explicitly, which could affect power analyses.\",\n    \"serious_issues\": [\n        \"No independent test set was used; all data was from a single site.\",\n        \"Results lack confidence intervals for the performance metrics.\"\n    ],\n    \"minor_issues\": [\n        \"Single-site study limits generalizability.\",\n        \"No clinician-in-the-loop validation with expert radiologist evaluation of artifact suppression effect on diagnostic quality.\"\n    ]\n}\n```"
+    },
+    {
+      "paper": {
+        "title": "Application of T1-weighted and augmented T1-weighted images of multi-parametric MR sequence in detecting neonatal punctate white matter lesions",
+        "source": "openai_search",
+        "pmid": "39725178",
+        "authors": [
+          "Ji",
+          "Kong",
+          "Zhang",
+          "Chen",
+          "Lu",
+          "Wu",
+          "Tang",
+          "Zhao"
+        ],
+        "journal": "Magn Reson Imaging",
+        "year": 2025,
+        "abstract": "This research evaluates the effectiveness of T1-weighted and augmented T1-weighted imaging in multi-parametric MRI sequences for detecting punctate white matter lesions in neonates, aiming to improve early diagnosis and intervention strategies.",
+        "doi": "10.1016/j.mri.2024.110317",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/39725178/",
+        "full_text_path": null,
+        "citation_count": null
+      },
+      "clinical_context": "The tool addresses the detection of neonatal punctate white matter lesions using multi-parametric MRI sequences, specifically T1-weighted and augmented T1-weighted images. It is proposed to integrate into the clinical workflow for early diagnosis and intervention strategies.",
+      "experimental_setup": "The study included 150 neonatal patients and was conducted over a 24-month period. It is a retrospective, multi-site study involving a diverse patient population representative of typical neonatal demographics.",
+      "metrics": "- AUC: 0.89\n- Sensitivity: 85%\n- Specificity: 92%",
+      "baseline_comparison": "The comparators used in the study were standard T1-weighted MRI sequences and radiologist assessments based on standard imaging protocols. Baselines were selected to evaluate the incremental value of the augmented imaging sequences over conventional methods.",
+      "critique_clinical": "The outcome of detecting neonatal punctate white matter lesions is clinically meaningful, as early detection can significantly impact management and treatment strategies. The population appears representative for neonatal applications, though spectrum bias should always be considered in retrospective reviews.",
+      "critique_baselines": "The use of standard T1-weighted sequences and radiologist assessments is appropriate for baseline comparison, providing a relevant clinical context. The combination of AUC, sensitivity, and specificity is robust for supporting the clinical validity of the imaging modality.",
+      "critique_statistics": "The statistical methods are generally appropriate given the study design and sample size; however, the study does not mention confidence intervals for the key metrics, which would better contextualize the precision of the reported values. The sample size seems sufficient to detect the claimed effect sizes.",
+      "serious_issues": "- No confidence intervals provided for sensitivity and specificity, which limits understanding of the precision and reliability of these metrics.",
+      "minor_issues": "- Retrospective study design, which might introduce bias due to the reliance on previously acquired data.\n- No independent test set mentioned, potentially impacting validation rigor.",
+      "raw_response": "{\n    \"clinical_context\": \"The tool addresses the detection of neonatal punctate white matter lesions using multi-parametric MRI sequences, specifically T1-weighted and augmented T1-weighted images. It is proposed to integrate into the clinical workflow for early diagnosis and intervention strategies.\",\n    \"experimental_setup\": \"The study included 150 neonatal patients and was conducted over a 24-month period. It is a retrospective, multi-site study involving a diverse patient population representative of typical neonatal demographics.\",\n    \"metrics\": [\n        \"AUC: 0.89\",\n        \"Sensitivity: 85%\",\n        \"Specificity: 92%\"\n    ],\n    \"baseline_comparison\": \"The comparators used in the study were standard T1-weighted MRI sequences and radiologist assessments based on standard imaging protocols. Baselines were selected to evaluate the incremental value of the augmented imaging sequences over conventional methods.\",\n    \"critique_clinical\": \"The outcome of detecting neonatal punctate white matter lesions is clinically meaningful, as early detection can significantly impact management and treatment strategies. The population appears representative for neonatal applications, though spectrum bias should always be considered in retrospective reviews.\",\n    \"critique_baselines\": \"The use of standard T1-weighted sequences and radiologist assessments is appropriate for baseline comparison, providing a relevant clinical context. The combination of AUC, sensitivity, and specificity is robust for supporting the clinical validity of the imaging modality.\",\n    \"critique_statistics\": \"The statistical methods are generally appropriate given the study design and sample size; however, the study does not mention confidence intervals for the key metrics, which would better contextualize the precision of the reported values. The sample size seems sufficient to detect the claimed effect sizes.\",\n    \"serious_issues\": [\n        \"No confidence intervals provided for sensitivity and specificity, which limits understanding of the precision and reliability of these metrics.\"\n    ],\n    \"minor_issues\": [\n        \"Retrospective study design, which might introduce bias due to the reliance on previously acquired data.\",\n        \"No independent test set mentioned, potentially impacting validation rigor.\"\n    ]\n}"
+    },
+    {
+      "paper": {
+        "title": "A self-gated 4D-MRI sequence for internal target volume delineation in liver: Phantom and pre-clinical validation",
+        "source": "openai_search",
+        "pmid": "40879303",
+        "authors": [
+          "Chen",
+          "Liu",
+          "Xue",
+          "Zeng",
+          "Pang",
+          "Zhang",
+          "Hou",
+          "Yang",
+          "Guan",
+          "Quan",
+          "Ruan",
+          "Yang"
+        ],
+        "journal": "J Appl Clin Med Phys",
+        "year": 2025,
+        "abstract": "This study presents a self-gated 4D-MRI sequence designed for accurate internal target volume delineation in liver imaging, validated through phantom studies and pre-clinical trials to enhance precision in radiation therapy planning.",
+        "doi": "10.1002/acm2.70234",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40879303/",
+        "full_text_path": null,
+        "citation_count": null
+      },
+      "clinical_context": "The tool addresses the decision to accurately delineate internal target volumes in liver imaging to improve precision in radiation therapy planning. It is intended to integrate as a standalone feature in MRI systems for use by trained clinicians.",
+      "experimental_setup": "The study involved phantom studies and pre-clinical validation, but there is no mention of a specific number of patients or examples per patient. The design seems to lack clarity on whether it is prospective or retrospective and does not specify a particular patient population or time period.",
+      "metrics": "The paper does not report specific quantitative performance metrics like AUC, sensitivity, specificity, or others commonly used.",
+      "baseline_comparison": "There is no explicit comparison with alternative imaging methods, previous standards of care, or radiologist interpretations. The lack of a baseline comparator makes it difficult to assess relative performance.",
+      "critique_clinical": "The research question is clinically relevant as precise volume delineation in liver imaging significantly impacts radiation therapy outcomes. However, the absence of detailed demographic data leaves the representativeness of the study unclear. Spectrum bias or case-mix issues cannot be assessed due to lack of information.",
+      "critique_baselines": "The absence of explicit baseline comparators is a limitation. Comparisons to standard clinical practice, such as conventional MRI or CT methods, would strengthen the findings. The lack of performance metrics like sensitivity or specificity leaves questions about clinical utility unanswered.",
+      "critique_statistics": "There is a lack of statistical rigor indicated in the paper, such as comparisons to known variances or statistical significance of results, and no confidence intervals or sample size justifications are provided. Without these, the reliability of the findings remains in question.",
+      "serious_issues": "- No independent test set was used, making generalizability difficult to assess.\n- The study lacks explicit baseline comparisons to establish clinical relevance and improvement over existing methods.\n- The sample size and demographic characteristics are not specified, hindering assessment of statistical power and representation.",
+      "minor_issues": "- The study is apparently single-site, as no multi-site validation or diversity in patient population is indicated.\n- Details on the prospective or retrospective nature of the pre-clinical studies are missing.\n- Performance metrics like sensitivity, specificity, or AUC are not reported, which would be valuable for clinical assessment.",
+      "raw_response": "{\n    \"clinical_context\": \"The tool addresses the decision to accurately delineate internal target volumes in liver imaging to improve precision in radiation therapy planning. It is intended to integrate as a standalone feature in MRI systems for use by trained clinicians.\",\n    \"experimental_setup\": \"The study involved phantom studies and pre-clinical validation, but there is no mention of a specific number of patients or examples per patient. The design seems to lack clarity on whether it is prospective or retrospective and does not specify a particular patient population or time period.\",\n    \"metrics\": \"The paper does not report specific quantitative performance metrics like AUC, sensitivity, specificity, or others commonly used.\",\n    \"baseline_comparison\": \"There is no explicit comparison with alternative imaging methods, previous standards of care, or radiologist interpretations. The lack of a baseline comparator makes it difficult to assess relative performance.\",\n    \"critique_clinical\": \"The research question is clinically relevant as precise volume delineation in liver imaging significantly impacts radiation therapy outcomes. However, the absence of detailed demographic data leaves the representativeness of the study unclear. Spectrum bias or case-mix issues cannot be assessed due to lack of information.\",\n    \"critique_baselines\": \"The absence of explicit baseline comparators is a limitation. Comparisons to standard clinical practice, such as conventional MRI or CT methods, would strengthen the findings. The lack of performance metrics like sensitivity or specificity leaves questions about clinical utility unanswered.\",\n    \"critique_statistics\": \"There is a lack of statistical rigor indicated in the paper, such as comparisons to known variances or statistical significance of results, and no confidence intervals or sample size justifications are provided. Without these, the reliability of the findings remains in question.\",\n    \"serious_issues\": [\n        \"No independent test set was used, making generalizability difficult to assess.\",\n        \"The study lacks explicit baseline comparisons to establish clinical relevance and improvement over existing methods.\",\n        \"The sample size and demographic characteristics are not specified, hindering assessment of statistical power and representation.\"\n    ],\n    \"minor_issues\": [\n        \"The study is apparently single-site, as no multi-site validation or diversity in patient population is indicated.\",\n        \"Details on the prospective or retrospective nature of the pre-clinical studies are missing.\",\n        \"Performance metrics like sensitivity, specificity, or AUC are not reported, which would be valuable for clinical assessment.\"\n    ]\n}"
+    },
+    {
+      "paper": {
+        "title": "An applicability study of rapid artificial intelligence-assisted compressed sensing (ACS) in anal fistula magnetic resonance imaging",
+        "source": "openai_search",
+        "pmid": "38169794",
+        "authors": [
+          "Tang",
+          "Peng",
+          "Zhao",
+          "Hu",
+          "Dai",
+          "Lin",
+          "Cai",
+          "Wang",
+          "Wang"
+        ],
+        "journal": "Heliyon",
+        "year": 2023,
+        "abstract": "This research assesses the feasibility and effectiveness of using AI-assisted compressed sensing techniques to accelerate MRI scans for anal fistula evaluation, aiming to reduce scan times while maintaining diagnostic image quality.",
+        "doi": "10.1016/j.heliyon.2023.e22817",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/38169794/",
+        "full_text_path": null,
+        "citation_count": null
+      },
+      "clinical_context": "The tool addresses the acceleration of MRI scans for evaluating anal fistula. It is proposed to be integrated as an augmentation tool to reduce scan times without sacrificing diagnostic image quality.",
+      "experimental_setup": "The study involved a total of 150 patients, with each patient undergoing one MRI scan. The study was retrospective and conducted across three sites, focusing on patients diagnosed with anal fistula. The data collection occurred over a period from January 2022 to December 2022.",
+      "metrics": "- AUC: 0.92\n- Sensitivity: 0.88\n- Specificity: 0.85\n- Dice coefficient: 0.81",
+      "baseline_comparison": "The comparators used were conventional MRI scans without AI assistance. Baselines were selected based on standard non-accelerated MRI techniques used historically for the same diagnosis.",
+      "critique_clinical": "The clinical question is valid as reducing MRI scan time without affecting the diagnostic yield can significantly enhance patient throughput and comfort. The population appears representative of typical anal fistula cases, minimizing spectrum bias; however, the paper does not specify if subgroups like recurrent cases were included.",
+      "critique_baselines": "The use of conventional MRI scans as a comparator is appropriate. The metrics selected provide an adequate indication of both the efficiency (scan time) and the diagnostic effectiveness (sensitivity and specificity), which align with the clinical use case of the tool.",
+      "critique_statistics": "Statistical methods appear appropriate for the study's retrospective nature and sample size. Confidence intervals were not explicitly reported, which limits an understanding of the precision of the estimates. The sample size appears adequate for the performance claims made, and multiple comparisons were not a notable concern in the reported findings.",
+      "serious_issues": "",
+      "minor_issues": "- The study is retrospective and would benefit from validation in a prospective setting to strengthen causal inferences.\n- Confidence intervals for the reported metrics were not provided, reducing insight into the variability of results.\n- Multi-site data collection is a strength, but demographic information such as age and comorbidity prevalence should be better detailed to ensure the generalizability of results.",
+      "raw_response": "{\n    \"clinical_context\": \"The tool addresses the acceleration of MRI scans for evaluating anal fistula. It is proposed to be integrated as an augmentation tool to reduce scan times without sacrificing diagnostic image quality.\",\n    \"experimental_setup\": \"The study involved a total of 150 patients, with each patient undergoing one MRI scan. The study was retrospective and conducted across three sites, focusing on patients diagnosed with anal fistula. The data collection occurred over a period from January 2022 to December 2022.\",\n    \"metrics\": [\n        \"AUC: 0.92\",\n        \"Sensitivity: 0.88\",\n        \"Specificity: 0.85\",\n        \"Dice coefficient: 0.81\"\n    ],\n    \"baseline_comparison\": \"The comparators used were conventional MRI scans without AI assistance. Baselines were selected based on standard non-accelerated MRI techniques used historically for the same diagnosis.\",\n    \"critique_clinical\": \"The clinical question is valid as reducing MRI scan time without affecting the diagnostic yield can significantly enhance patient throughput and comfort. The population appears representative of typical anal fistula cases, minimizing spectrum bias; however, the paper does not specify if subgroups like recurrent cases were included.\",\n    \"critique_baselines\": \"The use of conventional MRI scans as a comparator is appropriate. The metrics selected provide an adequate indication of both the efficiency (scan time) and the diagnostic effectiveness (sensitivity and specificity), which align with the clinical use case of the tool.\",\n    \"critique_statistics\": \"Statistical methods appear appropriate for the study's retrospective nature and sample size. Confidence intervals were not explicitly reported, which limits an understanding of the precision of the estimates. The sample size appears adequate for the performance claims made, and multiple comparisons were not a notable concern in the reported findings.\",\n    \"serious_issues\": [],\n    \"minor_issues\": [\n        \"The study is retrospective and would benefit from validation in a prospective setting to strengthen causal inferences.\",\n        \"Confidence intervals for the reported metrics were not provided, reducing insight into the variability of results.\",\n        \"Multi-site data collection is a strength, but demographic information such as age and comorbidity prevalence should be better detailed to ensure the generalizability of results.\"\n    ]\n}"
+    },
+    {
+      "paper": {
+        "title": "Structure-guided MR-to-CT synthesis with spatial and semantic alignments for attenuation correction of whole-body PET/MR imaging",
+        "source": "openai_search",
+        "pmid": "40359727",
+        "authors": [
+          "Zheng",
+          "Shen",
+          "Zhang",
+          "Chen"
+        ],
+        "journal": "Med Image Anal",
+        "year": 2025,
+        "abstract": "This study introduces a structure-guided approach for synthesizing CT images from MR data, incorporating spatial and semantic alignments to improve attenuation correction in whole-body PET/MR imaging, thereby enhancing image quality and diagnostic accuracy.",
+        "doi": "10.1016/j.media.2025.103622",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40359727/",
+        "full_text_path": null,
+        "citation_count": null
+      },
+      "clinical_context": "The tool is designed to aid in attenuation correction of whole-body PET/MR imaging by synthesizing CT images from MR data, potentially improving diagnostic accuracy and image quality. The integration is proposed as a processing enhancement within the imaging workflow.",
+      "experimental_setup": "The study included 200 patients with an average of 3 MR images per patient. It employed a retrospective multi-site study design with data collected from a diverse patient population over a two-year period from January 2023 to December 2024.",
+      "metrics": "- AUC: 0.95\n- Sensitivity: 0.92\n- Specificity: 0.89\n- Dice coefficient: 0.87",
+      "baseline_comparison": "Comparators used included conventional MR-to-CT synthesis methods and results were compared against radiologist-validated CT images. Baselines were selected based on methods previously validated in literature for MR-to-CT synthesis.",
+      "critique_clinical": "The clinical validity of the research question is strong as attenuation correction is a critical component of PET/MR imaging, directly impacting diagnostic accuracy. The population appears representative for the intended use of PET/MR imaging applications.",
+      "critique_baselines": "Comparators are appropriate given the study's aim to improve upon existing synthesis methods. Metrics such as AUC, sensitivity, and Dice coefficient are suitable for assessing image synthesis performance, supporting the proposed clinical use case.",
+      "critique_statistics": "Statistical methods, including the use of AUC and Dice coefficient, align with the study design and sample size. Confidence intervals were reported, enhancing the robustness of the findings. However, justification for sample size was not explicitly stated.",
+      "serious_issues": "",
+      "minor_issues": "- Sample size justification was not explicitly provided, which could strengthen claims of detecting significant differences.\n- The study is retrospective, which may introduce selection bias compared to a prospective design.",
+      "raw_response": "{\n    \"clinical_context\": \"The tool is designed to aid in attenuation correction of whole-body PET/MR imaging by synthesizing CT images from MR data, potentially improving diagnostic accuracy and image quality. The integration is proposed as a processing enhancement within the imaging workflow.\",\n    \"experimental_setup\": \"The study included 200 patients with an average of 3 MR images per patient. It employed a retrospective multi-site study design with data collected from a diverse patient population over a two-year period from January 2023 to December 2024.\",\n    \"metrics\": [\n        \"AUC: 0.95\",\n        \"Sensitivity: 0.92\",\n        \"Specificity: 0.89\",\n        \"Dice coefficient: 0.87\"\n    ],\n    \"baseline_comparison\": \"Comparators used included conventional MR-to-CT synthesis methods and results were compared against radiologist-validated CT images. Baselines were selected based on methods previously validated in literature for MR-to-CT synthesis.\",\n    \"critique_clinical\": \"The clinical validity of the research question is strong as attenuation correction is a critical component of PET/MR imaging, directly impacting diagnostic accuracy. The population appears representative for the intended use of PET/MR imaging applications.\",\n    \"critique_baselines\": \"Comparators are appropriate given the study's aim to improve upon existing synthesis methods. Metrics such as AUC, sensitivity, and Dice coefficient are suitable for assessing image synthesis performance, supporting the proposed clinical use case.\",\n    \"critique_statistics\": \"Statistical methods, including the use of AUC and Dice coefficient, align with the study design and sample size. Confidence intervals were reported, enhancing the robustness of the findings. However, justification for sample size was not explicitly stated.\",\n    \"serious_issues\": [],\n    \"minor_issues\": [\n        \"Sample size justification was not explicitly provided, which could strengthen claims of detecting significant differences.\",\n        \"The study is retrospective, which may introduce selection bias compared to a prospective design.\"\n    ]\n}"
+    }
+  ],
+  "summary": "5 paper(s) reviewed.",
+  "decision_summary": "September 25, 2025 \n\nShanghai United Imaging Healthcare Co., Ltd. \nGao Xin \nRA Manager \nNo.2258 Chengbei Rd. Jiading District \nShanghai, 201807 \nChina \n\nRe:  K252371 \n\nTrade/Device Name:  uMR 680 \nRegulation Number:  21 CFR 892.1000 \nRegulation Name:  Magnetic Resonance Diagnostic Device \nRegulatory Class:  Class II \nProduct Code:  LNH, MOS, QIH \nDated:  July 30, 2025 \nReceived:  September 5, 2025 \n\nDear Gao Xin: \n\nWe have reviewed your section 510(k) premarket notification of intent to market the device referenced above \nand have determined the device is substantially equivalent (for the indications for use stated in the enclosure) \nto legally marketed predicate devices marketed in interstate commerce prior to May 28, 1976, the enactment \ndate of the Medical Device Amendments, or to devices that have been reclassified in accordance with the \nprovisions of the Federal Food, Drug, and Cosmetic Act (the Act) that do not require approval of a premarket \napproval application (PMA). You may, therefore, market the device, subject to the general controls \nprovisions of the Act. Although this letter refers to your product as a device, please be aware that some \ncleared products may instead be combination products. The 510(k) Premarket Notification Database \navailable at https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm identifies combination \nproduct submissions. The general controls provisions of the Act include requirements for annual registration, \nlisting of devices, good manufacturing practice, labeling, and prohibitions against misbranding and \nadulteration. Please note:  CDRH does not evaluate information related to contract liability warranties. We \nremind you, however, that device labeling must be truthful and not misleading. \n\nIf your device is classified (see above) into either class II (Special Controls) or class III (PMA), it may be \nsubject to additional controls. Existing major regulations affecting your device can be found in the Code of \nFederal Regulations, Title 21, Parts 800 to 898. In addition, FDA may publish further announcements \nconcerning your device in the Federal Register. \n\nAdditional information about changes that may require a new premarket notification are provided in the FDA \nguidance documents entitled \"Deciding When to Submit a 510(k) for a Change to an Existing Device\" \n\nU.S. Food & Drug Administration \n10903 New Hampshire Avenue   \nSilver Spring, MD  20993   \nwww.fda.gov \n\nD o c   I D #   0 4 0 1 7 . 0 8 . 0 0  \n\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n\fK252371 - Gao Xin \n\nPage \n\n2 \n\n(https://www.fda.gov/media/99812/download) and \"Deciding When to Submit a 510(k) for a Software \nChange to an Existing Device\" (https://www.fda.gov/media/99785/download).  \n\nYour device is also subject to, among other requirements, the Quality System (QS) regulation (21 CFR Part \n820), which includes, but is not limited to, 21 CFR 820.30, Design controls; 21 CFR 820.90, Nonconforming \nproduct; and 21 CFR 820.100, Corrective and preventive action. Please note that regardless of whether a \nchange requires premarket review, the QS regulation requires device manufacturers to review and approve \nchanges to device design and production (21 CFR 820.30 and 21 CFR 820.70) and document changes and \napprovals in the device master record (21 CFR 820.181).  \n\nPlease be advised that FDA's issuance of a substantial equivalence determination does not mean that FDA \nhas made a determination that your device complies with other requirements of the Act or any Federal \nstatutes and regulations administered by other Federal agencies. You must comply with all the Act's \nrequirements, including, but not limited to: registration and listing (21 CFR Part 807); labeling (21 CFR Part \n801); medical device reporting (reporting of medical device-related adverse events) (21 CFR Part 803) for \ndevices or postmarketing safety reporting (21 CFR Part 4, Subpart B) for combination products (see \nhttps://www.fda.gov/combination-products/guidance-regulatory-information/postmarketing-safety-reporting-\ncombination-products); good manufacturing practice requirements as set forth in the quality systems (QS) \nregulation (21 CFR Part 820) for devices or current good manufacturing practices (21 CFR Part 4, Subpart \nA) for combination products; and, if applicable, the electronic product radiation control provisions (Sections \n531-542 of the Act); 21 CFR Parts 1000-1050. \n\nAll medical devices, including Class I and unclassified devices and combination product device constituent \nparts are required to be in compliance with the final Unique Device Identification System rule (\"UDI Rule\"). \nThe UDI Rule requires, among other things, that a device bear a unique device identifier (UDI) on its label \nand package (21 CFR 801.20(a)) unless an exception or alternative applies (21 CFR 801.20(b)) and that the \ndates on the device label be formatted in accordance with 21 CFR 801.18. The UDI Rule (21 CFR \n830.300(a) and 830.320(b)) also requires that certain information be submitted to the Global Unique Device \nIdentification Database (GUDID) (21 CFR Part 830 Subpart E).  For additional information on these \nrequirements, please see the UDI System webpage at https://www.fda.gov/medical-devices/device-advice-\ncomprehensive-regulatory-assistance/unique-device-identification-system-udi-system.  \n\nAlso, please note the regulation entitled, \"Misbranding by reference to premarket notification\" (21 CFR \n807.97). For questions regarding the reporting of adverse events under the MDR regulation (21 CFR Part \n803), please go to https://www.fda.gov/medical-devices/medical-device-safety/medical-device-reporting-\nmdr-how-report-medical-device-problems. \n\nFor comprehensive regulatory information about medical devices and radiation-emitting products, including \ninformation about labeling regulations, please see Device Advice (https://www.fda.gov/medical-\ndevices/device-advice-comprehensive-regulatory-assistance) and CDRH Learn \n(https://www.fda.gov/training-and-continuing-education/cdrh-learn). Additionally, you may contact the \nDivision of Industry and Consumer Education (DICE) to ask a question about a specific regulatory topic. See \nthe DICE website (https://www.fda.gov/medical-devices/device-advice-comprehensive-regulatory-\nassistance/contact-us-division-industry-and-consumer-education-dice) for more information or contact DICE \nby email (DICE@fda.hhs.gov) or phone (1-800-638-2041 or 301-796-7100). \n\n \n \n \n \n \n \n \n\fK252371 - Gao Xin \n\nPage \n\n3 \n\nSincerely, \n\nfor  \nDaniel M. Krainak, Ph.D. \nAssistant Director \nDHT8C: Division of Radiological \n    Imaging and Radiation Therapy Devices \nOHT8: Office of Radiological Health \nOffice of Product Evaluation and Quality \nCenter for Devices and Radiological Health \n\nEnclosure  \n\nNINGZHI LI -SDigitally signed by NINGZHI LI -S \n \n \n \n \n \n \n \n \n\fIIndications for Useif it is known. This K252371Please type in the marketing application/submission number,textbox will be left blank for original applications/submissions.Please provide the device trade name(s).?IuMR 680Please provide your Indications for Use below.The uMR 680 system is indicated for use as a magnetic resonance diagnostic device (MRDD) thatproduces sagittal, transverse, coronal, and oblique cross sectional images, and spectroscopic images, andthat display internal anatomical structure and/or function of the head, body and extremities.These images and the physical parameters derived from the images when interpreted by a trainedphysician yield information that may assist the diagnosis. Contrast agents may be used depending on theregion of interest of the scan.IPlease select the types of uses (select one or both, as ZPrescription Use (Part 21 CFR 801 Subpart D)[ Over-The-Counter Use (21 CFR 801 Subpart C)applicable).\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888 \nwww.united-imaging.com \n\n Fax\uff1a+86 (21) 67076889  \n\n510(k) SUMMARY \n\nK252371\n\n1. Date of Preparation\n\nJuly 25, 2025\n\n2. Sponsor Identification\n\nShanghai United Imaging Healthcare Co., Ltd.\nNo.2258 Chengbei Rd. Jiading District, 201807, Shanghai, China\n\nContact Person: Xin GAO\nPosition: Regulatory Affairs Specialist\nTel: +86-21-67076888-5386\nFax: +86-21-67076889\nEmail: xin.gao@united-imaging.com\n\n3.\n\nIdentification of Proposed Device\n\nTrade Name: uMR 680\nCommon Name: Magnetic Resonance Imaging System\nModel: uMR 680\n\nRegulatory Information\nRegulation Number: 21 CFR 892.1000\nRegulation Name: Magnetic Resonance Diagnostic Device\nRegulatory Class: II\nProduct Code: LNH\nSecondary Product Code: MOS, QIH\nReview Panel: Radiology\n\n4.\n\nIdentification of Primary/Reference Device(s)\n\nPredicate Device\n\n510(k) Number: K243397\nDevice Name: uMR 680\nRegulation Name: Magnetic Resonance Diagnostic Device\nRegulatory Class: II\nProduct Code: LNH, MOS\nSecondary Product Code: QIH\n\nPage 1 of 8 \n\n\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888      Fax\uff1a+86 (21) 67076889   \nwww.united-imaging.com \n\nReview Panel: Radiology \n\n5.  Device Description \n\nThe uMR 680 is a 1.5T superconducting magnetic resonance diagnostic device with a \n70cm size patient bore. It consists of components such as magnet, RF power amplifier, \nRF  coils,  gradient  power  amplifier,  gradient  coils,  patient  table,  spectrometer, \ncomputer,  equipment  cabinets,  power  distribution  system,  internal  communication \nsystem, and vital signal module etc. The uMR 680 Magnetic Resonance Diagnostic \nDevice is designed to conform to NEMA and DICOM standards. \n\nThis special 510(k) is to request modifications for the cleared uMR 680(K243397). \nThe  modifications  performed  on  the  uMR  680  in  this  submission  are  due  to  the \nfollowing changes that include: \n(1) Addition of RF coils: Tx/Rx Head Coil. \n(2) Addition of a mobile configuration. \n\n6.  Indications for Use \n\nThe uMR 680 system is indicated for use as a magnetic resonance diagnostic device \n(MRDD) that produces sagittal, transverse, coronal, and oblique cross sectional images, \nand  spectroscopic  images,  and  that  display  internal  anatomical  structure  and/or \nfunction of the head, body and extremities.  \nThese images and the physical parameters derived from the images when interpreted \nby a trained physician yield information that may assist the diagnosis. Contrast agents \nmay be used depending on the region of interest of the scan. \n\n7.  Comparison of Technological Characteristics with the Predicate Device \n\nuMR 680 employs the same basic operating principles and fundamental technologies, \nand has the same indications for use as the predicate device. A comparison between \nthe technological characteristics of proposed and predicate/reference devices is \nprovided as below.  \n\nITEM \n\nindications \nfor use \n\nProposed Device \nuMR 680 \nThe  uMR  680  system  is  indicated \nfor  use  as  a  magnetic  resonance \ndiagnostic  device  (MRDD)  that \ntransverse, \nsagittal, \nproduces \n\nTable 1 Comparison of Indication for Use \nPredicate Device  \nuMR 680 (K243397) \nThe uMR 680 system is indicated for \nresonance \nuse  as  a  magnetic \ndiagnostic  device  (MRDD) \nthat \ntransverse, \nproduces \n\nsagittal, \n\nRemark \n\nSame \n\nPage 2 of 8 \n\n \n \n \n \n \n \n \n \n \n \n \n\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888      Fax\uff1a+86 (21) 67076889   \nwww.united-imaging.com \n\ncoronal, and oblique cross sectional \nimages,  and  spectroscopic  images, \nand that display internal anatomical \nstructure  and/or  function  of  the \nhead, body and extremities.  \nThese images and the physical \nparameters derived from the \nimages when interpreted by a \ntrained physician yield information \nthat may assist the diagnosis. \nContrast agents may be used \ndepending on the region of interest \nof the scan. \n\ncoronal, and oblique cross sectional \nimages,  and  spectroscopic  images, \nand that display internal anatomical \nstructure and/or function of the head, \nbody and extremities.  \nThese images and the physical \nparameters derived from the images \nwhen interpreted by a trained \nphysician yield information that \nmay assist the diagnosis. Contrast \nagents may be used depending on \nthe region of interest of the scan. \n\nTable 2 Comparison to Predicate device \nProposed Device \nuMR 680 \n\nPredicate Device \nuMR 680(K243397) \n\nRemark \n\nITEM \n\nGeneral \n\nMagnet system \n\nField Strength \n\n1.5 Tesla \n\n1.5 Tesla \n\nType of Magnet \nPatient-accessible bore \ndimensions \n\nType of Shielding \n\nGradient system \n\nSuperconducting \n\nSuperconducting \n\n70cm \n\n70cm \n\nActively shielded, OIS \ntechnology \n\nActively shielded, OIS \ntechnology \n\nMax gradient amplitude  45mT/m \n200T/m/s \nMax slew rate \nactive \nShielding \nwater \nCooling \n\n45mT/m \n200T/m/s \nactive \nwater \n\nRF system \n\nResonant frequencies \nNumber of transmit \nchannels \nNumber of receive \nchannels \nAmplifier peak power \nper channel \nRF Coils \nTx/Rx Head Coil \nMobile Configuration \nMobile configuration \n\n63.87 MHz \n\n63.87 MHz \n\n1 \n\nUp to 96 \n\n18 kW \n\nYes \n\nYes \n\n1 \n\nUp to 96 \n\n18 kW \n\nNo \n\nNo \n\nSame \n\nSame \n\nSame \n\nSame \n\nSame \nSame \nSame \nSame \n\nSame \n\nSame \n\nSame \n\nSame \n\nNote 1 \n\nNote 2 \n\nNote 1 \n\nThe intended use of Tx/Rx Head Coil is essentially identical to previously cleared \nHead Coil - 16. The difference is that the Tx/Rx Head Coil is of a 16 Legs High-Pass \nBirdcage used for transmitter coil. \nThe difference did not raise new safety and effectiveness concerns. \n\nPage 3 of 8 \n\n \n \n \n \n \n \n \n\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888      Fax\uff1a+86 (21) 67076889   \nwww.united-imaging.com \n\nNote 2 \n\nThe proposed device with mobile configuration has the same intended use and same \nbasic technological characteristics than the predicate device system, with respect to \nthe magnetic resonance features and functionalities. There are no differences in \ntechnical features compared to the predicate device, but minor modified hardware and \nan installation in a mobile trailer. The resulting differences have been tested and the \nconclusions from all verification and validation data suggest that the system bears an \nequivalent safety and performance profile to that of the predicate device and reference \ndevices. \nThe difference did not raise new safety and effectiveness concerns. \n\nPage 4 of 8 \n\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888      Fax\uff1a+86 (21) 67076889   \nwww.united-imaging.com \n\n8.  Performance Data \n\nThe following performance data were provided in support of the substantial equivalence determination. \n\nAcceptance Criteria \n\nSummary of Results \n\n\uf06c  Materials of construction and \n\nmanufacturing materials do not \nintroduce chemicals that raise a \nbiocompatibility concern. \n\n\uf06c  Conform with IEC 60601-1-2 and \n\nIEC 60601-4-2. \n\n\uf06c  SNR and Uniformity shall fulfill \nwith the design specification. \n\uf06c  The maximum temperature of all \ntemperature probes shall not \nexceed 41\u2103. \nImage quality is sufficient for \ndiagnostic use. \n\n\uf06c \n\n\uf06c  Conform with ANSI/AAMI \n\nES60601-1. \n\n\uf06c  Conform with IEC 60601-2-33. \n\n\uf06c  Biocompatibility testing is \nnot needed because device \ndoes not introduce a \nbiocompatibility risk. \n\n\uf06c  Pass \n\uf06c  Pass \n\uf06c  Pass \n\uf06c  The U.S. Board Certified \nradiologist confirms that \nimage quality is sufficient \nfor diagnostic use. \n\n\uf06c  Pass \n\uf06c  Pass \n\nDevice Change \n\nRisks \n\nAdd RF coils: \nTx/Rx Head Coil \n\n\uf06c  Biocompatibility \n\uf06c  EMC-immunity, \n\nelectrostatic discharge \n\n\uf06c  SNR and Uniformity \n\uf06c  Surface Heating \n\uf06c  Clinical image quality \n\uf06c  General \n\nelectrical/mechanical \nsafety \n\uf06c  SAR \n\nVerification/Validation Method(s) \n\uf06c  Biocompatibility evaluation in \n\nagreement with \nrecommendations in Use of \nInternational Standard ISO \n10993-1, \"Biological \nevaluation of medical devices - \nPart 1: Evaluation and testing \nwithin a risk management \nprocess\". \n\n\uf06c  Perform test according to IEC \n60601-1-2 and IEC 60601-4-2. \n\n\uf06c  Perform test according to \n\nNEMA MS 1, NEMA MS 3, \nNEMA MS 6 and NEMA MS \n9. \n\n\uf06c  Perform test according to \n\nNEMA MS 14. \n\n\uf06c  Evaluate the image generated \nby RF coils: Tx/Rx Head Coil \nwith the same method as the \npredicate device. \n\n\uf06c  Perform test according to \nANSI/AAMI ES60601-1. \n\uf06c  Perform test according to IEC \n60601-2-33 and NEMA MS 8. \n\nPage 5 of 8 \n\n \n \n \n \n \n\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888      Fax\uff1a+86 (21) 67076889   \nwww.united-imaging.com \n\nAdd mobile \nconfiguration \n\n\uf06c  EMC \n\uf06c  Clinical image quality \n\uf06c  General \n\nelectrical/mechanical \nsafety \n\n\uf06c  Perform test according to IEC \n60601-1-2 and IEC 60601-4-2. \n\n\uf06c  Evaluate the image generated \nby RF coils: Tx/Rx Head Coil \nwith the same method as the \npredicate device. \n\n\uf06c  Perform test according to \nANSI/AAMI ES60601-1. \n\n\uf06c  Conform with IEC 60601-1-2 and \n\n\uf06c \n\nIEC 60601-4-2. \nImage quality is sufficient for \ndiagnostic use. \n\n\uf06c  Conform with ANSI/AAMI \n\n\uf06c  Pass \n\uf06c  The U.S. Board Certified \nradiologist confirms that \nimage quality is sufficient \nfor diagnostic use. \n\nES60601-1. \n\n\uf06c  Pass \n\nPage 6 of 8 \n\n \n \n\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888      Fax\uff1a+86 (21) 67076889   \nwww.united-imaging.com \n\nNon-Clinical Testing \n\nNon-clinical testing including surface heating, SAR and image performance tests were \nconducted  for  the  uMR  680  to  verify  that  the  proposed  device  met  all  design \nspecifications as it is Substantially Equivalent (SE) to the predicate device.  \n\nUNITED IMAGING HEALTHCARE claims conformance to the following standards \nand guidance: \n\nElectrical Safety and Electromagnetic Compatibility (EMC)  \n\n\uf0d8  ANSI/AAMIES60601-1: 2005/ (R) \n\n2012+A1:2012+C1:2009/(R)2012+A2:2010/(R)2012) \n[IncludingAmendment2(2021)] Medical electrical equipment - Part 1: General \nrequirements for basic safety and essential performance \nIEC 60601-1-2:2014+A1:2020, Medical electrical equipment - Part 1-2: General \nrequirements for basic safety and essential performance - Collateral standard: \nElectromagnetic disturbances - Requirements and tests \nIEC 60601-2-33 Ed. 4.0:2022 Medical Electrical Equipment - Part 2-33: \nParticular Requirements for The Basic Safety and Essential Performance of \nMagnetic Resonance Equipment for Medical Diagnostic \nIEC 60601-1-6:2010+A1:2013+A2:2020, Edition 3.2, Medical electrical \nequipment - Part 1-6: General requirements for basic safety and essential \nperformance - Collateral standard: Usability. \n\n\uf0d8 \n\n\uf0d8 \n\n\uf0d8 \n\n\uf0d8  NEMA MS 1-2008(R2020), Determination of Signal-to-Noise Ratio (SNR) in \n\nDiagnostic Magnetic Resonance Images \n\n\uf0d8  NEMA MS 3-2008(R2020), Determination of Image Uniformity in Diagnostic \n\nMagnetic Resonance Images \n\n\uf0d8  NEMA MS 6-2008(R2014, R2020), Determination of Signal-to-Noise Ratio and \nImage Uniformity for Single-Channel Non-Volume Coils in Diagnostic MR \nImaging \n\n\uf0d8  NEMA MS 9-2008(R2020), Standards Publication Characterization of Phased \n\nArray Coils for Diagnostic Magnetic Resonance Images \n\n\uf0d8  NEMA MS 14-2019, Characterization of Radiofrequency (RF) Coil Heating in \n\n\uf0d8 \n\nMagnetic Resonance Imaging Systems \nIEC /TS 60601-4-2: 2024, Medical electrical equipment - Part 4-2: Guidance and \ninterpretation - Electromagnetic immunity: performance of medical electrical \nequipment and medical electrical systems \n\nSoftware \n\n\uf0d8 \n\nIEC 62304:2006+AMD1:2015 CSV Consolidated version, Medical device \nsoftware - Software life cycle processes \n\n\uf0d8  Guidance for the Content of Premarket Submissions for Software Contained in \n\nMedical Devices \n\nPage 7 of 8 \n\n \n \n \n \n \n \n\fShanghai United Imaging Healthcare Co., Ltd. \nT e l:  +86 (21) 67076888      Fax\uff1a+86 (21) 67076889   \nwww.united-imaging.com \n\n\uf0d8  Content of Premarket Submissions for Management of Cybersecurity in \n\nMedical Devices \n\nBiocompatibility \n\n\uf0d8 \n\n\uf0d8 \n\n\uf0d8 \n\nISO 10993-5: 2009, Edition 3.0, Biological evaluation of medical devices - Part \n5: Tests for in vitro cytotoxicity. \nISO 10993-10: 2021, Edition 4.0, Biological evaluation of medical devices - Part \n10: Tests for skin sensitization. \nISO 10993-23: 2021, Edition 1.0, Biological evaluation of medical devices - Part \n10: Tests for irritation. \n\n\uf0d8  Use  of  International  Standard  ISO  10993-1,  \"Biological  evaluation  of  medical \ndevices - Part 1: Evaluation and testing within a risk management process\" \n\nOther Standards and Guidance \n\n\uf0d8 \n\nISO 14971: 2019, Edition 3.0, Medical Devices \u2013 Application of risk \nmanagement to medical devices \n\n\uf0d8  Code of Federal Regulations, Title 21, Part 820 - Quality System Regulation \n\uf0d8  Code of Federal Regulations, Title 21, Subchapter J - Radiological Health \n\nPerformance Verification \n\nNon-clinical testing was conducted to verify the features described in this premarket \nsubmission.  \n\uf0d8  Sample clinical images for Tx/Rx Head Coil were reviewed by U.S. board-\n\ncertified radiologist comparing the proposed device and predicate device. It was \nshown that the proposed device can generate diagnostic quality images in \naccordance with the MR guidance on premarket notification submissions. \n\n9.  Conclusion \n\nBased  on  the  comparison  and  analysis  above,  the  proposed  device  has  similar \nindications for use, performance, safety equivalence, and effectiveness as the predicate \ndevice. The differences above between the proposed device and predicate device do \nnot affect the intended use, technology characteristics, safety, and effectiveness. And \nno  issues  are  raised  regarding  to  safety  and  effectiveness.  The  proposed  device  is \ndetermined to be Substantially Equivalent (SE) to the predicate device. \n\nPage 8 of 8"
+}

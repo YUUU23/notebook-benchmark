@@ -1,0 +1,10 @@
+Title: CTA of the adult native aorta: Everything you wanted to know (but were never told)
+Authors: Vaz A, de Oliveira Santana Ramos D, Reifegerste CP, Serra VC, Araújo LR
+Journal: Clinical imaging
+Year: 2026
+PMID: 41759336
+DOI: 10.1016/j.clinimag.2026.110758
+URL: https://pubmed.ncbi.nlm.nih.gov/41759336/
+
+Abstract:
+Computed tomography angiography (CTA) is the reference standard for comprehensive evaluation of the native aorta, providing simultaneous assessment of luminal, mural, and perivascular structures within a single rapid acquisition. Accurate diagnosis and appropriate management increasingly depend on standardized terminology, consistent anatomic segmentation, and reproducible measurement techniques. This review presents a practical framework for systematic interpretation of adult aortic CTA. Key aspects include detailed anatomic considerations, standardized measurement principles, contemporary acquisition protocols, and structured reporting strategies. The imaging spectrum of the main aortic disease categories-degenerative, congenital, and inflammatory-is reviewed, with emphasis on atherosclerosis, acute aortic syndromes, aneurysmal disease, coarctation, Kommerell diverticulum, and large-vessel vasculitis. Particular attention is given to morphologic patterns, prognostic imaging features, and common diagnostic pitfalls, as well as to terminology that more accurately reflects underlying pathophysiology. By integrating technical recommendations with disease-specific imaging criteria, this review aims to improve diagnostic precision, facilitate longitudinal follow-up, and enhance multidisciplinary communication. A structured approach to aortic CTA interpretation reinforces the central role of radiology in clinical decision-making and risk stratification in patients with aortic disease.

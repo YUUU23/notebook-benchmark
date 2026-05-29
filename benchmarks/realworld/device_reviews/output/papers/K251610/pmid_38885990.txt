@@ -1,0 +1,10 @@
+Title: Assessing the effectiveness of artificial intelligence (AI) in prioritising CT head interpretation: study protocol for a stepped-wedge cluster randomised trial (ACCEPT-AI)
+Authors: Vimalesvaran, Duncan, McConnachie, Blackwood, Stobo, Maclay, Wu, Germeni, Robert, Bilgili, Kumar, Hall, Lowe
+Journal: BMJ Open
+Year: 2024
+PMID: 38885990
+DOI: 10.1136/bmjopen-2023-081062
+URL: https://pubmed.ncbi.nlm.nih.gov/38885990/
+
+Abstract:
+This study evaluates Qure.ai's qER software in identifying and prioritizing patients with critical findings from AI analysis of non-contrast head CT scans. It is a multicenter trial spanning four diverse sites over 13 months.

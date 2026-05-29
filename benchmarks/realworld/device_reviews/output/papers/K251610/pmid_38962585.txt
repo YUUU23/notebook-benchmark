@@ -1,0 +1,10 @@
+Title: Revolutionizing Healthcare: Qure.AI's Innovations in Medical Diagnosis and Treatment
+Authors: Zavaleta-Monestel, Quesada-Villaseñor, Arguedas-Chacón, García-Montero, Barrantes-López, Salas-Segura, Anchía-Alfaro, Nieto-Bernal, Diaz-Juan
+Journal: Cureus
+Year: 2024
+PMID: 38962585
+DOI: 10.7759/cureus.61585
+URL: https://pubmed.ncbi.nlm.nih.gov/38962585/
+
+Abstract:
+This article reviews Qure.AI's suite of AI solutions in medical diagnosis and treatment, focusing on the efficacy of their chest X-ray interpretation tool, 'qXR'. It discusses applications of AI in healthcare, including machine learning and deep learning, and their impact on diagnostic accuracy and efficiency.

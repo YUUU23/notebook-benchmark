@@ -1,0 +1,10 @@
+Title: ABCC6 Heterozygosity as Genetic Predisposition to Cerebrovascular Disease Across Ages
+Authors: Amico G, Severino M, Bertamino M, Pascarella R, Tortora D, Signa S, Rusmini M, Rossi A, Ceccherini I, Zedde M
+Journal: Genes
+Year: 2026
+PMID: 41751611
+DOI: 10.3390/genes17020226
+URL: https://pubmed.ncbi.nlm.nih.gov/41751611/
+
+Abstract:
+(No abstract available)

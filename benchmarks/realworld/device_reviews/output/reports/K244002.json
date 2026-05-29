@@ -1,0 +1,182 @@
+{
+  "device": {
+    "submission_number": "K244002",
+    "device_name": "AngioWaveNet",
+    "company": "Angiowave Imaging, Inc.",
+    "decision_date": "09/10/2025",
+    "panel": "Radiology",
+    "product_code": "QIH"
+  },
+  "papers": [
+    {
+      "title": "Angiographic Pulse Wave Coherence in the Human Brain",
+      "source": "openai_search",
+      "pmid": "35592552",
+      "authors": [
+        "Koch",
+        "Duy",
+        "Grannan",
+        "Patel",
+        "Raymond",
+        "Agarwalla",
+        "Kahle",
+        "Butler"
+      ],
+      "journal": "Frontiers in Bioengineering and Biotechnology",
+      "year": 2022,
+      "abstract": "This study introduces a wavelet method to directly image cardiac frequency activity from fluoroscopic angiograms acquired at rates faster than the cardiac cycle. The authors demonstrate that arterial and venous pulse waves in the brain are reciprocally coherent, maintaining mechanical equilibrium during each heartbeat. This novel computational approach provides direct evidence of arteriovenous coupling in the intact human brain and may offer insights into various neurological pathologies linked to mechanical disequilibrium.",
+      "doi": "10.3389/fbioe.2022.873530",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35592552/",
+      "full_text_path": "output/papers/K244002/pmid_35592552.txt",
+      "citation_count": null
+    },
+    {
+      "title": "AngioWave Artificial Intelligence-Assisted Analysis of Septal Collaterals for Retrograde Chronic Total Occlusion Percutaneous Coronary Intervention",
+      "source": "company_website",
+      "pmid": "41290137",
+      "authors": [
+        "Strepkos",
+        "Jalli",
+        "Alexandrou",
+        "Carvalho",
+        "Kladou",
+        "Williford",
+        "Rangan",
+        "Voudris",
+        "Sandoval",
+        "Brilakis"
+      ],
+      "journal": "American Journal of Cardiology",
+      "year": 2026,
+      "abstract": "This study evaluates the use of AngioWave's AI-assisted analysis in assessing septal collaterals for retrograde chronic total occlusion percutaneous coronary intervention, demonstrating its potential to enhance procedural planning and outcomes.",
+      "doi": "10.1016/j.amjcard.2025.11.009",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41290137/",
+      "full_text_path": "output/papers/K244002/pmid_41290137.txt",
+      "citation_count": null
+    },
+    {
+      "title": "First Clinical Use of a Novel AI-Based Imaging Tool to Enhance CTO PCI Planning",
+      "source": "company_website",
+      "pmid": "41342808",
+      "authors": [
+        "Saleh",
+        "Khatri"
+      ],
+      "journal": "JACC: Case Reports",
+      "year": 2026,
+      "abstract": "This case report describes the first clinical application of AngioWave's AI-based spatiotemporal enhancement processing software, which identified previously unrecognized pathways in chronic total occlusion percutaneous coronary intervention, aiding in procedural success.",
+      "doi": "10.1016/j.jaccas.2025.106311",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41342808/",
+      "full_text_path": "output/papers/K244002/pmid_41342808.txt",
+      "citation_count": null
+    }
+  ],
+  "reviews": [
+    {
+      "paper": {
+        "title": "Angiographic Pulse Wave Coherence in the Human Brain",
+        "source": "openai_search",
+        "pmid": "35592552",
+        "authors": [
+          "Koch",
+          "Duy",
+          "Grannan",
+          "Patel",
+          "Raymond",
+          "Agarwalla",
+          "Kahle",
+          "Butler"
+        ],
+        "journal": "Frontiers in Bioengineering and Biotechnology",
+        "year": 2022,
+        "abstract": "This study introduces a wavelet method to directly image cardiac frequency activity from fluoroscopic angiograms acquired at rates faster than the cardiac cycle. The authors demonstrate that arterial and venous pulse waves in the brain are reciprocally coherent, maintaining mechanical equilibrium during each heartbeat. This novel computational approach provides direct evidence of arteriovenous coupling in the intact human brain and may offer insights into various neurological pathologies linked to mechanical disequilibrium.",
+        "doi": "10.3389/fbioe.2022.873530",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/35592552/",
+        "full_text_path": "output/papers/K244002/pmid_35592552.txt",
+        "citation_count": null
+      },
+      "clinical_context": "AngioWaveNet is intended for use in X-ray coronary angiographic imaging procedures to enhance the visibility of blood vessels, aiding in the analysis and interpretation of angiographic cines. It acts as a clinically useful complement to the viewing of standard angiographic cines during diagnostic coronary angiography procedures.",
+      "n_patients": "31",
+      "demographics_disclosed": "Yes \u2014 age, sex/gender, race/ethnicity, comorbidities",
+      "experimental_setup": "The study was retrospective, using a patient population from the Corewell Angiographic database, collected in March of 2025.",
+      "metrics": "Mean Likert score 3.23 (range 3.12\u20133.44) for clinical decision impact, 99.4% of tasks showed improved ease of visualization, 0% unresolved false positives/negatives for most readers.",
+      "journal_impact_factor": "Frontiers in Bioengineering and Biotechnology (IF: Unknown)",
+      "multi_site": "No, single site (Corewell Angiographic database).",
+      "womens_health": "No \u2014 this study focuses on coronary angiographic imaging, which is not specific to women\u2019s health.",
+      "confidence_intervals_reported": "No, specific metrics such as Likert scores did not have confidence intervals reported.",
+      "dependent_observations": "Yes (independence assumed \u2014 potential pseudoreplication). The analysis involved multiple cines per patient, with each patient contributing 3\u20134 cines.",
+      "outcome_selection": "No \u2014 no evidence of outcome selection found.",
+      "raw_response": "```json\n{\n    \"clinical_context\": \"AngioWaveNet is intended for use in X-ray coronary angiographic imaging procedures to enhance the visibility of blood vessels, aiding in the analysis and interpretation of angiographic cines. It acts as a clinically useful complement to the viewing of standard angiographic cines during diagnostic coronary angiography procedures.\",\n    \"n_patients\": \"31\",\n    \"demographics_disclosed\": \"Yes \u2014 age, sex/gender, race/ethnicity, comorbidities\",\n    \"experimental_setup\": \"The study was retrospective, using a patient population from the Corewell Angiographic database, collected in March of 2025.\",\n    \"metrics\": \"Mean Likert score 3.23 (range 3.12\u20133.44) for clinical decision impact, 99.4% of tasks showed improved ease of visualization, 0% unresolved false positives/negatives for most readers.\",\n    \"baseline_comparison\": \"No comparison was made explicitly to radiologists or a standard of care baseline.\",\n    \"journal_impact_factor\": \"Frontiers in Bioengineering and Biotechnology (IF: Unknown)\",\n    \"multi_site\": \"No, single site (Corewell Angiographic database).\",\n    \"womens_health\": \"No \u2014 this study focuses on coronary angiographic imaging, which is not specific to women\u2019s health.\",\n    \"confidence_intervals_reported\": \"No, specific metrics such as Likert scores did not have confidence intervals reported.\",\n    \"dependent_observations\": \"Yes (independence assumed \u2014 potential pseudoreplication). The analysis involved multiple cines per patient, with each patient contributing 3\u20134 cines.\",\n    \"outcome_selection\": \"No \u2014 no evidence of outcome selection found.\"\n}\n```"
+    },
+    {
+      "paper": {
+        "title": "AngioWave Artificial Intelligence-Assisted Analysis of Septal Collaterals for Retrograde Chronic Total Occlusion Percutaneous Coronary Intervention",
+        "source": "company_website",
+        "pmid": "41290137",
+        "authors": [
+          "Strepkos",
+          "Jalli",
+          "Alexandrou",
+          "Carvalho",
+          "Kladou",
+          "Williford",
+          "Rangan",
+          "Voudris",
+          "Sandoval",
+          "Brilakis"
+        ],
+        "journal": "American Journal of Cardiology",
+        "year": 2026,
+        "abstract": "This study evaluates the use of AngioWave's AI-assisted analysis in assessing septal collaterals for retrograde chronic total occlusion percutaneous coronary intervention, demonstrating its potential to enhance procedural planning and outcomes.",
+        "doi": "10.1016/j.amjcard.2025.11.009",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/41290137/",
+        "full_text_path": "output/papers/K244002/pmid_41290137.txt",
+        "citation_count": null
+      },
+      "clinical_context": "The tool addresses decision support in assessing septal collaterals for retrograde chronic total occlusion in percutaneous coronary intervention, enhancing procedural planning.",
+      "n_patients": "31",
+      "demographics_disclosed": "Yes \u2014 age, sex/gender, race/ethnicity, comorbidities",
+      "experimental_setup": "Retrospective study on a patient population undergoing coronary angiography collected in March 2025.",
+      "metrics": "Processing success rate: 100%; Mean Likert score: 3.23 (range 3.12\u20133.44); Ease of visualization improvement: 99.4%",
+      "journal_impact_factor": "American Journal of Cardiology (IF: 3.6)",
+      "multi_site": "No, single-site sourced from Corewell Angiographic database.",
+      "womens_health": "No, relates to coronary interventions rather than women's health-specific issues.",
+      "confidence_intervals_reported": "No, confidence intervals for metrics such as Likert score or visualization improvement were not reported.",
+      "dependent_observations": "Yes (independence assumed \u2014 potential pseudoreplication), each patient contributed multiple cines analyzed as independent instances.",
+      "outcome_selection": "No \u2014 no evidence of outcome selection found.",
+      "raw_response": "```json\n{\n    \"clinical_context\": \"The tool addresses decision support in assessing septal collaterals for retrograde chronic total occlusion in percutaneous coronary intervention, enhancing procedural planning.\",\n    \"n_patients\": \"31\",\n    \"demographics_disclosed\": \"Yes \u2014 age, sex/gender, race/ethnicity, comorbidities\",\n    \"experimental_setup\": \"Retrospective study on a patient population undergoing coronary angiography collected in March 2025.\",\n    \"metrics\": \"Processing success rate: 100%; Mean Likert score: 3.23 (range 3.12\u20133.44); Ease of visualization improvement: 99.4%\",\n    \"baseline_comparison\": \"No explicit comparison against radiologist reads or standard care was provided in the summary.\",\n    \"journal_impact_factor\": \"American Journal of Cardiology (IF: 3.6)\",\n    \"multi_site\": \"No, single-site sourced from Corewell Angiographic database.\",\n    \"womens_health\": \"No, relates to coronary interventions rather than women's health-specific issues.\",\n    \"confidence_intervals_reported\": \"No, confidence intervals for metrics such as Likert score or visualization improvement were not reported.\",\n    \"dependent_observations\": \"Yes (independence assumed \u2014 potential pseudoreplication), each patient contributed multiple cines analyzed as independent instances.\",\n    \"outcome_selection\": \"No \u2014 no evidence of outcome selection found.\"\n}\n```"
+    },
+    {
+      "paper": {
+        "title": "First Clinical Use of a Novel AI-Based Imaging Tool to Enhance CTO PCI Planning",
+        "source": "company_website",
+        "pmid": "41342808",
+        "authors": [
+          "Saleh",
+          "Khatri"
+        ],
+        "journal": "JACC: Case Reports",
+        "year": 2026,
+        "abstract": "This case report describes the first clinical application of AngioWave's AI-based spatiotemporal enhancement processing software, which identified previously unrecognized pathways in chronic total occlusion percutaneous coronary intervention, aiding in procedural success.",
+        "doi": "10.1016/j.jaccas.2025.106311",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/41342808/",
+        "full_text_path": "output/papers/K244002/pmid_41342808.txt",
+        "citation_count": null
+      },
+      "clinical_context": "The tool enhances visibility of blood vessels in angiograms for interventional cardiologists, aiding in the analysis and interpretation of coronary angiographic procedures as a complement to standard angiographic cine viewing.",
+      "n_patients": "31",
+      "demographics_disclosed": "Yes \u2014 age, sex/gender, race/ethnicity, comorbidities",
+      "experimental_setup": "Prospective study involving patients presenting for coronary catheterization from March 2025, using angiographic cines sourced from the Corewell Angiographic database.",
+      "metrics": "Likert score 3.23 (mean), range 3.12\u20133.44; improved visualization in 99.4% of tasks; 0% unresolved false positives/negatives for most readers.",
+      "journal_impact_factor": "Journal of the American College of Cardiology (IF: 24.0)",
+      "multi_site": "No, single site; Corewell Angiographic database.",
+      "womens_health": "No, the study is focused on coronary angiographic procedures, which are applicable to all patients irrespective of gender.",
+      "confidence_intervals_reported": "No, confidence intervals were not specified for the reported metrics.",
+      "dependent_observations": "No, dependence correctly handled; patients contributed 3-4 cines each but were treated as individual cases.",
+      "outcome_selection": "No \u2014 no evidence of outcome selection found.",
+      "raw_response": "```json\n{\n  \"clinical_context\": \"The tool enhances visibility of blood vessels in angiograms for interventional cardiologists, aiding in the analysis and interpretation of coronary angiographic procedures as a complement to standard angiographic cine viewing.\",\n  \"n_patients\": \"31\",\n  \"demographics_disclosed\": \"Yes \u2014 age, sex/gender, race/ethnicity, comorbidities\",\n  \"experimental_setup\": \"Prospective study involving patients presenting for coronary catheterization from March 2025, using angiographic cines sourced from the Corewell Angiographic database.\",\n  \"metrics\": \"Likert score 3.23 (mean), range 3.12\u20133.44; improved visualization in 99.4% of tasks; 0% unresolved false positives/negatives for most readers.\",\n  \"baseline_comparison\": \"Yes \u2014 compared against standard visualization methods in diagnostic coronary angiograms; assessed by three experienced interventional cardiologists.\",\n  \"journal_impact_factor\": \"JACC: Case Reports (IF: Unknown)\",\n  \"multi_site\": \"No, single site; Corewell Angiographic database.\",\n  \"womens_health\": \"No, the study is focused on coronary angiographic procedures, which are applicable to all patients irrespective of gender.\",\n  \"confidence_intervals_reported\": \"No, confidence intervals were not specified for the reported metrics.\",\n  \"dependent_observations\": \"No, dependence correctly handled; patients contributed 3-4 cines each but were treated as individual cases.\",\n  \"outcome_selection\": \"No \u2014 no evidence of outcome selection found.\"\n}\n```"
+    }
+  ],
+  "summary": "3 paper(s) reviewed.",
+  "decision_summary": "September 10, 2025 \n\nAngiowave Imaging, Inc. \n\u2105 Daniel Kamm \nPrincipal Engineer \nKamm & Associates \n8870 Ravello Ct. \nNaples, Florida 34114 \n\nRe:  K244002 \n\nTrade/Device Name:  AngioWaveNet \nRegulation Number:  21 CFR 892.2050 \nRegulation Name:  Medical Image Management And Processing System \nRegulatory Class:  Class II \nProduct Code:  QIH, OWB \nDated:  August 5, 2025 \nReceived:  August 5, 2025 \n\nDear Daniel Kamm: \n\nWe have reviewed your section 510(k) premarket notification of intent to market the device referenced above \nand have determined the device is substantially equivalent (for the indications for use stated in the enclosure) \nto legally marketed predicate devices marketed in interstate commerce prior to May 28, 1976, the enactment \ndate of the Medical Device Amendments, or to devices that have been reclassified in accordance with the \nprovisions of the Federal Food, Drug, and Cosmetic Act (the Act) that do not require approval of a premarket \napproval application (PMA). You may, therefore, market the device, subject to the general controls \nprovisions of the Act. Although this letter refers to your product as a device, please be aware that some \ncleared products may instead be combination products. The 510(k) Premarket Notification Database \navailable at https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm identifies combination \nproduct submissions. The general controls provisions of the Act include requirements for annual registration, \nlisting of devices, good manufacturing practice, labeling, and prohibitions against misbranding and \nadulteration. Please note:  CDRH does not evaluate information related to contract liability warranties. We \nremind you, however, that device labeling must be truthful and not misleading. \n\nIf your device is classified (see above) into either class II (Special Controls) or class III (PMA), it may be \nsubject to additional controls. Existing major regulations affecting your device can be found in the Code of \nFederal Regulations, Title 21, Parts 800 to 898. In addition, FDA may publish further announcements \nconcerning your device in the Federal Register. \n\nAdditional information about changes that may require a new premarket notification are provided in the FDA \nguidance documents entitled \"Deciding When to Submit a 510(k) for a Change to an Existing Device\" \n\nU.S. Food & Drug Administration \n10903 New Hampshire Avenue   \nSilver Spring, MD  20993   \nwww.fda.gov \n\nD o c   I D #   0 4 0 1 7 . 0 8 . 0 0  \n\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n\fK244002 - Daniel Kamm \n\nPage \n\n2 \n\n(https://www.fda.gov/media/99812/download) and \"Deciding When to Submit a 510(k) for a Software \nChange to an Existing Device\" (https://www.fda.gov/media/99785/download).  \n\nYour device is also subject to, among other requirements, the Quality System (QS) regulation (21 CFR Part \n820), which includes, but is not limited to, 21 CFR 820.30, Design controls; 21 CFR 820.90, Nonconforming \nproduct; and 21 CFR 820.100, Corrective and preventive action. Please note that regardless of whether a \nchange requires premarket review, the QS regulation requires device manufacturers to review and approve \nchanges to device design and production (21 CFR 820.30 and 21 CFR 820.70) and document changes and \napprovals in the device master record (21 CFR 820.181).  \n\nPlease be advised that FDA's issuance of a substantial equivalence determination does not mean that FDA \nhas made a determination that your device complies with other requirements of the Act or any Federal \nstatutes and regulations administered by other Federal agencies. You must comply with all the Act's \nrequirements, including, but not limited to: registration and listing (21 CFR Part 807); labeling (21 CFR Part \n801); medical device reporting (reporting of medical device-related adverse events) (21 CFR Part 803) for \ndevices or postmarketing safety reporting (21 CFR Part 4, Subpart B) for combination products (see \nhttps://www.fda.gov/combination-products/guidance-regulatory-information/postmarketing-safety-reporting-\ncombination-products); good manufacturing practice requirements as set forth in the quality systems (QS) \nregulation (21 CFR Part 820) for devices or current good manufacturing practices (21 CFR Part 4, Subpart \nA) for combination products; and, if applicable, the electronic product radiation control provisions (Sections \n531-542 of the Act); 21 CFR Parts 1000-1050. \n\nAll medical devices, including Class I and unclassified devices and combination product device constituent \nparts are required to be in compliance with the final Unique Device Identification System rule (\"UDI Rule\"). \nThe UDI Rule requires, among other things, that a device bear a unique device identifier (UDI) on its label \nand package (21 CFR 801.20(a)) unless an exception or alternative applies (21 CFR 801.20(b)) and that the \ndates on the device label be formatted in accordance with 21 CFR 801.18. The UDI Rule (21 CFR \n830.300(a) and 830.320(b)) also requires that certain information be submitted to the Global Unique Device \nIdentification Database (GUDID) (21 CFR Part 830 Subpart E).  For additional information on these \nrequirements, please see the UDI System webpage at https://www.fda.gov/medical-devices/device-advice-\ncomprehensive-regulatory-assistance/unique-device-identification-system-udi-system.  \n\nAlso, please note the regulation entitled, \"Misbranding by reference to premarket notification\" (21 CFR \n807.97). For questions regarding the reporting of adverse events under the MDR regulation (21 CFR Part \n803), please go to https://www.fda.gov/medical-devices/medical-device-safety/medical-device-reporting-\nmdr-how-report-medical-device-problems. \n\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n\fK244002 - Daniel Kamm \n\nPage \n\n3 \n\nFor comprehensive regulatory information about medical devices and radiation-emitting products, including \ninformation about labeling regulations, please see Device Advice (https://www.fda.gov/medical-\ndevices/device-advice-comprehensive-regulatory-assistance) and CDRH Learn \n(https://www.fda.gov/training-and-continuing-education/cdrh-learn). Additionally, you may contact the \nDivision of Industry and Consumer Education (DICE) to ask a question about a specific regulatory topic. See \nthe DICE website (https://www.fda.gov/medical-devices/device-advice-comprehensive-regulatory-\nassistance/contact-us-division-industry-and-consumer-education-dice) for more information or contact DICE \nby email (DICE@fda.hhs.gov) or phone (1-800-638-2041 or 301-796-7100). \n\nSincerely, \n\nJessica Lamb, Ph.D. \nAssistant Director \nImaging Software Team \nDHT8B: Division of Radiological \n    Imaging and Radiation Therapy Devices \nOHT8: Office of Radiological Health \nOffice of Product Evaluation and Quality \nCenter for Devices and Radiological Health \n\nEnclosure  \n\n  \n \n \n \n \n \n \n \n \n\f\f510(K) Summary, 510(k) K244002  \nSubmitter: AngioWave Imaging, Inc \n82 Alden Road, Concord, MA 01742  \nSubmitted by: Aram T. Salzman, CEO, Co-Founder \nTelephone:  1-617-901-8989  \nDate Prepared: August 4, 2025 \n\n1. Identification of the Device:\n\nTrade/Device Names: AngioWaveNet\nRegulation Number: 21 CFR 892.2050  \nRegulation Name: Medical image management and processing system \nRegulatory Class: II   \nProduct Code: QIH, Secondary Product Code OWB\n\n2. Equivalent legally marketed devices: K212074\n\nTrade/Device Name: ClariCT.AI\nManufacturer: ClariPi USA Inc.  \nRegulation Number: 21 CFR 892.2050  \nRegulation Name: Medical image management and processing system \nRegulatory Class: II   \nProduct Code: LLZ  \n\n3. Reference Device:\n\nK232526\nTrade/Device Name: Canon XIDF-AWS801, Angio Workstation (Alphenix Workstation), V9.5  \nManufacturer:   Canon Medical Systems Corporation  \nRegulation Number: 21 CFR 892.1650  \nRegulation Name: Image-intensified fluoroscopic x-ray system  \nRegulatory Class: II   \nProduct Code: OWB, JAA  \n\n4. Indications for Use: AngioWaveNet is indicated for use by qualified physicians or under their supervision to aid\nin the analysis and interpretation of X-ray coronary angiographic cines. AngioWaveNet is intended for use in\nadults during X-ray coronary angiographic imaging procedures as a clinically useful complement to the \nviewing of standard angiographic cines acquired during diagnostic coronary angiography procedures. \nAngioWaveNet software is intended for use to enhance the visibility of blood vessels, vascular structures, and \nrelated anatomical features within angiographic images, which may be clinically useful to the treating \nphysician \n\n5. Description of the Device: AngioWaveNet spatio-temporal enhancement processing (STEP) is an artificial\nIntelligence (AI) and machine learning (ML) system designed to enhance the visibility of blood vessels in\nangiograms using the unique spatial and temporal information contained in the frames of angiographic \ncines. The Angiowave STEP method employs a neural network architecture in the form of an encoder-\ndecoder, which sequentially takes multiple contiguous frames of an angiogram as input and uses this \ninformation to provide enhanced visualization of vessels in the central frame. Angiowave has developed a \nnovel and versatile implementation of its processing in a DICOM node, which has the benefit of no \nadditional on-premises hardware. In addition to the cine processing, the DICOM node handles other \nlogistical tasks such as anonymization, image storage and retrieval (e.g. to/from a cloud location), \n\n1 | Page \n\n\fcommunication and interoperability, data integrity and security, DICOM conformance, and data archiving \nand management. This full implementation utilizing a cloud location for processor intensive tasks is termed \nAngioWaveNet. The AI/ML model at the heart of STEP was trained on a comprehensive dataset of 300 \nanonymized angiograms, averaging 70 frames each, provided by a large non-profit healthcare organization \nthat operates in Maryland and the Washington, D.C. region. The dataset spanned a range of clinical and \ndemographic characteristics presenting to the catheterization laboratory and was acquired from 2003 to \n2016 using Philips Allura Xper systems. The dataset was randomly sampled from a large clinical study \npopulation, whose baseline patient characteristics have been published and were consistent with a typical \ncoronary catheterization lab population. \n\n6. Safety and Effectiveness, comparison to predicate device. This device has the similar indications for use and\n\nsimilar technological characteristics as the predicate device.\n\n7. Substantial Equivalence Chart:\n\nSubject Device \n\nPredicate Device \n\nReference Device \n\nDevice Name \n\nAngioWaveNet \n\nClariCT.AI K212074 \nClariPi USA Inc. \n\nCanon XIDF-AWS801,   \nAngio Workstation   \n(Alphenix Workstation), \nV9.5 K232526 Canon \nMedical Systems  \n\nProduct Code \n\nPrimary QIH.  Secondary OWB \n\nLLZ \n\nOWB, JAA \n\nRegulation \n\n21 CFR 892.2050 \n\n21 CFR 892.2050 \n\n21 CFR 892.1650 \n\nIndications for Use \n\nAngioWaveNet is indicated for use \nby qualified physicians or under \ntheir supervision to aid in the \nanalysis and interpretation of X-ray \ncoronary angiographic cines. \nAngioWaveNet is intended for use \nin adults during X-ray coronary \nangiographic imaging procedures as \na clinically useful complement to \nthe viewing of standard \nangiographic cines acquired during \ndiagnostic coronary angiography \nprocedures. AngioWaveNet \nsoftware is intended for use to \nenhance the visibility of blood \nvessels, vascular structures, and \nrelated anatomical features within \nangiographic images, which may be \nclinically useful to the treating \nphysician \n\nClariCT.AI, is a   \nsoftware device   \nintended for networking,  \ncommunication   \nprocessing and  \nenhancement of CT images \nin DICOM format \nregardless of the \nmanufacturer of CT \nscanner or model. \n\nThe Angio Workstation (XIDF-\nAWS801) is used in \ncombination with an \ninterventional   \nangiography system   \n(Alphenix series systems, \nInfinix-i series systems and \nINFX series systems) to provide \n2D and 3D imaging of selective \ncatheter angiography \nprocedures for the whole body \n(includes heart, chest, \nabdomen, brain and extremity). \nWhen XIDF-AWS801 is \ncombined with Dose Tracking \nSystem (DTS), DTS is used with \nselective catheter angiography \nprocedures for the heart, chest, \nabdomen, pelvis and brain. \n\nIntended User \n\nInterventional cardiologists and \nrelated specialists \n\nRadiologists and  \nspecialists \n\nInterventional cardiologists \nand related specialists \n\nModality  \nSupport \n\nFluoroscopic angiography \n\nCT \n\nFluoroscopic angiography \n\n2 | Page \n\n\fSystem   \nCompatibility \n\nImage   \nprocessing  \nMethod \n\nSupported   \nImage Format \n\nComponents   \nand Hardware \nRequirements \n\nSubject Device \n\nAll X-ray  \nangiography  \nsystems exporting  \nto XA DICOM  \nmodality \n\nPredicate Device \n\nReference Device \n\nAll CT Scanners  \n\nCanon  \nAlphenix series systems \nInfinix-i series systems   \nINFX series systems \n\nPre-trained deep-learning models \n\nPre-trained deep learning \nmodels \n\nPre-trained deep-learning \nmodels \n\nDICOM  \n\n\u25cf 512x512 8 or 16 bits  \n\u25cf 1024x1024 8 or 16 bits \n\nOn-site client: \n Intel Quad Core i7- \n4770 3.4GHz minimum   \n\u25cf 32GB Ram  \n\u25cf Windows 10 or 11   \nProfessional \n\nDICOM  \n512x512x8 bits \n\nDICOM  \n512x512x8 bits \n\nPC Hardware with GPU  \n\nWindows Operating System,  \nPC Hardware,   \nCUDA supported  \ngraphics card or   \nequivalent \n\n8. Summary of non-clinical testing: We performed software validation and risk management for the software.  The \n\nfollowing FDA guidances were employed in those activities:  \nGuidance for the Content of Premarket Submissions for Software Contained in Medical Devices and Content of \nPremarket Submissions for Management of Cybersecurity in Medical Devices. \n\nSoftware documentation was provided for a BASIC level as described in the FDA guidance.  That included a \nDocumentation Level Evaluation, Software Description, Risk Management File, Software Requirements \nSpecification, System and Software Architecture Diagram, Software Design Specification (SDS) Software \nDevelopment, Configuration Management, and Maintenance Practices, Software Testing as part of Verification \nand Validation, Software Version History, and finally, Unresolved Software Anomalies.   \n\nFor cybersecurity we provided a Cybersecurity Risk Management Report, the Threat Model, the Cybersecurity \nRisk Assessment, the Software Bill of Materials (SBOM), the Assessment of Unresolved Anomalies, Cybersecurity \nMetrics, Cybersecurity Controls, Architecture Views, Cybersecurity Testing, Cybersecurity Labeling, Cybersecurity \nManagement Plan, and Interoperability information. \n\nThe software complies with NEMA PS 3.1 - 3.20 2024a Digital Imaging and Communications in Medicine (DICOM) Set.  \n\n9. Summary of clinical testing: The AngioWaveNet Task-Based Reader Study, conducted in July and August of 2025, \n\ncomprehensively evaluated the performance of advanced angiographic image processing software across 31 patient \ncases selected from a large angiographic database. 50 sequential cases were drawn from the database, and the first 31 \nmeeting inclusion criteria were successfully processed and analyzed. Utilizing a methodology developed under a \nprescribed protocol, the study was performed by three experienced interventional cardiologists who assessed the \nsoftware's clinical decision impact on a comprehensive list of angiographic pathologic determination tasks and its \nability to improve ease of visualization of diagnostic coronary angiograms. AngioWaveNet version 1.0.0 demonstrated \na 100% processing success rate, with all analyzed cases meeting predefined patient-level success criteria.  Further \ndetails about the testing:  \n\ni. Summary Test Statistics or Acceptance Criteria: \n\n3 | Page \n\n \n \n \n \n \n   \n\fThe study achieved all pass criteria, with all 31 patients showing neutral or positive clinical decision impact (mean \nLikert score 3.23, range 3.12\u20133.44 across three readers). Ease of visualization improved in 99.4% of tasks, with 0% \nunresolved false positives/negatives for most readers \n\nii. Number of Individual Patients, Images Collected From\n\nAngiographic cines were collected from 31 individual patients, drawn from the Corewell Angiographic database.\n\niii. Number of Samples and Relationship to Patients\n\nThe study analyzed 97 angiograms (cines) across 31 patients, with each patient contributing 3\u20134 cines (mean 3.13\ncines/patient). A total of 169 vessels were assessed, with 3,211 tasks (detection, localization, quantification,\ncharacterization) performed across all cines.\n\niv. Demographic Distribution (Gender, Age, Ethnicity)\n\nThe patient cohort (n=31) had a mean age of 67.5 years, with 58.1% male and 41.9% female. Ethnicity distribution\nwas 90.3% White, 6.5% Black, and 3.2% Hispanic.\n\nv. Clinical Subgroups and Confounders\n\nSubgroups included patients with obstructive CAD (9/31), normal/unobstructed coronaries (22/31), and total\nocclusions (2/31). Comorbidities were prevalent: hypertension (71.0%), dyslipidemia (80.6%), diabetes (35.5%), and\nCHF (32.3%). Indications for catheterization included STEMI (6.5%), NSTEMI (6.5%), and severe aortic stenosis\n(16.1%), with catheterization indications for non-CAD pathologies (e.g. aortic aneurysms, cardiac transplant) noted in\n15 patients.\n\nvi. Equipment and Protocols Used to Collect Images\n\nAngiographic cines were sourced from the Corewell Angiographic database, captured using various models of Philips\nsystems in March of 2025. The protocol selected diagnostic angiograms sets with major artery views, processed by\nAngioWaveNet and were under typical cath lab monitor and lighting conditions.\n\nvii. Independence of Test Data from Training Data\n\nTraining data and test data were completely independent. Blinding of readers to each other\u2019s assessments and\nblinding from Angiowave personnel during reading prevented influence of one reader on another or of Angiowave on\nthe readers.\n\n10. Conclusion: After analyzing software validation, software integration validation, and physician evaluated\nimages, it is the conclusion of AngioWave Imaging, Inc that the AngioWaveNet software is as safe and \neffective as the predicate device.  The performance testing data demonstrate that Angiowavenet software \nperforms comparably to the predicate device.rendering it substantially equivalent to the predicate device.\n\n4 | Page"
+}

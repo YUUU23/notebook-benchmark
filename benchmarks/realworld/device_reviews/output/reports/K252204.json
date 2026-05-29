@@ -1,0 +1,147 @@
+{
+  "device": {
+    "submission_number": "K252204",
+    "device_name": "prolaio eVO2peak Module (Version 1.0)",
+    "company": "Prolaio, Inc.",
+    "decision_date": "12/16/2025",
+    "panel": "Cardiovascular",
+    "product_code": "PPW"
+  },
+  "papers": [
+    {
+      "title": "Multiview deep learning improves detection of major cardiac conditions from echocardiography",
+      "source": "pubmed",
+      "pmid": "41844861",
+      "authors": [
+        "Barrios JP",
+        "Ansari MU",
+        "Olgin JE",
+        "Abreau S",
+        "Delfrate J",
+        "Langlais EL",
+        "Avram R",
+        "Tison GH"
+      ],
+      "journal": "Nature cardiovascular research",
+      "year": 2026,
+      "abstract": null,
+      "doi": "10.1038/s44161-026-00786-7",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41844861/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "Automated Echocardiographic Detection of Mitral Valve Prolapse and Mitral Regurgitation with Video-based Artificial Intelligence Algorithms",
+      "source": "pubmed",
+      "pmid": "41822682",
+      "authors": [
+        "Ansari MU",
+        "Barrios JP",
+        "Tastet L",
+        "Jhawar R",
+        "Cristin L",
+        "Rich A",
+        "Bibby D",
+        "Fang Q",
+        "Arya F",
+        "Crudo V",
+        "Nguyen T",
+        "Shah DJ",
+        "Delling FN",
+        "Tison GH"
+      ],
+      "journal": "medRxiv : the preprint server for health sciences",
+      "year": 2026,
+      "abstract": null,
+      "doi": "10.64898/2026.02.26.26347229",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41822682/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "Pulmonary Hypertension Associated With Left Heart Disease: Challenges, Emerging Strategies, and Future Directions",
+      "source": "pubmed",
+      "pmid": "41811276",
+      "authors": [
+        "Khan MS",
+        "Borlaug BA",
+        "Butler J",
+        "Gomberg-Maitland M",
+        "Humbert M",
+        "Lam CSP",
+        "Reddy YNV",
+        "Stone GW",
+        "Zannad F",
+        "Tedford RJ"
+      ],
+      "journal": "Journal of the American College of Cardiology",
+      "year": 2026,
+      "abstract": null,
+      "doi": "10.1016/j.jacc.2026.01.024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41811276/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "Designing Next-Generation Cardiometabolic Outcome Trials for Obesity Medicines",
+      "source": "pubmed",
+      "pmid": "41811272",
+      "authors": [
+        "Platz E",
+        "Peikert A",
+        "Bozkurt B",
+        "Van der Schueren B",
+        "Butler J",
+        "Lingvay I",
+        "McGuire DK",
+        "Zannad F",
+        "Sattar N"
+      ],
+      "journal": "Journal of the American College of Cardiology",
+      "year": 2026,
+      "abstract": null,
+      "doi": "10.1016/j.jacc.2026.01.013",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41811272/",
+      "full_text_path": null,
+      "citation_count": null
+    },
+    {
+      "title": "Cardiac Contractility Modulation for Patients with Heart Failure and Preserved Ejection Fraction: The AIM HIGHer Study",
+      "source": "pubmed",
+      "pmid": "41802565",
+      "authors": [
+        "Butler J",
+        "Rao I",
+        "Sauer AJ",
+        "Anker SD",
+        "Fioretti F",
+        "Burkhoff D",
+        "Filippatos G",
+        "Lam CSP",
+        "Stone GW",
+        "Wazni O"
+      ],
+      "journal": "Journal of cardiac failure",
+      "year": 2026,
+      "abstract": null,
+      "doi": "10.1016/j.cardfail.2026.02.050",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41802565/",
+      "full_text_path": null,
+      "citation_count": null
+    }
+  ],
+  "reviews": [],
+  "summary": "5 paper(s) found; peer review not run.",
+  "decision_summary": "December 16, 2025 \n\nprolaio, Inc. \nGeorge Allen Hides \nVice President, Regulatory, Quality, and Clinical \n230 W Monroe, Unit 2560 \nChicago, Illinois 60606 \n\nRe:  K252204 \n\nTrade/Device Name:  prolaio eVO2peak Module (Version 1.0) \nRegulation Number:  21 CFR 870.2200 \nRegulation Name:  Adjunctive Cardiovascular Status Indicator \nRegulatory Class:  Class II \nProduct Code:  PPW \nDated:  December 1, 2025 \nReceived:  December 1, 2025 \n\nDear George Allen Hides: \n\nWe have reviewed your section 510(k) premarket notification of intent to market the device referenced above \nand have determined the device is substantially equivalent (for the indications for use stated in the enclosure) \nto legally marketed predicate devices marketed in interstate commerce prior to May 28, 1976, the enactment \ndate of the Medical Device Amendments, or to devices that have been reclassified in accordance with the \nprovisions of the Federal Food, Drug, and Cosmetic Act (the Act) that do not require approval of a premarket \napproval application (PMA). You may, therefore, market the device, subject to the general controls \nprovisions of the Act. Although this letter refers to your product as a device, please be aware that some \ncleared products may instead be combination products. The 510(k) Premarket Notification Database \navailable at https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm identifies combination \nproduct submissions. The general controls provisions of the Act include requirements for annual registration, \nlisting of devices, good manufacturing practice, labeling, and prohibitions against misbranding and \nadulteration. Please note:  CDRH does not evaluate information related to contract liability warranties. We \nremind you, however, that device labeling must be truthful and not misleading. \n\nIf your device is classified (see above) into either class II (Special Controls) or class III (PMA), it may be \nsubject to additional controls. Existing major regulations affecting your device can be found in the Code of \nFederal Regulations, Title 21, Parts 800 to 898. In addition, FDA may publish further announcements \nconcerning your device in the Federal Register. \n\n \n \n \n \n \n \n \n \n \n \n \n \n \n\fK252204 - George Allen Hides \n\nPage \n\n2 \n\nAdditional information about changes that may require a new premarket notification are provided in the FDA \nguidance documents entitled \"Deciding When to Submit a 510(k) for a Change to an Existing Device\" \n(https://www.fda.gov/media/99812/download) and \"Deciding When to Submit a 510(k) for a Software \nChange to an Existing Device\" (https://www.fda.gov/media/99785/download).  \n\nYour device is also subject to, among other requirements, the Quality System (QS) regulation (21 CFR Part \n820), which includes, but is not limited to, 21 CFR 820.30, Design controls; 21 CFR 820.90, Nonconforming \nproduct; and 21 CFR 820.100, Corrective and preventive action. Please note that regardless of whether a \nchange requires premarket review, the QS regulation requires device manufacturers to review and approve \nchanges to device design and production (21 CFR 820.30 and 21 CFR 820.70) and document changes and \napprovals in the device master record (21 CFR 820.181).  \n\nPlease be advised that FDA's issuance of a substantial equivalence determination does not mean that FDA \nhas made a determination that your device complies with other requirements of the Act or any Federal \nstatutes and regulations administered by other Federal agencies. You must comply with all the Act's \nrequirements, including, but not limited to: registration and listing (21 CFR Part 807); labeling (21 CFR Part \n801); medical device reporting (reporting of medical device-related adverse events) (21 CFR Part 803) for \ndevices or postmarketing safety reporting (21 CFR Part 4, Subpart B) for combination products (see \nhttps://www.fda.gov/combination-products/guidance-regulatory-information/postmarketing-safety-reporting-\ncombination-products); good manufacturing practice requirements as set forth in the quality systems (QS) \nregulation (21 CFR Part 820) for devices or current good manufacturing practices (21 CFR Part 4, Subpart \nA) for combination products; and, if applicable, the electronic product radiation control provisions (Sections \n531-542 of the Act); 21 CFR Parts 1000-1050. \n\nAll medical devices, including Class I and unclassified devices and combination product device constituent \nparts are required to be in compliance with the final Unique Device Identification System rule (\"UDI Rule\"). \nThe UDI Rule requires, among other things, that a device bear a unique device identifier (UDI) on its label \nand package (21 CFR 801.20(a)) unless an exception or alternative applies (21 CFR 801.20(b)) and that the \ndates on the device label be formatted in accordance with 21 CFR 801.18. The UDI Rule (21 CFR \n830.300(a) and 830.320(b)) also requires that certain information be submitted to the Global Unique Device \nIdentification Database (GUDID) (21 CFR Part 830 Subpart E).  For additional information on these \nrequirements, please see the UDI System webpage at https://www.fda.gov/medical-devices/device-advice-\ncomprehensive-regulatory-assistance/unique-device-identification-system-udi-system.  \n\nAlso, please note the regulation entitled, \"Misbranding by reference to premarket notification\" (21 CFR \n807.97). For questions regarding the reporting of adverse events under the MDR regulation (21 CFR Part \n803), please go to https://www.fda.gov/medical-devices/medical-device-safety/medical-device-reporting-\nmdr-how-report-medical-device-problems. \n\nFor comprehensive regulatory information about medical devices and radiation-emitting products, including \ninformation about labeling regulations, please see Device Advice (https://www.fda.gov/medical-\ndevices/device-advice-comprehensive-regulatory-assistance) and CDRH Learn \n(https://www.fda.gov/training-and-continuing-education/cdrh-learn). Additionally, you may contact the \nDivision of Industry and Consumer Education (DICE) to ask a question about a specific regulatory topic. See \nthe DICE website (https://www.fda.gov/medical-devices/device-advice-comprehensive-regulatory-\n\n \n \n \n \n \n \n\fK252204 - George Allen Hides \n\nPage \n\n3 \n\nassistance/contact-us-division-industry-and-consumer-education-dice) for more information or contact DICE \nby email (DICE@fda.hhs.gov) or phone (1-800-638-2041 or 301-796-7100). \n\nSincerely, \n\nLCDR Stephen Browning \nAssistant Director \nDivision of Cardiac Electrophysiology,  \n    Diagnostics, and Monitoring Devices \nOffice of Cardiovascular Devices \nOffice of Product Evaluation and Quality \nCenter for Devices and Radiological Health \n\nEnclosure  \n\nStephen C. Browning -S \n \n \n \n \n \n \n \n\fDEPARTMENT OF HEALTH AND HUMAN SERVICES\nFood and Drug Administration\n\nIndications for Use\n\nForm Approved: OMB No. 0910-0120\n\nExpiration Date: 06/30/2023\n\nSee PRA Statement below.\n\n510(k) Number (if known)\nK252204\n\nDevice Name\nprolaio eVO2max Module (Version 1.0)\n\nIndications for Use (Describe)\n\nThe prolaio eVO2peak Module (Version 1.0) is an all-software medical device intended to be used for estimating peak\noxygen consumption (eVO2peak (mL/kg/min)) in adult patients for whom such VO2 Peak cardiopulmonary functional\ntesting is desired.\n\nThe prolaio eVO2peak Module uses as inputs: demographic data and single-lead electrocardiogram (sampled at least 125\nHz) and triaxial accelerometry data (sampled at 50 Hz) from qualified third-party FDA-cleared wearable medical sensors\nfrom patients carrying out activities of daily living.\n\nThe prolaio eVO2peak Module is intended to provide information as an adjunctive aid in the clinical evaluation of\npatients by qualified clinicians who have the responsibility for interpreting its significance in connection with other\nstandard of care clinical findings.\n\nThe prolaio eVO2peak Module is not intended to be used as a diagnostic, for active patient monitoring, to be solely relied\nupon for determining patient status, or as an alarm device.\n\nType of Use (Select one or both, as applicable)\n\nPrescription Use (Part 21 CFR 801 Subpart D)\n\nOver-The-Counter Use (21 CFR 801 Subpart C)\n\nCONTINUE ON A SEPARATE PAGE IF NEEDED.\n\nThis section applies only to requirements of the Paperwork Reduction Act of 1995.\n\n*DO NOT SEND YOUR COMPLETED FORM TO THE PRA STAFF EMAIL ADDRESS BELOW.*\n\nThe burden time for this collection of information is estimated to average 79 hours per response, including the\ntime to review instructions, search existing data sources, gather and maintain the data needed and complete\nand review the collection of information. Send comments regarding this burden estimate or any other aspect\nof this information collection, including suggestions for reducing this burden, to:\n\nDepartment of Health and Human Services\nFood and Drug Administration\nOffice of Chief Information Officer\nPaperwork Reduction Act (PRA) Staff\nPRAStaff@fda.hhs.gov\n\n\u201cAn agency may not conduct or sponsor, and a person is not required to respond to, a collection of\ninformation unless it displays a currently valid OMB number.\u201d\n\nFORM FDA 3881 (6/20)Page 1 of 1PSC Publishing Services (301) 443-6740       EF\fK252204\n\n510(k) Summary \n\nDATE PREPARED \n\nDecember 15, 2025 \n\nSUBMITTER \n\nprolaio, Inc.  \n230 W Monroe \nSuite 2560 \nChicago IL 60606 USA \nPhone: (855) 869-9054 \n\nCONTACT \n\nGeorge Allen Hides \nVice President Regulatory, Quality and Clinical Affairs at prolaio, Inc. \nEmail: george.hides@prolaio.com \nPhone: (312) 654-1010 \n\nThis 510(k) Summary has been prepared in accordance with CFR 21 Part 807.92. \n\nDEVICE \n\nCategory \n\nDescription \n\nDevice Trade Name  prolaio eVO2peak Module (Version 1.0) \n\nCommon Name \n\nAdjunctive Cardiovascular Status Indicator \n\nClassification Name  Adjunctive Cardiovascular Status Indicator \n\nClass \n\n2 \n\nRegulation Number  21 CFR\u00a7870.2200 \n\nProduct Code \n\nPPW \n\nPREDICATE DEVICE \n\nCategory \n\nDescription \n\nDevice Trade Name  CipherOx CRI M1 (K173929) \n\nCommon Name \n\nAdjunctive Cardiovascular Status Indicator \n\nClassification Name  Adjunctive Cardiovascular Status Indicator \n\nClass \n\n2 \n\nRegulation Number  21 CFR\u00a7870.2200 \n\nProduct Code \n\nPPW \n\nNote \n\nThe predicate has not been subject to a design-related recall. \n\nK252204 Page 1 of 7\fDEVICE DESCRIPTION \n\nThe prolaio eVO2peak Module is a software-only Class II SaMD Python library. It processes stored \nphysiologic data\u2014single-lead ECG and triaxial accelerometry. The module applies a locked deep-learning \nmodel trained against reference VO2 Peak from cardiopulmonary exercise test (CPET). The module returns \nmean eVO2peak and contextual information allowing clinicians to use eVO2peak in concert with other \nclinical signs and parameters. \n\nINDICATIONS FOR USE \n\nThe prolaio eVO2peak Module (Version 1.0) is an all-software medical device intended to be used for \nestimating peak oxygen consumption (eVO2peak (mL/kg/min)) in adult patients for whom such VO2 Peak \ncardiopulmonary functional testing is desired. \n\nThe prolaio eVO2peak Module uses as inputs: demographic data and single-lead electrocardiogram (sampled \nat least 125 Hz) and triaxial accelerometry data (sampled at 50 Hz) from qualified third-party FDA-cleared \nwearable medical sensors from patients carrying out activities of daily living.  \n\nThe prolaio eVO2peak Module is intended to provide information as an adjunctive aid in the clinical \nevaluation of patients by qualified clinicians who have the responsibility for interpreting its significance in \nconnection with other standard of care clinical findings. \n\nThe prolaio eVO2peak Module is not intended to be used as a diagnostic, for active patient monitoring, to be \nsolely relied upon for determining patient status, or as an alarm device. \n\nINTENDED USE \n\nIntended Use and Indications for Use are the same. \n\nK252204 Page 2 of 7 \n \n \n \n \n \n\fPREDICATE DEVICE COMPARISON \n\nDevice \nFunctionality \n\nComparison \n\nTraditional 510(k) \nPredicate \nFlashback Technologies \n\nManufacturer \n510(k) Number  K173929 \nClassification \n\nFlashback Technologies \nCipherOx CRI M1 \n\nProduct Code \nIntended Use \n\nClass 2 \n21CFR\u00a72200 \nAdjunctive Cardiovascular Status Indicator \nPPW \nThe CipherOxTM CRI M1 is indicated for continuous noninvasive \nmonitoring of functional oxygen saturation of arterial hemoglobin \n(SpO2), pulse rate (measured by an SpO2 sensor), and the \nCompensatory Reserve Index (CRI), which trends changes in \nintravascular volume relative to the individual patient\u2019s response to \nhypovolemia. \n\nFor patients with a finger thickness of 0.3\u201d to 1\u201d in hospital and pre-\nhospital settings. \n\nCRI trends with changes in intravascular volume relative to the \nindividual patient\u2019s response to hypovolemia, and should only be used by \nqualified medical providers as an adjunct to rather than as a replacement \nfor traditional hemodynamic measures. CRI is indicated for adults (19-36 \nyears old) in the supine position under non-motion conditions and \nwithout cardiovascular disease. CRI has not been studied in trauma \npatients. \n\nComments \n\n\u2014 \n\n\u2014 \n\u2014 \nSame \n\nSame \nSimilar \n\nEstimates cardiovascular \nparameter of clinical interest \n\nAdult population \n\nUsed by qualified medical \nprofessionals \n\nAdjunctive aid for \nretrospective analysis \n\nNot a diagnostic, alarm \ndevice, not for active patient \nmonitoring, not to be solely \nrelied upon to make clinical \ndecisions \n\nprolaio  \neVO2peak Module  \n(Version 1.0) \n\nTraditional 510(k) \nCandidate Device \nprolaio Inc. \nK252204 \nClass 2 \n21CFR\u00a72200 \nAdjunctive Cardiovascular Status Indicator \nPPW \nThe prolaio eVO2peak Module (Version 1.0) is an \nall-software medical device intended to be used for \nestimating peak oxygen consumption (eVO2peak \n(mL/kg/min)) in adult patients for whom such \nVO2Max cardiopulmonary functional testing is \ndesired. \n\nThe prolaio eVO2peak Module uses as inputs: \ndemographic data and single-lead electrocardiogram \n(sampled at least 125 Hz) and triaxial accelerometry \ndata (sampled at 50 Hz) from qualified third-party \nFDA-cleared wearable medical sensors from \npatients carrying out activities of daily living.  \n\nThe prolaio eVO2peak Module is intended to \nprovide information as an adjunctive aid in the \nclinical evaluation of patients by qualified clinicians \nwho have the responsibility for interpreting its \nsignificance in connection with other standard of \ncare clinical findings. \n\nThe prolaio eVO2peak Module is not intended to \nbe used as a diagnostic, for active patient \nmonitoring, to be solely relied upon for determining \npatient status, or as an alarm device. \n\nK252204 Page 3 of 7 \n \n \n \n \n \n \n \n \n \n \n \n \n\fDevice \nFunctionality \n\nFlashback Technologies \nCipherOx CRI M1 \n\nLevel of \nConcern \n\nModerate1 \n\nprolaio  \neVO2peak Module  \n(Version 1.0) \n\nComments \n\nBasic Documentation Level1 \n\nSame  \n\nEnvironment of \nUse \nBiosensor \nRequirements \n\nHospital and prehospital settings \n\nAmbulatory Settings \n\nNonin non-invasive, finger-worn, pulse ox sensor \n\nNon-invasive chest-worn, single-lead ECG \nbiosensor with ECG 125 Hz or higher and triaxial \naccelerometer 50 Hz or higher \n\nCardiovascular \nParameter \n\nSpO2 \nPulse Rate \nCRITM Algorithm \n\neVO2peak  \n\nSoftware \n\nYes \u2013 CRITM Algorithm \n\nYes \u2013 eVO2peak \n\nDisplay \n\nThe CRI\u2122 algorithm trends intravascular volume using non-invasive \narterial pulsatile waveform signals by continuously comparing extracted \nwaveforms to a reference model. CipherOx\u2122 CRI system operates on \nthe photoplethysmograph (PPG) waveform used in pulse oximetry to \nestimate CRI.   \nYes.  \n\nM1 User Interface module is a small, portable, battery-powered \nmultiparameter monitor \n\nPatient \nPopulation \nAlarm \nActive Patient \nMonitoring \n\nAdult (19 \u2013 36 yrs) \n\nNo \nNo \n\neVO2peak estimates peak oxygen consumption. \n\nNo \n\nAdult \n\nNo \nNo \n\nSame software \ndocumentation level \nSame \n\nSimilar \n\nNon-invasive commercial \nmedical biosensor devices \nprovide input to \ncomputational algorithm for \nanalysis \nSimilar \n\nDifferent metrics but both \nintended to estimate clinical \nphysiologic cardiovascular \nparameters \nSame \n\nSimilar \n\neVO2peak Module does not \ninclude an interface or display \nbut its outputs can be \nintegrated into such an \nexternal system for display \nSame \n\nSame \nSame \n\n1 \u201cMinor\u201d, \u201cModerate\u201d, \u201cMajor\u201d Levels of Concern has been replaced with \u201cBasic\u201d or \u201cEnhanced\u201d Documentation Levels in Guidance for Industry \u2013 \nContent of Premarket Submissions for Device Software Function (2023). \n\nK252204 Page 4 of 7 \n \n \n \n \n \n \n \n\fA detailed Substantial Equivalence Table is available in the submission, comparing device characteristics \nincluding algorithmic methodology, input/output data types, performance metrics, system integration \npathways, and risk control measures. \n\nSPECIAL CONTROLS \n\nAdjunctive cardiovascular status indicator devices include several special controls, as follows: \n\nControl \n\nEvidence \n\nSoftware description, verification, and validation based on comprehensive hazard \nanalysis must be provided. \n\nFull characterization of technical parameters of the software, including any \nproprietary algorithm(s) \n\nSoftware Description \n\nDescription of the expected impact of all applicable sensor acquisition hardware \ncharacteristics on performance and any associated hardware specifications \n\nSoftware Description \n\nSpecification of acceptable incoming sensor data quality control measures \n\nSoftware Description \n\nMitigation of impact of user error or failure of any subsystem components (signal \ndetection and analysis, data display, and storage) on accuracy of patient reports \n\nScientific justification for the validity of the status indicator algorithm(s) must be \nprovided. Verification of algorithm calculations and validation testing of the \nalgorithm using a data set separate from the training data must demonstrate the \nvalidity of modeling. \n\nRisk Analysis \nUsability Assessment \n\nDevice Description \n\nUsability assessment must be provided to demonstrate that risk of misinterpretation \nof the status indicator is appropriately mitigated. \n\nUsability Assessment  \n\nClinical data must be provided in support of the intended use. \n\nOutput measure(s) must be compared to an acceptable reference method to \ndemonstrate that the output measure(s) represent(s) the predictive measure(s) \nthat the device provides in an accurate and reproducible manner \n\nValidation Report \n\nThe data set must be representative of the intended use population for the device. \nAny selection criteria or limitations of the samples must be fully described and \njustified \n\nValidation Report \n\nAgreement of the measure(s) with the reference measure(s) must be assessed \nacross the full measurement range; \n\nData must be provided within the clinical validation study or using equivalent \ndatasets to demonstrate the consistency of the output and be representative of the \nrange of data sources and data quality likely to be encountered in the intended \nuse population and relevant use conditions in the intended use environment \n\nValidation Report \n\nValidation Report \n\nLabeling \n\nThe type of sensor data used, including specification of compatible sensors for \ndata acquisition \n\nA description of what the device measures and outputs to the user \n\nUser Guide and \nInstallation Manual \n& User About Page \n\nUser Guide and \nInstallation Manual \n& User About Page \n\nK252204 Page 5 of 7 \n \n \n\fControl \n\nWarnings identifying sensor reading acquisition factors that may impact \nmeasurement results \n\nGuidance for interpretation of the measurements, including warning(s) \nspecifying adjunctive use of the measurements \n\nKey assumptions made in the calculation and determination of measurements \n\nThe measurement performance of the device for all presented parameters, with \nappropriate confidence intervals, and the supporting evidence for this \nperformance \n\nA detailed description of the patients studied in the clinical validation (e.g., age, \ngender, race/ethnicity, clinical stability) as well as procedural details of the \nclinical study \n\nEvidence \n\nUser Guide and \nInstallation Manual \n& User About Page \n\nUser Guide and \nInstallation Manual \n& User About Page \n\nUser Guide and \nInstallation Manual \n& User About Page \n\nUser Guide and \nInstallation Manual \n\nUser About Page \n\nPERFORMANCE DATA \n\nRisk Management: \n\nThe prolaio peak Module underwent risk analysis per ISO 14971. All residual risks post-mitigation were \nevaluated as acceptable. \n\nCybersecurity: \n\nCybersecurity testing was conducted under the principles in FDA\u2019s 2023 Cybersecurity Premarket Guidance. \nThe module includes encryption, access control, input validation, and logging as part of its secure product \ndevelopment framework. All residual risks post-mitigation were evaluated as acceptable. \n\nHuman Factors Engineering (HFE): \n\nAlthough the device lacks a user interface, HFE principles under IEC 62366 and FDA\u2019s 2016 Applying \nHuman Factors and Usability Engineering to Medical Devices were applied to ensure safe integration and \ninterpretation of outputs by clinical users. Documentation includes instructions for integration and intended \ncontext of use. Evaluation supported that device users could safely use the device. \n\nAI/ML Compliance: \n\nThe module was developed in accordance with FDA\u2019s Good Machine Learning Practice (GMLP) principles. \nTraining and validation datasets were diverse and clinically representative of the target population. The \nalgorithm is locked and does not perform autonomous updates. \n\nSoftware V&V \n\nVerification and validation activities per IEC 62304 confirmed functional performance, scalability, and \ncompatibility to ensure that the use of the software fulfils the intended use without causing any unacceptable \nrisks.  \n\nK252204 Page 6 of 7 \n\fClinical Validation: \n\nValidation of prolaio eVO2peak was performed using data from patients undergoing cardiopulmonary \nexercise tests (CPET) in a clinical study including multiple centers in the United States. Overall, 228 patients \nwere enrolled in multiple regions and were demographically diverse and representative of the intended \npopulation. Performance of prolaio eVO2peak met the target accuracy, reliability/consistency, and bias \ncriteria.  \n\nResults \nMean Error (Bias) (mL/kg/min) \nMean Absolute Error (mL/kg/min) \n\nCONCLUSIONS \n\nOverall [95%CI] \n1.47 [0.55, 2.27] \n4.39 [3.82, 4.91] \n\nBike Modality [95%CI] \n0.97 [0.01, 1.96] \n4.07 [3.52, 4.69] \n\nThe results from risk management, design control, and clinical testing support that the prolaio eVO2peak \nModule is substantially equivalent to the predicate device. The proposed device does not raise new questions \nof safety or effectiveness compared to the predicate, or from differences to the predicate, for the proposed \nindications for use. \n\nK252204 Page 7 of 7",
+  "decision_review": {
+    "n_patients": "228",
+    "n_samples": "Same as patients",
+    "patients_vs_samples": "N/A \u2014 one observation per patient",
+    "multi_site": "Yes, multiple centers in the United States",
+    "baseline_comparison": "Predicate device",
+    "demographics_disclosed": "Disclosed: age / Not reported: sex/gender, race/ethnicity, comorbidities",
+    "confidence_intervals": "Yes, metrics with CIs: Mean Error (Bias) and Mean Absolute Error",
+    "womens_health": "No, relates to general adult cardiopulmonary testing",
+    "raw_response": "{\n    \"n_patients\": \"228\",\n    \"n_samples\": \"Same as patients\",\n    \"patients_vs_samples\": \"N/A \u2014 one observation per patient\",\n    \"multi_site\": \"Yes, multiple centers in the United States\",\n    \"baseline_comparison\": \"Predicate device\",\n    \"demographics_disclosed\": \"Disclosed: age / Not reported: sex/gender, race/ethnicity, comorbidities\",\n    \"confidence_intervals\": \"Yes, metrics with CIs: Mean Error (Bias) and Mean Absolute Error\",\n    \"womens_health\": \"No, relates to general adult cardiopulmonary testing\"\n}"
+  }
+}

@@ -1,0 +1,10 @@
+Title: Retrospective evaluation of a novel ultrasound-based imaging analysis software for predicting radiofrequency ablation areas
+Authors: Sato, Yamamoto, Tanaka, Yoshida, Kobayashi, Fujimoto, Nakamura, Ishikawa, Matsumoto, Shimizu
+Journal: PLoS One
+Year: 2025
+PMID: 39823502
+DOI: 10.1371/journal.pone.0256789
+URL: https://pubmed.ncbi.nlm.nih.gov/39823502/
+
+Abstract:
+This study introduces and evaluates BioTrace, a software system designed for real-time monitoring of thermal ablation tissue damage during image-guided radiofrequency ablation for hepatocellular carcinoma. BioTrace analyzes thermal gas bubble activity in B-mode ultrasound imaging to predict ablation zones, showing high agreement with contrast-enhanced computed tomography assessments.

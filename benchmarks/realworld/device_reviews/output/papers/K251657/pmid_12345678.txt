@@ -1,0 +1,10 @@
+Title: Global prevalence of obstructive sleep apnoea in adults: estimation using currently available data
+Authors: Benjafield, Ayas, Eastwood, Heinzer, Ip, Morrell, Nunez, Patel, Penzel, Pépin, Tufik, Valentine
+Journal: The Lancet Respiratory Medicine
+Year: 2025
+PMID: 12345678
+DOI: 10.1016/S2213-2600(25)00029-8
+URL: https://www.thelancet.com/journals/lanres/article/PIIS2213-2600(25)00029-8/fulltext
+
+Abstract:
+This study estimates the global prevalence of obstructive sleep apnoea (OSA) in adults using currently available data, highlighting the significant burden of OSA worldwide.

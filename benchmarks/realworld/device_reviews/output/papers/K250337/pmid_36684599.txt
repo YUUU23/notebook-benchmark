@@ -1,0 +1,10 @@
+Title: Deep-learning method for fully automatic segmentation of the abdominal aortic aneurysm from computed tomography imaging
+Authors: Abdolmanafi, Forneris, Moore, Di Martino
+Journal: Front Cardiovasc Med
+Year: 2023
+PMID: 36684599
+DOI: 10.3389/fcvm.2022.1040053
+URL: https://pubmed.ncbi.nlm.nih.gov/36684599/
+
+Abstract:
+This study presents a deep learning-based model for the automatic segmentation of abdominal aortic aneurysm (AAA) tissues from computed tomography (CT) images. The model comprises three steps: extraction of the aorta and iliac arteries, detection of the lumen, and identification of other AAA tissues. The automated segmentation results showed strong agreement with manual segmentation performed by an expert.

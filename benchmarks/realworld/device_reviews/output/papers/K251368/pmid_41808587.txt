@@ -1,0 +1,10 @@
+Title: AI-Driven Analysis of the Fetal Left Ventricular Outflow Tract: Diagnostic Value and Applications
+Authors: Turan S, Velly C, Bisanti M, Mancini J, Lafouge A, Voznyuk I, Quarello E
+Journal: Journal of ultrasound in medicine : official journal of the American Institute of Ultrasound in Medicine
+Year: 2026
+PMID: 41808587
+DOI: 10.1002/jum.70230
+URL: https://pubmed.ncbi.nlm.nih.gov/41808587/
+
+Abstract:
+To develop and validate a deep-learning pipeline that identifies left ventricular outflow tract (LVOT) views in routine obstetric screening report images and audits 7 predefined LVOT image-quality criteria with an interpretable 0-7 summary score. We randomly selected 180 screening report files from low-risk pregnancies (90 second trimester, 20-25 weeks; 90 third trimester, 30-35 weeks). An expert provided file-level reference labels for LVOT presence/absence and for each quality criterion (criterion "present" if met on ≥1 LVOT image within a file), plus the summary score. The algorithm performed LVOT detection, criterion prediction, and identical file-level aggregation. Agreement was assessed using Cohen κ for binary endpoints and the intraclass correlation coefficient (ICC) for the summary score. The dataset included 1,097 images. LVOT was absent in 10/180 (5.6%) files and all 10 were correctly classified as absent. Agreement for LVOT presence was substantial (κ = 0.768). Agreement across criteria ranged from κ = 0.657 to 0.957, and agreement for the 0-7 summary score was excellent (ICC = 0.902). For LVOT presence, sensitivity was 97.7% and specificity was 90.0%. Sensitivity was high for criteria 1-5 (96.3%-99.4%); criterion 6 showed sensitivity of 92.5% and specificity of 71.7%; criterion 7 showed sensitivity of 78.4% and specificity of 96.9%. Automated LVOT identification and criterion-based quality auditing achieved substantial-to-near-perfect agreement with expert review and may enable scalable quality assurance and targeted training in fetal cardiac screening.

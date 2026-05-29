@@ -1,0 +1,10 @@
+Title: Celebrating breakthrough in dental diagnostics: FDA approval of an AI model for diagnosis of periodontal diseases: A correspondence
+Authors: Khan A, Khan KJ, Ghaza MA, Dave T, Shahnoor S, Khan AM, Oduoye MO, Nafula WP, Ubechu SC
+Journal: Health science reports
+Year: 2023
+PMID: 37732105
+DOI: 10.1002/hsr2.1573
+URL: https://pubmed.ncbi.nlm.nih.gov/37732105/
+
+Abstract:
+Periodontal diseases are prevalent and have significant implications for oral health and overall well-being. Current diagnostic methods have limitations in accuracy and standardization. The recent Food and Drug Administration approval of Videa Perio Assist (VPA), an AI model for diagnosing periodontal diseases, presents a breakthrough in dental diagnostics. VPA is a cloud-based, AI-powered software that automatically measures and visualizes bone levels associated with each tooth from radiographic images. Clinical testing has demonstrated VPA's efficacy in accurately diagnosing periodontal diseases with high sensitivity and specificity. The integration of AI in dentistry has the potential to revolutionize periodontal disease diagnosis, improve patient care, and enhance decision-making. However, further research, education, cost-effectiveness, and collaboration are essential for maximizing the benefits of AI in dental settings. The approval and implementation of VPA mark a significant advancement in dental diagnostics, paving the way for more effective solutions and a healthier global population.

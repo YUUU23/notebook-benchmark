@@ -1,0 +1,10 @@
+Title: Retrospective audit of an artificial intelligence software for the detection of intracranial haemorrhage used by a teleradiology company in the United Kingdom
+Authors: Vimalesvaran, Fu, Novak, Robert, Kumar, Tanamala, Oke, Bhatia, Shah, Romsauerova, Das, Espinosa, Grzeda, Narbone, Dharmadhikari, Harrison, Gooch, Woznitza, Salik, Campbell, Khan, Lowe, Shuaib, Ather
+Journal: BJR|Open
+Year: 2024
+PMID: N/A
+DOI: 10.1093/bjro/tzae033
+URL: https://academic.oup.com/bjro/article-abstract/doi/10.1093/bjro/tzae033/7811147
+
+Abstract:
+This retrospective evaluation assesses the performance of Qure.ai's qER software in detecting intracranial haemorrhages in a teleradiology setting.

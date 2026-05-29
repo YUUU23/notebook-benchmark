@@ -1,0 +1,10 @@
+Title: Deep Learning-Driven Automated Assessment of Left Ventricular Diastolic Function in Echocardiography
+Authors: Karužas, Miščikas, Kiziela, Šablauskas, Kažukauskienė, Verikas, Naskauskas, Šakalytė, Jaruševičius, Plisienė, Lesauskaitė
+Journal: Echocardiography
+Year: 2025
+PMID: 40892533
+DOI: 10.1111/echo.70290
+URL: https://pubmed.ncbi.nlm.nih.gov/40892533/
+
+Abstract:
+This study assessed the feasibility, accuracy, and diagnostic performance of a fully automated deep learning model (Ligence Heart) for evaluating left ventricular diastolic function using 2D transthoracic echocardiography. The AI model showed strong correlation with expert manual measurements and high accuracy in identifying normal and severe grades of diastolic dysfunction.

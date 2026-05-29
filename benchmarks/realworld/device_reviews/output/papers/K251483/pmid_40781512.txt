@@ -1,0 +1,10 @@
+Title: Deep learning-based image enhancement for improved black blood imaging in brain metastasis
+Authors: Oh, Paik, Jo, Choi, Yoo, Choi
+Journal: European Radiology
+Year: 2025
+PMID: 40781512
+DOI: 10.1007/s00330-025-11920-7
+URL: https://pubmed.ncbi.nlm.nih.gov/40781512/
+
+Abstract:
+This study evaluates the utility of deep learning-based image enhancement for improving the image quality and diagnostic performance of 3D contrast-enhanced T1-weighted black blood MR imaging for brain metastases. The authors find that deep learning-based image enhancement improves image quality and sensitivity for detecting small brain metastases.

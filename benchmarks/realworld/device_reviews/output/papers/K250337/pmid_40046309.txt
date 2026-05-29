@@ -1,0 +1,10 @@
+Title: Abdominal aortic aneurysm classification based on dynamic intraluminal thrombus analysis during cardiac cycle
+Authors: Guest, Forneris, Satriano, Moore, Di Martino
+Journal: J Vasc Surg Cases Innov Tech
+Year: 2025
+PMID: 40046309
+DOI: 10.1016/j.jvscit.2025.101736
+URL: https://pubmed.ncbi.nlm.nih.gov/40046309/
+
+Abstract:
+This research introduces a classification system for abdominal aortic aneurysms (AAAs) based on the dynamic analysis of intraluminal thrombus (ILT) during the cardiac cycle. The study emphasizes the importance of ILT dynamics in assessing AAA stability and rupture risk, proposing that dynamic ILT behavior could serve as a predictive marker for clinical outcomes.

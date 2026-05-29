@@ -1,0 +1,10 @@
+Title: Deep Learning-Based High-Resolution Magnetic Resonance Angiography (MRA) Generation Model for 4D Time-Resolved Angiography with Interleaved Stochastic Trajectories (TWIST) MRA in Fast Stroke Imaging
+Authors: 
+Journal: Unknown
+Year: 2024
+PMID: 38893725
+DOI: N/A
+URL: https://airsmed.com/en/clinical-evidence/
+
+Abstract:
+This study investigated the application of SwiftMR in enhancing the quality and diagnostic performance of 4D time-resolved, contrast-enhanced MRA for ischemic stroke imaging. The results demonstrated that SwiftMR significantly improves image quality and diagnostic confidence in stroke imaging.

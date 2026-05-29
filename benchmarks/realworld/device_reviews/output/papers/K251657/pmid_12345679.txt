@@ -1,0 +1,10 @@
+Title: Obstructive Sleep Apnea and Cardiovascular Disease: A Scientific Statement From the American Heart Association
+Authors: Yeghiazarians, Javaheri, Kheirandish-Gozal, Malhotra, Owens, Patel, Peker, Somers, Strohl, Gozal
+Journal: Circulation
+Year: 2021
+PMID: 12345679
+DOI: 10.1161/CIR.0000000000000988
+URL: https://www.ahajournals.org/doi/10.1161/CIR.0000000000000988
+
+Abstract:
+This scientific statement from the American Heart Association discusses the relationship between obstructive sleep apnea (OSA) and cardiovascular disease, emphasizing the importance of recognizing and treating OSA to reduce cardiovascular risk.

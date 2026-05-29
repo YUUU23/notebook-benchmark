@@ -1,0 +1,10 @@
+Title: Improving Diagnostic Performance of MRI for Temporal Lobe Epilepsy With Deep Learning-Based Image Reconstruction in Patients With Suspected Focal Epilepsy
+Authors: 
+Journal: Unknown
+Year: 2024
+PMID: 38528695
+DOI: N/A
+URL: https://airsmed.com/en/clinical-evidence/
+
+Abstract:
+This study explores the integration of SwiftMR in enhancing the diagnostic performance of MRI for temporal lobe epilepsy. The findings indicate that SwiftMR improves image quality and diagnostic accuracy in patients with suspected focal epilepsy.

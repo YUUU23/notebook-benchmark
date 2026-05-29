@@ -1,0 +1,10 @@
+Title: [Preterm prolong rupture of membrane in twin: Prognosis factors of neonatal survival]
+Authors: Allary M, Lesieur E, Blanc J, Mauviel F, Petit Jean L, Donato X, Faust C, Quarello E, Bretelle F
+Journal: Gynecologie, obstetrique, fertilite & senologie
+Year: 2025
+PMID: 40154661
+DOI: 10.1016/j.gofs.2025.03.004
+URL: https://pubmed.ncbi.nlm.nih.gov/40154661/
+
+Abstract:
+To evaluate and identify factors influencing neonatal survival of twins in twin pregnancies with prolonged preterm premature rupture of membranes (PPROM) affecting one twin before 37weeks of gestation. A retrospective multicenter cohort study (2015-2021) including: 1/twin pregnancies with PPROM between 13 and 37weeks of gestation, 2/two live fetuses at the time of rupture, and 3/delayed delivery (>48hours after rupture). The primary outcome was the survival of the affected twin. The secondary outcome was the survival of the co-twin. Univariate and multivariate analyses were performed. Among 402 cases of preterm prelabor rupture of membranes (PPROM), 132 patients were included. Survival at hospital discharge was 79.5% for twins with membrane rupture and 84.1% for their co-twins. Survival was correlated with a higher gestational age at the time of rupture (P=0.03) and at delivery (P<0.01). Improved survival was associated with dichorionic pregnancies (aOR: 2.98; 95% CI: 1.06-8.34), a normal amniotic fluid volume, and a shorter latency period. The same was observed with the administration of corticosteroids and antibiotic prophylaxis. The prognosis of the unborn child is primarily associated with gestational age at delivery. The survival of twins with prolonged PPROM is high. Dichorionic chorionicity and factors such as gestational age at delivery, normal amniotic fluid levels, and shorter duration of rupture improve survival.

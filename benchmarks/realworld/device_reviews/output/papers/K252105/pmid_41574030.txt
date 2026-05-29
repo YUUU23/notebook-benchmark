@@ -1,0 +1,10 @@
+Title: Artificial intelligence implementation in automated heart chambers quantification during pharmacological stress echocardiography
+Authors: Karužas, Ciampi, Kažukauskienė, Miščikas, Šablauskas, Kiziela, Verikas, Plisienė, Lesauskaitė, Cortigiani, Wierzbowska-Drabik, Kasprzak, Lowenstein, Prota, Gaibazzi, Tuttolomondo, Lepone, Marconi, Arbucci, Picano
+Journal: European Heart Journal - Digital Health
+Year: 2025
+PMID: 41574030
+DOI: 10.1093/ehjdh/ztaf121
+URL: https://pubmed.ncbi.nlm.nih.gov/41574030/
+
+Abstract:
+This study explored the application of artificial intelligence in automating heart chamber quantification during pharmacological stress echocardiography. The AI-based software demonstrated feasibility and accuracy in automated measurements, potentially enhancing the efficiency and reliability of stress echocardiographic assessments.

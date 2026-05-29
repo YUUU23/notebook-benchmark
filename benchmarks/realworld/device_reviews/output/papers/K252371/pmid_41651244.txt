@@ -1,0 +1,10 @@
+Title: Development of anti-EGFR targeted magnetic nanoparticles for doxorubicin delivery into triple negative breast cancer cells
+Authors: Lameli C, David S, Allard-Vannier E, Dupeyrol G, Boursin F, Aubrey N, Chourpa I, Hervé-Aubert K
+Journal: European journal of pharmaceutics and biopharmaceutics : official journal of Arbeitsgemeinschaft fur Pharmazeutische Verfahrenstechnik e.V
+Year: 2026
+PMID: 41651244
+DOI: 10.1016/j.ejpb.2026.115009
+URL: https://pubmed.ncbi.nlm.nih.gov/41651244/
+
+Abstract:
+A new generation of pH-responsive magnetic theranostic nanovectors (NV) has been developed to deliver doxorubicin (DOX) to triple negative breast cancer (TNBC) cells which overexpress epidermal growth factor receptor (EGFR). DOX was loaded onto functionalized NV using a pH-sensitive DOX-Fe

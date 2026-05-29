@@ -1,0 +1,10 @@
+Title: Angiographic Pulse Wave Coherence in the Human Brain
+Authors: Koch, Duy, Grannan, Patel, Raymond, Agarwalla, Kahle, Butler
+Journal: Frontiers in Bioengineering and Biotechnology
+Year: 2022
+PMID: 35592552
+DOI: 10.3389/fbioe.2022.873530
+URL: https://pubmed.ncbi.nlm.nih.gov/35592552/
+
+Abstract:
+This study introduces a wavelet method to directly image cardiac frequency activity from fluoroscopic angiograms acquired at rates faster than the cardiac cycle. The authors demonstrate that arterial and venous pulse waves in the brain are reciprocally coherent, maintaining mechanical equilibrium during each heartbeat. This novel computational approach provides direct evidence of arteriovenous coupling in the intact human brain and may offer insights into various neurological pathologies linked to mechanical disequilibrium.

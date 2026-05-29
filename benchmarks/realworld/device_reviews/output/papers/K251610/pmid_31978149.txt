@@ -1,0 +1,10 @@
+Title: Towards human-AI collaboration in radiology: a multidimensional evaluation of the acceptability of AI for chest radiograph analysis in supporting pulmonary tuberculosis diagnosis
+Authors: Engle, Gabrielian, Long, Hurt, Rosenthal
+Journal: PLOS One
+Year: 2020
+PMID: 31978149
+DOI: 10.1371/journal.pone.0224445
+URL: https://pubmed.ncbi.nlm.nih.gov/31978149/
+
+Abstract:
+This study evaluates the technical performance, usability, and health impact of implementing Qure.ai's qXR AI system to support radiologists in diagnosing pulmonary tuberculosis. It includes a diagnostic accuracy evaluation and a qualitative human factors assessment.

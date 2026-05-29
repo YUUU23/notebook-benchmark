@@ -1,0 +1,10 @@
+Title: Factors Associated with Machine Learning-Based Predictions of Retinal Aging Using Teleretinal Screening Images from Patients with Diabetes
+Authors: Nguyen TT, Cruz MJ, Chokshi T, Potter VL, San Agustin MJP, Joshy AR, Sarabu N, Liu X, Yiu G
+Journal: Ophthalmology science
+Year: 2026
+PMID: 41853569
+DOI: 10.1016/j.xops.2026.101112
+URL: https://pubmed.ncbi.nlm.nih.gov/41853569/
+
+Abstract:
+To identify factors associated with accelerated retinal aging based on machine learning predictions of age using fundus images from teleretinal screening of patients with diabetes. Cross-sectional study of retinal images. Ten thousand, five hundred thirty eye images from 2939 patients with diabetes who underwent teleretinal screening at the University of California clinics. We trained a vision transformer (ViT) model to predict chronological age from retinal fundus photographs of 2939 patients with diabetes who underwent teleretinal screening as part of the Collaborative University of California Teleophthalmology Initiative (CUTI), and validated it using images from the Artificial Intelligence Ready and Exploratory Atlas for Diabetes Insights data set. We collected demographic, lifestyle, and systemic health factors, and analyzed their association with prediction errors, known as the retinal age gap. Association between demographic, lifestyle, and systemic factors with retinal age gap. Our model accurately predicted chronological age from teleretinal images (mean absolute error 4.43 years; R Machine learning predictions of retinal aging using teleretinal images from patients with diabetes may predict cardiovascular risk and are accelerated by systemic comorbidities. Proprietary or commercial disclosure may be found in the Footnotes and Disclosures at the end of this article.

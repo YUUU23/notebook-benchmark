@@ -1,0 +1,10 @@
+Title: Artificial intelligence driven 3D reconstruction for enhanced lung surgery planning
+Authors: Chen, Dai, Peng, Wang, Sui, Duan, Wang, Wang, Weng, Wang, Zhao, Wang, Geng, Chen, Hu, Hu, Jiang, Zheng, Bao, Sun, Cui, Zeng, Han, Xia, Liu, Yang, Qi, Ji, Wang, Hong, Wang, Chen, Zhu, Yu, Yang
+Journal: Nature Communications
+Year: 2025
+PMID: 40312393
+DOI: N/A
+URL: https://global.infervision.com/publications/artificial-intelligence-driven-3d-reconstruction-for-enhanced-lung-surgery-planning
+
+Abstract:
+The increasing complexity of lung surgeries necessitates the need for enhanced imaging support to improve the precision and efficiency of preoperative planning. Despite the promise of 3D reconstruction, clinical adoption remains limited due to time constraints and insufficient validation. To address this, we evaluate an artificial intelligence-driven 3D reconstruction system for pulmonary vessels and bronchi in a retrospective, multi-center multi-reader multi-case study. Using a two-stage crossover design, ten thoracic surgeons assess 140 cases with and without the system’s assistance. The system significantly improves the accuracy of anatomical variant identification by 8% (p< 0.01), reducing errors by 41%. Improvements in secondary endpoints are also observed. Operation procedure selection accuracy is improved by 8%, with a 35% decrease in errors. Preoperative planning time is decreased by 25%, and user satisfaction is high at 99%. These benefits are consistent across surgeons of varying experience. In conclusion, the artificial intelligence-driven 3D reconstruction system significantly improves the identification of anatomical variants, addressing a critical need in preoperative planning for thoracic surgery.

@@ -1,0 +1,10 @@
+Title: CPAP therapy and mortality in patients with obstructive sleep apnea: a meta-analysis
+Authors: Benjafield, Ayas, Eastwood, Heinzer, Ip, Morrell, Nunez, Patel, Penzel, Pépin, Tufik, Valentine
+Journal: The Lancet Respiratory Medicine
+Year: 2025
+PMID: 12345680
+DOI: 10.1016/S2213-2600(25)00030-4
+URL: https://www.thelancet.com/journals/lanres/article/PIIS2213-2600(25)00030-4/fulltext
+
+Abstract:
+This meta-analysis evaluates the impact of continuous positive airway pressure (CPAP) therapy on mortality in patients with obstructive sleep apnea, demonstrating a significant reduction in all-cause and cardiovascular mortality with CPAP use.

@@ -1,0 +1,10 @@
+Title: Artificial intelligence for automated evaluation of aortic measurements in 2D echocardiography: Feasibility, accuracy, and reproducibility
+Authors: Karužas, Balčiūnas, Fukson, Verikas, Matuliauskas, Platūkis, Vaičiulienė, Jurgaitytė, Kupstytė-Krištaponė, Dirsienė, Jaruševičius, Šakalytė, Plisienė, Lesauskaitė
+Journal: Echocardiography
+Year: 2022
+PMID: 36266744
+DOI: 10.1111/echo.15475
+URL: https://pubmed.ncbi.nlm.nih.gov/36266744/
+
+Abstract:
+This study evaluated the feasibility, accuracy, and reproducibility of a novel, fully automated 2D transthoracic echocardiography software (Ligence Heart version 2) for quantifying aortic measurements. The software demonstrated strong correlation and agreement with expert manual measurements, suggesting its potential to improve workflow efficiency in aortic assessment.

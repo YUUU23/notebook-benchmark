@@ -1,0 +1,10 @@
+Title: An Approach of Automating Hippocampal Volumetric Tool for Brain
+Authors: Mishra, Sisodia, Pipaliya, Lalwani
+Journal: International Journal of Medical and Health Sciences
+Year: 2025
+PMID: 32144978
+DOI: N/A
+URL: https://publications.waset.org/abstracts/212951.pdf
+
+Abstract:
+Alzevita is a cloud-based AI tool developed to assist neuroradiologists and imaging professionals in brain MRI analysis through automated hippocampal segmentation and volumetric reporting. It provides improved consistency, speed, and clinical confidence in quantitative neuroimaging workflows. For model development, a total of 200 MRI brain scans from India were used for training, and 298 MRI scans from the USA were utilized for validation. The tool’s efficiency was evaluated using Dice Score and Hausdorff Distance metrics.

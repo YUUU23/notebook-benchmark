@@ -1,0 +1,10 @@
+Title: Enhanced Pancreatic Transection in Minimally Invasive Distal Pancreatectomy: The Synergy of Slow-Firing and Staple Line Suturing
+Authors: Umemoto K, Sato S, Yamamoto H, Takada M, Ambo Y, Hirano S
+Journal: Asian journal of endoscopic surgery
+Year: 2025
+PMID: 40355095
+DOI: 10.1111/ases.70084
+URL: https://pubmed.ncbi.nlm.nih.gov/40355095/
+
+Abstract:
+Minimally invasive distal pancreatectomy (MIDP) is increasingly performed for pancreatic body and tail lesions. However, postoperative pancreatic fistula (POPF) remains a major complication, with reported rates of 13%-36%. Despite various technical approaches, including reinforced staplers and pre-firing compression, results have been inconsistent. We adopted a modified transection technique during MIDP using the ECHELON FLEX powered stapler with a slow-firing method, followed by staple line suturing. This retrospective study included 70 MIDP cases performed at Teine Keijinkai Hospital between January 2012 and August 2023. POPF was evaluated using the 2016 International Study Group of Pancreatic Surgery (ISGPS) criteria. Surgical outcomes were descriptively compared with a historical group in which reinforced staplers were used without suturing. Among the 70 patients, 59 underwent pancreatic transection with the ECHELON FLEX and suturing. Clinically relevant POPF (Grade B or C) occurred in 5.1% of these patients. In contrast, the incidence was 45.5% in the 11 historical cases using reinforced staplers. No Grade C POPF was observed. The combination of slow-firing transection and staple line suturing may help reduce POPF in MIDP. This simple and reproducible technique is a promising strategy for safe pancreatic stump management.

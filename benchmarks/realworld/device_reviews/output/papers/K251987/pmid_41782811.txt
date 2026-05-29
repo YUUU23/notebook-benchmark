@@ -1,0 +1,10 @@
+Title: Deep reinforcement learning for automatic anatomic CT landmark localization in Stanford Type B aortic dissection
+Authors: Bäumler K, Codari M, Mastrodicasa D, Mistelbauer G, Willemink MJ, Walters S, Hinostroza V, Turner V, Chepelev L, Sriprachyakul A, Madani MH, Ewane A, Chen EP, Marsden AL, Desjardins B, Fleischmann D, ROADMAP Group
+Journal: Radiology advances
+Year: 2026
+PMID: 41782811
+DOI: 10.1093/radadv/umag006
+URL: https://pubmed.ncbi.nlm.nih.gov/41782811/
+
+Abstract:
+Long-term aortic dissection monitoring requires consistent, landmark-based measurements over time. To evaluate the performance of deep reinforcement learning (DRL) agents for the detection of anatomic landmarks in patients with Stanford Type B aortic dissection (TBAD). This is an international retrospective study of 396 CT angiography scans of patients with TBAD from 9 participating sites (mean age 57.6 years ± 13.7/[SD]; 236 male, 160 female). Aortic landmarks, including the aortic annulus and 8 aortic branch vessels, were manually labeled. Additionally, interobserver variability data were collected between 2 observers for 30 scans. DRL agents were trained independently for each landmark with the manual labels serving as the reference standard. Unique landmark locations were obtained from (1) single agents' predictions and (2) clusters of landmark predictions using the DBSCAN clustering algorithm. The performance was analyzed based on distance metrics (mean, median, quantiles) and failure rates, defined as a distance error of more than 10 mm. Interobserver variability data were analyzed with a pairwise Wilcoxon test. On the internal test set, DRL single agents predicted landmark locations with median errors of 2.7 (95% CI, 2.2-3.3) mm and 4.8% failure rate. Cluster-based predictions resulted in a median error of 2.5 (95% CI, 2.4-2.7) mm and 4.0% failure rate. Pooled over all landmarks, cluster-based predictions outperformed single-agent predictions ( Single-agent and cluster-based DRL predict aortic landmarks in patients with TBAD with high accuracy and precision, comparable to the variability between human observers.

@@ -1,0 +1,10 @@
+Title: Signa SP/2 – A MRI System for Image Guided Surgery
+Authors: Author(s) not specified
+Journal: Medical Laser Application
+Year: 2002
+PMID: N/A
+DOI: 10.1078/1615-1615-00053
+URL: https://www.sciencedirect.com/science/article/abs/pii/S1615161504700538
+
+Abstract:
+This article introduces the Signa SP/2, a 'double-doughnut' magnet MRI system developed by GE Medical Systems. Designed for image-guided, computer-assisted minimally invasive surgical procedures, the system integrates a tracking/navigational system to guide instruments such as biopsy needles, laser fibers, and cryo probes.

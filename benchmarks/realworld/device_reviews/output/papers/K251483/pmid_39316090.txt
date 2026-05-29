@@ -1,0 +1,10 @@
+Title: Reliability of brain volume measures of accelerated 3D T1-weighted images with deep learning-based reconstruction
+Authors: Jung, Jeong, Kim, Hwang, Choi, Jeon, Choi, Lee, Yoo, Yun, Kang
+Journal: Neuroradiology
+Year: 2025
+PMID: 39316090
+DOI: 10.1007/s00234-024-03461-5
+URL: https://pubmed.ncbi.nlm.nih.gov/39316090/
+
+Abstract:
+This study explores the feasibility and reliability of deep learning-based accelerated MRI scans for brain volumetry. Using 3D T1-weighted data from 3T MRI, the authors demonstrate that deep learning-based reconstruction achieves clinical feasibility of 3D T1 brain volumetric MRI by up to 75% acceleration relative to full-sampled acquisition.

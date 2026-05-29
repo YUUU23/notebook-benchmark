@@ -1,0 +1,10 @@
+Title: First Clinical Use of a Novel AI-Based Imaging Tool to Enhance CTO PCI Planning
+Authors: Saleh, Khatri
+Journal: JACC: Case Reports
+Year: 2026
+PMID: 41342808
+DOI: 10.1016/j.jaccas.2025.106311
+URL: https://pubmed.ncbi.nlm.nih.gov/41342808/
+
+Abstract:
+This case report describes the first clinical application of AngioWave's AI-based spatiotemporal enhancement processing software, which identified previously unrecognized pathways in chronic total occlusion percutaneous coronary intervention, aiding in procedural success.
