@@ -25,7 +25,8 @@ Reproduce steps (connect to ipyflow kernel):
 1. Run-all (execution count 1-27)
 2. Add `train_now.mul_(2.0)` as a standalone cell between execution count 11 and 12, and run as execution count 28.
 3. Expect to see all cells using `train_now` being automatically re-run.
-4. `ipyflow` did not rerun any cell.
+4. `ipyflow` did not rerun any cell automatically and suggest to rerun cell 12 and 18.
+5. When rerunning cell 18, cell 1-4,6,8-14,16-21,23-27 all got triggered to rerun. 
 
 ### random seed
 Dir: [random-seed](./random-seed)
@@ -47,7 +48,7 @@ class Trainer:
         )
 ```
 3. Since Trainer definition does use torch random seed, we are expecting to see cell 17-22 and 24-28 (23 is all commented out) to be automatically re-run.
-4. `ipyflow` did rerun 17-22 and 24-28, and also rerun cell 1-4, 6, 8-15. 
+4. `ipyflow` did not rerun any cell automatically and suggest cell 12,13. When rerunning suggested cells, cell 1-4,6,8-14,16-21,23-27 also got rerun. 
 
 ### file IO
 Dir: [RAW-IO](./RAW-IO)
@@ -66,7 +67,7 @@ np.save('GMM_dt001_1e6samples.npy', traj)
 Dir: [plot](./plot)
 **ipyflow** \
 1. Run-all (execution count 1-27)
-2. Dirct assignment (m1): ipyflow does rerun almost all cells (except for cell 5, 7, 15, 22)
+2. Dirct assignment (m1): ipyflow reruns cell 1-4,6,8-14,16-21,23-27.
 ```python
 # original cell 2
 plt.rcParams['font.size'] = 15
