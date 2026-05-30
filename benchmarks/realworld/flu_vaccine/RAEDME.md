@@ -3,6 +3,9 @@ Automatic task generation for compositional causal reasoning (CCR) evaluation in
 
 [Github](https://github.com/jmaasch/compositional_causal_reasoning/tree/main)
 
+Modification added to the original notebook as the base:
+- Add `np.random.seed(0)` to the end of cell 2 to avoid randomness across runs.
+
 ## m1: direct assignment
 ```python
 # original cell 3
