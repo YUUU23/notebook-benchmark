@@ -3,6 +3,9 @@ Original notebook from ICML '24 paper: AutoElicit: Using Large Language Models f
 [Github](https://github.com/alexcapstick/llm-elicited-priors/blob/main/effects_of_bad_descriptions.ipynb)
 
 ## Modifications
+Modification made to the original notebook to avoid introducing randomness:
+- pass `random_seed=0` to `pm.sample_prior_predictive()`
+
 **ipyflow** \
 1. Run-all (execution count 1-16)
 2. Mutation (m1): ipyflow does not rerun any cell, where cell 14 is expected to be rerun 
