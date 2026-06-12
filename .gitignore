@@ -11,7 +11,8 @@ jupyter-run/config/mod_config_file.json
 
 **/*.npy
 **/*.pth
+**/*.pkl
 
-data/
-dataset/
+*/data/
+*/dataset/
 .nb/
