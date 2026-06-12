@@ -31,8 +31,7 @@ def validate_benchmark_directory(directory: str) -> tuple[str, list[tuple[str, s
 
     Naming conventions supported:
       Numbered: example.ipynb, m1_example.ipynb, m2_example.ipynb, ...
-        Step 1 applies the diff between example and m1.
-        Step 2 applies the diff between m1 and m2.  (and so on)
+        Each step applies the diff between example (the base) and mN.
       Legacy: example.ipynb, m_example.ipynb
         Treated as a single step equivalent to m1.
 
@@ -83,9 +82,8 @@ def validate_benchmark_directory(directory: str) -> tuple[str, list[tuple[str, s
             f"{directory}: modification indices are not consecutive starting from 1: {indices}"
         )
 
-    # Build step chain: base → m1 → m2 → ...
-    chain = [nb_stems[base]] + [path for _, path in ordered]
-    steps = [(chain[i], chain[i + 1]) for i in range(len(ordered))]
+    # Build steps comparing each modification against the base: base → m1, base → m2, ...
+    steps = [(nb_stems[base], path) for _, path in ordered]
     return (base, steps)
 
 def run_cleanup(): 
