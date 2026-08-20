@@ -1,7 +1,7 @@
 from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff, get_cells_reran
 from utils.notebook_manager import NotebookManager
 from utils.supporting_scripts import find_supporting_scripts
-import json, subprocess, os
+import json, subprocess, os, time, urllib.request
 
 class BenchmarkRunner:
     config_root_dir = "./config"
@@ -67,9 +67,30 @@ class BenchmarkRunner:
         try:
             print("=== [SETUP] Executing UI SETUP script")
             subprocess.run([script_path, self.jupyter_config_path], capture_output=False, text=False, check=False)
-            # print(f"Output from running {script_path}: {result.stdout}") 
+            # print(f"Output from running {script_path}: {result.stdout}")
+            self._wait_for_jupyter_server()
         except subprocess.CalledProcessError as e:
             print(f"Error executing ui script: {e} \n {e.stderr}")
+
+    def _wait_for_jupyter_server(self, url: str = "http://localhost:8888/lab", timeout: float = 30.0) -> None:
+        """ui_setup.sh backgrounds `jupyter lab &` and returns immediately,
+        before the server has actually finished starting. Without this wait,
+        Playwright's webServer.reuseExistingServer check can race ahead of it,
+        find nothing responding yet, and start its own server on the same
+        port -- which then fails with "port already in use" once this server
+        finishes binding a moment later ("Process from config.webServer was
+        not able to start. Exit code: 1")."""
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            try:
+                urllib.request.urlopen(url, timeout=2)
+                print(f"=== [SETUP] Jupyter server responding at {url}")
+                return
+            except Exception:
+                # Anything here (connection refused, timeout, ...) just means
+                # "not ready yet" -- keep polling until the deadline.
+                time.sleep(0.5)
+        print(f"=== [SETUP] WARNING: Jupyter server did not respond at {url} within {timeout}s")
          
     def _generate_ui_config_file(self, 
                                  cell_idx: int, 

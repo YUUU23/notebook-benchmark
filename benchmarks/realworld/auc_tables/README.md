@@ -9,12 +9,14 @@
 # original cell 1
 def get_scatter(in_distr, ood, type, all_tasks): 
     global likelihood_generated, lid_generated
+    likelihood_generated = in_vs_out[in_vs_out['name'] == 'generated']['log-likelihood'].values
     ...
 
 # modified
 def get_scatter(in_distr, ood, type, all_tasks): 
     global likelihood_generated, lid_generated
-    likelihood_generated.append(-123)
+    likelihood_generated = in_vs_out[in_vs_out['name'] == 'generated']['log-likelihood'].values.copy()
+    likelihood_generated *= 1.25
     ...
 ```
 

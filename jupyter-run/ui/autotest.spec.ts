@@ -122,8 +122,16 @@ test.describe.serial("Notebook Run", () => {
       `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
     );
 
-    await page.notebook.waitForRun();
-    await page.notebook.save();
+    // Note: a second waitForRun()+save() used to happen here, immediately
+    // after the one above with nothing state-changing in between besides a
+    // read-only getCellTextOutput() call. JupyterLab's save() re-fetches the
+    // server's current content hash right before writing and compares it to
+    // what the client last cached (see DocumentWidgetManager._maybeSave /
+    // _raiseConflict in @jupyterlab/docregistry, bundled into
+    // jlab_core.*.js): two save() calls fired back-to-back was the suspected
+    // trigger for a "File Changed on disk" conflict dialog blocking the
+    // download step below. Removed as the fix; if a second save is later
+    // found necessary, re-add it but confirm this race doesn't reappear.
 
     // Download notebook
     console.log(
