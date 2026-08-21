@@ -13,6 +13,6 @@ jupyter-run/config/mod_config_file.json
 **/*.pth
 **/*.pkl
 
-*/data/
+**/data/
 */dataset/
-.nb/
+jupyter-run/.jupyter_server.pid
