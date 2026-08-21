@@ -7,7 +7,20 @@ if [[ ! -f "$JUPYTER_CONFIG_PATH" ]]; then
     exit 1 # Exit the script with a non-zero status to indicate an error
 fi
 
-jupyter lab --config "$JUPYTER_CONFIG_PATH" >/dev/null 2>&1 &
+# If a previous run's server is still bound to 8888 (scripts/cleanup.sh
+# force-kills whatever's actually listening on the port at the end of a run,
+# but a run invoked without --auto_cleanup, or one that crashed before
+# cleanup, can still leave one behind), starting a new server here would
+# just fail to bind and exit immediately -- silently, since stderr is
+# thrown away below -- leaving the stale server as the one Playwright's
+# reuseExistingServer then reuses for the whole test, with no error to
+# indicate that's what happened. Clearing the port first guarantees this
+# run always gets its own fresh server.
+if command -v fuser >/dev/null 2>&1; then
+    fuser -k 8888/tcp >/dev/null 2>&1
+fi
+
+uv run jupyter lab --config "$JUPYTER_CONFIG_PATH" >/dev/null 2>&1 &
 
 # Wait for server to be ready (up to 60s)
 echo "Waiting for JupyterLab to start..."
