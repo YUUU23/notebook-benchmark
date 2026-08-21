@@ -1,0 +1,6 @@
+{
+  "@jupyterlab/docmanager-extension:plugin": {
+    "autosave": false,
+    "lastModifiedCheckMargin": 10000
+  }
+}
