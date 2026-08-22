@@ -12,7 +12,7 @@ from sklearn.neighbors import kneighbors_graph
 from scipy.sparse import csr_matrix
 # from scipy.sparse.csgraph import dijkstra
 
-from kernels import get_distfunc
+from distfuncs import get_distfunc
 
 def relaxed_distortion_measure_JGinvJT(H):
     # ------ inputs -------

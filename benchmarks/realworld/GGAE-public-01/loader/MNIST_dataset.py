@@ -10,7 +10,7 @@ import os, sys
 from torchvision.datasets.mnist import MNIST as MNIST_torch
 
 sys.path.append('..')
-from kernels import get_distfunc
+from distfuncs import get_distfunc
 
 class MNIST(MNIST_torch):
     def __init__(self,

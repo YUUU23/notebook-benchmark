@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import os, sys
 
-from kernels import get_distfunc
+from distfuncs import get_distfunc
 
 class dSprites:
     def __init__(self, root='dataset', N=10000, split='training', shape='all', fix_scale=False, fix_orientation=True, XY_hole=True, **kwargs):

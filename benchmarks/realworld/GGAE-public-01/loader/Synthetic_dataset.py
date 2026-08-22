@@ -3,7 +3,7 @@ import torch
 
 from scipy.optimize import fsolve
 
-from kernels import get_distfunc
+from distfuncs import get_distfunc
 
 class SwissRoll:
     def __init__(self, N=10000, uniform=False, hole=True, theta_range = [1.5,3.5], hole_range = [0.33, 0.67, 0.33, 0.67], aspect_ratio = 1, split='training', **kwargs):
