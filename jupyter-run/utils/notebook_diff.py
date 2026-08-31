@@ -200,30 +200,38 @@ def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> 
 
 def get_cells_reran(nb_json_original: str, nb_json_modified: str, modified_cell_idx: int, modified_cell_id: str) -> tuple[int, int, list[int]]: 
     """
-    Return execution count difference of two notebooks given, and a list of 
-    cell indexes for those cells where the execution count differs. 
+    Return the ordered execution events after a notebook modification.
+
+    The first event is the explicit execution of the modified cell. Reactive
+    executions are identified by counts greater than that execution and sorted
+    by execution count. A cell may therefore occur twice: once for the edit and
+    once when the reactive scheduler includes it in its rerun set.
     """
     original_cells = get_code_cells(nb_json_original)
     modified_cells = get_code_cells(nb_json_modified)
-    
-    reran_count = 0
-    cells_reran = []
-    for cell_i, (original_cell, modified_cell) in enumerate(zip(original_cells, modified_cells)):
-        if cell_i == modified_cell_idx: 
-            orig_id = modified_cell.get("id")
-            if orig_id and modified_cell_id and orig_id != modified_cell_id:
-                raise ValueError(f"Cell ID mismatch for modified cell {modified_cell_idx}")
-            else: 
-                continue
 
+    if not 0 <= modified_cell_idx < len(modified_cells):
+        raise IndexError(f"Modified cell index {modified_cell_idx} is out of range")
+
+    initial_execution_counts = [
+        cell.get("execution_count")
+        for cell in original_cells
+        if isinstance(cell.get("execution_count"), int)
+    ]
+    modification_execution_count = max(initial_execution_counts, default=0) + 1
+    reactive_executions = []
+    for cell_i, (original_cell, modified_cell) in enumerate(zip(original_cells, modified_cells)):
         orig_id = original_cell.get("id")
         mod_id = modified_cell.get("id")
         if orig_id and mod_id and orig_id != mod_id:
             raise ValueError("Cell ID mismatch")
-        
-        if original_cell["execution_count"] != modified_cell["execution_count"]:
-            reran_count += 1
-            cells_reran.append(cell_i)
-    
-    return (reran_count, len(original_cells), cells_reran)
-        
+        if cell_i == modified_cell_idx and mod_id and modified_cell_id and mod_id != modified_cell_id:
+            raise ValueError(f"Cell ID mismatch for modified cell {modified_cell_idx}")
+
+        execution_count = modified_cell.get("execution_count")
+        if isinstance(execution_count, int) and execution_count > modification_execution_count:
+            reactive_executions.append((execution_count, cell_i))
+
+    reactive_executions.sort()
+    cells_executed = [modified_cell_idx] + [cell_i for _, cell_i in reactive_executions]
+    return (len(cells_executed), len(original_cells), cells_executed)

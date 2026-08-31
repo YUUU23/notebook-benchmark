@@ -1,4 +1,5 @@
 import { expect, galata, test } from "@jupyterlab/galata";
+import type { Page } from "@playwright/test";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
 
@@ -18,6 +19,69 @@ const modification = test_config.modification;
 const datadirectory = test_config.dataDirectory;
 const supportingScripts: { sourcePath: string; targetRelPath: string; isDirectory: boolean }[] =
   (test_config as any).supportingScripts ?? [];
+
+/**
+ * Wait until reactive execution is finished and return the instant at which
+ * the kernel was first observed idle after the final execution-count change.
+ *
+ * The quiet period confirms that no more reactive work is about to start, but
+ * returning the beginning of that period keeps the validation delay out of
+ * the wall-clock measurement.
+ */
+async function waitForReactiveExecutionsToSettle(page: Page): Promise<number> {
+  const timeoutMs = 30_000;
+  const quietPeriodMs = 1_000;
+  const pollIntervalMs = 100;
+  const deadline = Date.now() + timeoutMs;
+  let previousCounts = "";
+  let stableSince = Date.now();
+  let idleSince: number | undefined;
+
+  while (Date.now() < deadline) {
+    const counts = await page.evaluate(() => {
+      const app = (window as any).galata.app;
+      const notebook = app.shell.currentWidget?.content;
+      return JSON.stringify(
+        notebook?.widgets
+          .filter((cell: any) => cell.model.type === "code")
+          .map((cell: any) => cell.model.executionCount) ?? []
+      );
+    });
+
+    if (counts !== previousCounts) {
+      previousCounts = counts;
+      stableSince = Date.now();
+      idleSince = undefined;
+    }
+
+    const kernelIsIdle = await page
+      .locator('#jp-main-statusbar >> text=Idle')
+      .isVisible();
+    if (kernelIsIdle) {
+      idleSince ??= performance.now();
+    } else {
+      idleSince = undefined;
+    }
+    if (kernelIsIdle && Date.now() - stableSince >= quietPeriodMs) {
+      return idleSince ?? performance.now();
+    }
+    await page.waitForTimeout(pollIntervalMs);
+  }
+
+  throw new Error("Timed out waiting for reactive cell executions to settle");
+}
+
+async function prepareExecution(page: Page, cellIndex?: number): Promise<void> {
+  await page.evaluate((index) => {
+    (window as any).galata.resetExecutionCount(index);
+  }, cellIndex);
+  await page.waitForFunction(() => {
+    const text = document.querySelector('#jp-main-statusbar')?.textContent ?? '';
+    return !['Connecting', 'Initializing', 'Starting'].some(status =>
+      text.includes(status)
+    );
+  });
+}
 
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
@@ -83,7 +147,12 @@ test.describe.serial("Notebook Run", () => {
 
     // Run all cells
     console.log(`=== [UI] RUNNING ALL CELLS`);
-    await page.notebook.run();
+    await prepareExecution(page);
+    const initialRunStartedAt = performance.now();
+    await page.menu.clickMenuItem('Run>Run All Cells');
+    await page.notebook.waitForRun();
+    const initialWallTimeSeconds =
+      (performance.now() - initialRunStartedAt) / 1000;
     await page.notebook.save();
 
     // Download notebook (for identifying how many cells have reran later)
@@ -110,8 +179,22 @@ test.describe.serial("Notebook Run", () => {
     await cell.getByRole("textbox").press("ControlOrMeta+a");
     await cell.getByRole("textbox").press("Backspace");
     await cell.getByRole("textbox").fill(modification.source);
-    await page.notebook.runCell(modification.cellIndex, true);
+    await page.notebook.selectCells(modification.cellIndex);
+    await prepareExecution(page, modification.cellIndex);
+    const reactiveRunStartedAt = performance.now();
+    await page.keyboard.press('Control+Enter');
     await page.notebook.waitForRun();
+    const reactiveRunSettledAt = await waitForReactiveExecutionsToSettle(page);
+    const reactiveWallTimeSeconds =
+      (reactiveRunSettledAt - reactiveRunStartedAt) / 1000;
+    const totalWallTimeSeconds =
+      initialWallTimeSeconds + reactiveWallTimeSeconds;
+    console.log(`=== [METRICS] ${JSON.stringify({
+      schemaVersion: 1,
+      initialWallTimeSeconds,
+      reactiveWallTimeSeconds,
+      totalWallTimeSeconds,
+    })}`);
     await page.notebook.save();
 
     // Save modified notebook output
