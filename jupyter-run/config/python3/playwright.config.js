@@ -8,7 +8,8 @@ module.exports = {
   ...defineConfig({
     testDir: "../../ui",
     testMatch: "autotest-baseline.spec.ts", // plain run-all baseline (column E)
-    timeout: 600 * 1000,
+    // 20 min: realworld initial run-all can be slow.
+    timeout: 20 * 60 * 1000,
   }),
   webServer: {
     command: "jlpm start",

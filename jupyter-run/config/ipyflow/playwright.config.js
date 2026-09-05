@@ -8,7 +8,8 @@ module.exports = {
   ...defineConfig({
     testDir: "../../ui",
     testMatch: "autotest.spec.ts", // Matches only this file
-    timeout: 600 * 1000,
+    // 20 min: realworld reactive runs are heavier than the automatable suites.
+    timeout: 20 * 60 * 1000,
   }),
   webServer: process.env.PW_LIST ? undefined : {
     command: "jlpm start",

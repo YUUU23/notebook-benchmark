@@ -51,6 +51,148 @@ def _extract_sys_path_dirs(source: str) -> list[str]:
     return dirs
 
 
+def _extract_string_literals(source: str) -> list[str]:
+    """Return string constants appearing anywhere in Python source."""
+    out: list[str] = []
+    try:
+        tree = ast.parse(source)
+    except SyntaxError:
+        return out
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            out.append(node.value)
+    return out
+
+
+# Names of nnb/ipyflow run-output artifacts that pollute a benchmark's data/
+# dir (written by prior runs); never upload these into the UI working dir.
+_OUTPUT_ARTIFACT_NAMES = {"trace.db", "trace.db-wal", "trace.db-shm", "log"}
+
+
+def _is_output_artifact(path: Path) -> bool:
+    if ".ipynb_checkpoints" in path.parts:
+        return True
+    if path.name in _OUTPUT_ARTIFACT_NAMES:
+        return True
+    return False
+
+
+def find_data_dependencies(
+    nb_json: dict,
+    nb_dir: str,
+    exclude: set[str] | None = None,
+    size_cap_bytes: int = 200 * 1024 * 1024,
+    file_count_cap: int = 500,
+) -> list[dict]:
+    """
+    Detect the relative data files a notebook reads and stage them so the
+    Playwright run (which uploads the notebook into a fresh temp dir) can resolve
+    paths like ``./data/x.wav`` that only work from the benchmark dir manually.
+
+    Strategy: scan code cells for string literals that resolve to an existing
+    path relative to the notebook dir, then stage the referenced FILES
+    individually (a directory reference is expanded to its files) preserving the
+    relative path, so ``open('./data/x')`` lands at ``<tmp>/data/x``.
+
+    Guardrails (a notebook can reference far more than it needs):
+      * skip URLs, non-path-ish strings, absolute paths, and ``.`` / ``..`` /
+        the notebook dir itself (uploading the whole working dir is wrong);
+      * never escape above the suite dir (nb_dir's parent);
+      * skip run-output artifacts (trace.db / log / .ipynb_checkpoints) so the
+        accumulated manual-run logs under data/ are not uploaded;
+      * skip anything already staged as an import/sys.path dep (``exclude``);
+      * skip a reference whose files exceed ``size_cap_bytes`` or
+        ``file_count_cap`` (e.g. multi-hundred-MB datasets) -- those stay manual.
+
+    Returns the same {sourcePath, targetRelPath, isDirectory} dicts as
+    find_supporting_scripts, so the caller can concatenate the two lists.
+    """
+    nb_dir_path = Path(nb_dir).resolve()
+    suite_root = nb_dir_path.parent  # allow ../dataset style, but no higher
+    run_dir = Path.cwd().resolve()
+    exclude_resolved = {str(Path(p).resolve()) for p in (exclude or set())}
+
+    # Collect candidate referenced paths.
+    candidates: list[Path] = []
+    seen_cand: set[str] = set()
+    for cell in nb_json.get("cells", []):
+        if cell.get("cell_type") != "code":
+            continue
+        source = "".join(cell.get("source", []))
+        for s in _extract_string_literals(source):
+            s = s.strip()
+            if not s or "\n" in s or len(s) > 200:
+                continue
+            if s.startswith(("http://", "https://", "/")):
+                continue
+            if s in (".", "./", "..", "../"):
+                continue
+            # Path-ish: has a separator or a filename extension.
+            if "/" not in s and "." not in os.path.basename(s):
+                continue
+            cand = (nb_dir_path / s).resolve()
+            if str(cand) in seen_cand or not cand.exists():
+                continue
+            # Must stay within the suite dir and not be the working dir itself.
+            if cand == nb_dir_path or suite_root not in cand.parents and cand != suite_root:
+                continue
+            seen_cand.add(str(cand))
+            candidates.append(cand)
+
+    results: list[dict] = []
+    seen_files: set[str] = set()
+
+    def _staged_entry(f: Path) -> dict | None:
+        try:
+            source_path = str(f.relative_to(run_dir))
+        except ValueError:
+            source_path = str(f)
+        return {
+            "sourcePath": source_path,
+            "targetRelPath": os.path.relpath(f, nb_dir_path),
+            "isDirectory": False,
+        }
+
+    for cand in candidates:
+        # Skip anything already covered by an import/sys.path upload.
+        if str(cand) in exclude_resolved or any(
+            str(cand).startswith(ex + os.sep) for ex in exclude_resolved
+        ):
+            continue
+
+        # Expand to concrete files, dropping run-output artifacts.
+        if cand.is_file():
+            files = [cand] if not _is_output_artifact(cand) else []
+        else:
+            files = [
+                p for p in cand.rglob("*")
+                if p.is_file() and not _is_output_artifact(p)
+                and not any(seg in _OUTPUT_ARTIFACT_NAMES or seg == ".ipynb_checkpoints"
+                            for seg in p.relative_to(cand).parts)
+            ]
+
+        files = [f for f in files if str(f) not in seen_files]
+        if not files:
+            continue
+
+        total = sum(f.stat().st_size for f in files)
+        if len(files) > file_count_cap or total > size_cap_bytes:
+            print(
+                f"=== [RUN] WARNING: data dependency {os.path.relpath(cand, nb_dir_path)!r} "
+                f"skipped ({len(files)} files, {total / 1e6:.0f}MB exceeds cap) -- "
+                f"benchmark may fail; stage it manually"
+            )
+            continue
+
+        for f in files:
+            entry = _staged_entry(f)
+            if entry:
+                seen_files.add(str(f))
+                results.append(entry)
+
+    return results
+
+
 def find_supporting_scripts(nb_json: dict, nb_dir: str) -> list[dict]:
     """
     Scan notebook cells for imports and sys.path manipulation that resolve to local files.

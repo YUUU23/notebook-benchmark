@@ -21,3 +21,12 @@ c.FileCheckpoints.checkpoint_dir = '../'
 # Standard Galata testing fix (same pattern JupyterLab's own extension
 # cookiecutter template uses).
 c.LabApp.app_settings_dir = str(Path(__file__).resolve().parent.parent / "app-settings")
+
+# Safety net for the per-benchmark kernel reap (benchmark_runner.reap_kernels):
+# the shared server lives for the whole suite and the UI test never shuts down
+# the kernel it spawns, so any kernel a reap misses would sit resident and grow
+# memory across benchmarks until OOM. Cull idle kernels no browser is still
+# connected to (cull_connected stays default False -> an in-use kernel is never
+# culled). See doc/journal.md.
+c.MappingKernelManager.cull_idle_timeout = 120
+c.MappingKernelManager.cull_interval = 30

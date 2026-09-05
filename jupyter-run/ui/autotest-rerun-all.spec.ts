@@ -92,9 +92,11 @@ test.describe.serial("Notebook Run", () => {
     console.log(
       `=== [UI] SAVING INITIAL RUN NOTEBOOK IN: ${downloadInitialPath}`
     );
-    await page.getByText("File", { exact: true }).click();
+    // File>Download via the galata menu helper: a bare getByText("File") matched
+    // any element whose text is exactly "File" (e.g. "File ~/..." in tracebacks),
+    // tripping Playwright's strict-mode violation and failing the download.
     const downloadOriginalPathPromise = page.waitForEvent("download");
-    await page.getByRole("menuitem", { name: "Download" }).click();
+    await page.menu.clickMenuItem("File>Download");
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
@@ -162,9 +164,10 @@ test.describe.serial("Notebook Run", () => {
     console.log(
       `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
     );
-    await page.getByText("File", { exact: true }).click();
+    // File>Download via the galata menu helper (see note above): avoids the
+    // getByText("File") strict-mode violation when cell output contains "File".
     const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("menuitem", { name: "Download" }).click();
+    await page.menu.clickMenuItem("File>Download");
     const download = await downloadPromise;
     await download.saveAs(downloadReactivePath);
     await page.pause();
