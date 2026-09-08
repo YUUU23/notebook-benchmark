@@ -5,40 +5,40 @@
     \cmidrule(r){2-3} \cmidrule(lr){4-5}
     \leftcell{Dataset Pair \\$A$ (and) $B$}&  \makecell{{\scriptsize (AUC-ROC)} \\ Naive Likelihood} &  \makecell{{\scriptsize (AUC-ROC)} \\ LID OOD (Ours)}&  \makecell{{\scriptsize (AUC-ROC)} \\ Naive Likelihood} &  \makecell{{\scriptsize (AUC-ROC)} \\ LID OOD (Ours)}  \\
     \midrule
-    {\scriptsize MNIST (and) FMNIST} & $0.000$ & $0.561$ &$0.996$ & $0.996$ \\ 
-{\scriptsize MNIST (and) EMNIST} & $0.000$ & $1.000$ &$0.846$ & $0.846$ \\ 
-{\scriptsize MNIST (and) Omniglot} & $0.000$ & $0.888$ &$1.000$ & $1.000$ \\ 
-{\scriptsize FMNIST (and) MNIST} & $0.000$ & $1.000$ &$\mathbf{0.240}$ & $\mathbf{0.845}$ \\ 
-{\scriptsize FMNIST (and) EMNIST} & $0.000$ & $1.000$ &$\mathbf{0.339}$ & $\mathbf{0.569}$ \\ 
+    {\scriptsize FMNIST (and) EMNIST} & $0.000$ & $1.000$ &$\mathbf{0.339}$ & $\mathbf{0.568}$ \\ 
+{\scriptsize FMNIST (and) MNIST} & $0.000$ & $1.000$ &$\mathbf{0.240}$ & $\mathbf{0.846}$ \\ 
 {\scriptsize FMNIST (and) Omniglot} & $0.000$ & $1.000$ &$0.952$ & $0.959$ \\ 
-{\scriptsize EMNIST (and) MNIST} & $0.000$ & $1.000$ &$0.830$ & $0.830$ \\ 
 {\scriptsize EMNIST (and) FMNIST} & $0.000$ & $0.895$ &$0.999$ & $0.999$ \\ 
+{\scriptsize EMNIST (and) MNIST} & $0.000$ & $1.000$ &$0.830$ & $0.830$ \\ 
 {\scriptsize EMNIST (and) Omniglot} & $0.000$ & $1.000$ &$1.000$ & $1.000$ \\ 
-{\scriptsize Omniglot (and) MNIST} & $0.000$ & $0.558$ &$0.995$ & $0.995$ \\ 
+{\scriptsize MNIST (and) FMNIST} & $0.000$ & $0.561$ &$0.996$ & $0.996$ \\ 
+{\scriptsize MNIST (and) EMNIST} & $1.000$ & $1.000$ &$0.154$ & $0.154$ \\ 
+{\scriptsize MNIST (and) Omniglot} & $0.000$ & $0.888$ &$1.000$ & $1.000$ \\ 
 {\scriptsize Omniglot (and) FMNIST} & $0.000$ & $0.001$ &$1.000$ & $1.000$ \\ 
 {\scriptsize Omniglot (and) EMNIST} & $0.000$ & $0.082$ &$1.000$ & $1.000$ \\ 
+{\scriptsize Omniglot (and) MNIST} & $0.000$ & $0.558$ &$0.995$ & $0.995$ \\ 
 \midrule 
 
-{\scriptsize Tiny (and) CIFAR100} & $\mathbf{0.190}$ & $\mathbf{0.700}$ &$0.880$ & $0.910$ \\ 
-{\scriptsize Tiny (and) SVHN} & $\mathbf{0.000}$ & $\mathbf{0.995}$ &$\mathbf{0.219}$ & $\mathbf{0.951}$ \\ 
-{\scriptsize Tiny (and) CIFAR10} & $\mathbf{0.172}$ & $\mathbf{0.712}$ &$0.882$ & $0.908$ \\ 
-{\scriptsize Tiny (and) CelebA} & $\mathbf{0.012}$ & $\mathbf{0.920}$ &$0.895$ & $0.895$ \\ 
-{\scriptsize CIFAR100 (and) Tiny} & $\mathbf{0.039}$ & $\mathbf{0.766}$ &$\mathbf{0.416}$ & $\mathbf{0.464}$ \\ 
-{\scriptsize CIFAR100 (and) SVHN} & $\mathbf{0.000}$ & $\mathbf{0.993}$ &$\mathbf{0.045}$ & $\mathbf{0.944}$ \\ 
-{\scriptsize CIFAR100 (and) CIFAR10} & $\mathbf{0.052}$ & $\mathbf{0.789}$ &$0.470$ & $0.504$ \\ 
-{\scriptsize CIFAR100 (and) CelebA} & $\mathbf{0.000}$ & $\mathbf{0.902}$ &$\mathbf{0.340}$ & $\mathbf{0.663}$ \\ 
-{\scriptsize SVHN (and) Tiny} & $0.768$ & $0.777$ &$0.996$ & $0.996$ \\ 
 {\scriptsize SVHN (and) CIFAR100} & $0.773$ & $0.782$ &$0.996$ & $0.996$ \\ 
-{\scriptsize SVHN (and) CIFAR10} & $0.774$ & $0.783$ &$0.996$ & $0.996$ \\ 
+{\scriptsize SVHN (and) CIFAR10} & $0.774$ & $0.782$ &$0.996$ & $0.996$ \\ 
 {\scriptsize SVHN (and) CelebA} & $0.608$ & $0.629$ &$0.996$ & $0.996$ \\ 
-{\scriptsize CIFAR10 (and) Tiny} & $\mathbf{0.065}$ & $\mathbf{0.675}$ &$0.452$ & $0.458$ \\ 
-{\scriptsize CIFAR10 (and) CIFAR100} & $\mathbf{0.120}$ & $\mathbf{0.688}$ &$0.528$ & $0.560$ \\ 
-{\scriptsize CIFAR10 (and) SVHN} & $\mathbf{0.000}$ & $\mathbf{0.988}$ &$\mathbf{0.064}$ & $\mathbf{0.943}$ \\ 
+{\scriptsize SVHN (and) Tiny} & $0.768$ & $0.778$ &$0.996$ & $0.996$ \\ 
+{\scriptsize CIFAR100 (and) SVHN} & $\mathbf{0.000}$ & $\mathbf{0.993}$ &$\mathbf{0.045}$ & $\mathbf{0.944}$ \\ 
+{\scriptsize CIFAR100 (and) CIFAR10} & $\mathbf{0.052}$ & $\mathbf{0.788}$ &$0.470$ & $0.503$ \\ 
+{\scriptsize CIFAR100 (and) CelebA} & $\mathbf{0.000}$ & $\mathbf{0.903}$ &$\mathbf{0.340}$ & $\mathbf{0.664}$ \\ 
+{\scriptsize CIFAR100 (and) Tiny} & $\mathbf{0.039}$ & $\mathbf{0.767}$ &$\mathbf{0.416}$ & $\mathbf{0.464}$ \\ 
+{\scriptsize CIFAR10 (and) SVHN} & $\mathbf{0.000}$ & $\mathbf{0.987}$ &$\mathbf{0.064}$ & $\mathbf{0.943}$ \\ 
+{\scriptsize CIFAR10 (and) CIFAR100} & $\mathbf{0.120}$ & $\mathbf{0.687}$ &$0.528$ & $0.560$ \\ 
 {\scriptsize CIFAR10 (and) CelebA} & $\mathbf{0.000}$ & $\mathbf{0.847}$ &$\mathbf{0.360}$ & $\mathbf{0.648}$ \\ 
-{\scriptsize CelebA (and) Tiny} & $\mathbf{0.130}$ & $\mathbf{0.719}$ &$0.844$ & $0.845$ \\ 
-{\scriptsize CelebA (and) CIFAR100} & $\mathbf{0.176}$ & $\mathbf{0.699}$ &$0.876$ & $0.878$ \\ 
-{\scriptsize CelebA (and) SVHN} & $\mathbf{0.001}$ & $\mathbf{0.984}$ &$\mathbf{0.087}$ & $\mathbf{0.746}$ \\ 
-{\scriptsize CelebA (and) CIFAR10} & $\mathbf{0.164}$ & $\mathbf{0.706}$ &$0.877$ & $0.878$ \\ 
+{\scriptsize CIFAR10 (and) Tiny} & $\mathbf{0.065}$ & $\mathbf{0.674}$ &$0.452$ & $0.458$ \\ 
+{\scriptsize CelebA (and) SVHN} & $\mathbf{0.001}$ & $\mathbf{0.983}$ &$\mathbf{0.087}$ & $\mathbf{0.745}$ \\ 
+{\scriptsize CelebA (and) CIFAR100} & $\mathbf{0.176}$ & $\mathbf{0.700}$ &$0.876$ & $0.878$ \\ 
+{\scriptsize CelebA (and) CIFAR10} & $\mathbf{0.164}$ & $\mathbf{0.701}$ &$0.877$ & $0.878$ \\ 
+{\scriptsize CelebA (and) Tiny} & $\mathbf{0.130}$ & $\mathbf{0.715}$ &$0.844$ & $0.845$ \\ 
+{\scriptsize Tiny (and) SVHN} & $\mathbf{0.000}$ & $\mathbf{0.997}$ &$\mathbf{0.219}$ & $\mathbf{0.952}$ \\ 
+{\scriptsize Tiny (and) CIFAR100} & $\mathbf{0.190}$ & $\mathbf{0.704}$ &$0.880$ & $0.910$ \\ 
+{\scriptsize Tiny (and) CIFAR10} & $\mathbf{0.172}$ & $\mathbf{0.713}$ &$0.882$ & $0.908$ \\ 
+{\scriptsize Tiny (and) CelebA} & $\mathbf{0.012}$ & $\mathbf{0.919}$ &$0.895$ & $0.895$ \\ 
 
     \bottomrule
     \end{tabularx}

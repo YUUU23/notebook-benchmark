@@ -16,3 +16,4 @@ jupyter-run/config/mod_config_file.json
 **/data/
 */dataset/
 jupyter-run/.jupyter_server.pid
+benchmarks/realworld/auc_tables/generated_tabulars
