@@ -7,11 +7,11 @@ module.exports = {
   ...baseConfig,
   ...defineConfig({
     testDir: "../../ui",
-    testMatch: "autotest.spec.ts", // Matches only this file
-    // 20 min: realworld reactive runs are heavier than the automatable suites.
+    testMatch: "autotest-baseline.spec.ts", // plain run-all baseline (column E)
+    // 20 min: realworld initial run-all can be slow.
     timeout: 20 * 60 * 1000,
   }),
-  webServer: process.env.PW_LIST ? undefined : {
+  webServer: {
     command: "jlpm start",
     url: "http://localhost:8888/lab",
     timeout: 120 * 1000,

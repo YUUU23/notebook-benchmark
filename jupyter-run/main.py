@@ -22,6 +22,25 @@ def run_benchmarks(b: BenchmarkRunner, name:str,
         
 _NUMBERED_MOD_RE = re.compile(r'^m(\d+)_(.+)$')
 _LEGACY_MOD_RE  = re.compile(r'^m_(.+)$')
+# Matches the marker printed by run_benchmarks() on step completion; used to
+# reconstruct which benchmarks already finished when resuming (--resume-log).
+_COMPLETE_RE = re.compile(r'^=== \[RUN\] COMPLETE RUNNING (.+?) ===\s*$')
+
+
+def load_completed_labels(log_path: str) -> set[str]:
+    """Scan a prior run's log for '=== [RUN] COMPLETE RUNNING <label> ===' markers
+    and return the set of step labels that already finished, so a resumed run can
+    skip them. Read once at startup, before this run appends to the same file."""
+    completed: set[str] = set()
+    try:
+        with open(log_path) as f:
+            for line in f:
+                m = _COMPLETE_RE.match(line.rstrip("\n"))
+                if m:
+                    completed.add(m.group(1))
+    except FileNotFoundError:
+        pass
+    return completed
 
 
 def validate_benchmark_directory(directory: str) -> tuple[str, list[tuple[str, str]]]:
@@ -116,7 +135,8 @@ def main():
     parser.add_argument("-d", "--data_directory", type=str, help="additional files the benchmark may need")
     parser.add_argument("--start_ui_kernel", action="store_true", help="start UI kernel")
     parser.add_argument("--run_in_copy", action="store_true", help="make copy of original benchmarks and run in copy directory for isolation") 
-    parser.add_argument("--auto_cleanup", action="store_true", help="automatically cleanup after run") 
+    parser.add_argument("--auto_cleanup", action="store_true", help="automatically cleanup after run")
+    parser.add_argument("--resume-log", type=str, help="prior run log; skip benchmarks already marked COMPLETE in it")
     args = parser.parse_args()
     
     if args.config == None: 
@@ -152,13 +172,23 @@ def main():
                 except IOError as e:
                     print(f"error parsing directory {d}, {e}")
         
-        if benchmark_to_run: 
+        if benchmark_to_run:
+            completed = load_completed_labels(args.resume_log) if args.resume_log else set()
             spawn_ui_kernel = args.start_ui_kernel
             b = BenchmarkRunner(args.config, spawn_ui_kernel=spawn_ui_kernel)
             for name, steps in benchmark_to_run:
                 for i, (original_nb_path, modified_nb_path) in enumerate(steps):
-                    step_label = f"{name} (step {i + 1}/{len(steps)})" if len(steps) > 1 else name
+                    # Multi-step benchmarks (realworld m1..mN) are labelled
+                    # "<name>_m<step>" to match the results sheet's col A. Single
+                    # step benchmarks keep the bare name (py-built-in / lib).
+                    step_label = f"{name}_m{i + 1}" if len(steps) > 1 else name
+                    if step_label in completed:
+                        print(f"=== [RUN] SKIP (already complete) {step_label} ===")
+                        continue
                     run_benchmarks(b, step_label, original_nb_path, modified_nb_path, data_directory)
+                    # Reclaim the kernel(s) this step left on the shared server so
+                    # memory does not accumulate across benchmarks (see reap_kernels).
+                    b.reap_kernels()
         else:
             print(f"no benchmark found under provided directory {args.single_benchmark if args.single_benchmark else args.multiple_benchmarks}")
         

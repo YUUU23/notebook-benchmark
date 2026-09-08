@@ -8,6 +8,10 @@ module.exports = {
   ...defineConfig({
     testDir: "../../ui",
     testMatch: "autotest.spec.ts", // Matches only this file
+    // Realworld notebooks (heavy training/plots) run far longer than Galata's
+    // 60s default per-test timeout, which was silently failing them. 20 min
+    // covers the manual-run durations seen under each benchmark's data/ dir.
+    timeout: 20 * 60 * 1000,
   }),
   webServer: {
     command: "jlpm start",
