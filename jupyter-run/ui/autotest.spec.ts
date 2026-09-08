@@ -1,4 +1,5 @@
 import { expect, galata, test } from "@jupyterlab/galata";
+import type { Page } from "@playwright/test";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
 
@@ -15,9 +16,151 @@ const downloadInitialPath = path.join(
   test_config.downloadInitialPath
 );
 const modification = test_config.modification;
+// "edit" (in-place source change) | "add" (insert + run a new cell) |
+// "delete" (remove a cell, reactive cascade with no user execution).
+// Default "edit" keeps older mod configs working.
+const modOp: string = (modification as any).op ?? "edit";
 const datadirectory = test_config.dataDirectory;
 const supportingScripts: { sourcePath: string; targetRelPath: string; isDirectory: boolean }[] =
   (test_config as any).supportingScripts ?? [];
+
+/**
+ * Wait until reactive execution is finished and return the instant at which
+ * the kernel was first observed idle after the final execution-count change.
+ *
+ * The quiet period confirms that no more reactive work is about to start, but
+ * returning the beginning of that period keeps the validation delay out of
+ * the wall-clock measurement.
+ */
+async function waitForReactiveExecutionsToSettle(page: Page): Promise<number> {
+  // Long enough for heavy realworld reactive cascades; bounded by the
+  // Playwright per-test timeout in the active playwright.config.js.
+  const timeoutMs = 20 * 60 * 1000;
+  const quietPeriodMs = 1_000;
+  const pollIntervalMs = 100;
+  const deadline = Date.now() + timeoutMs;
+  let previousCounts = "";
+  let stableSince = Date.now();
+  let idleSince: number | undefined;
+
+  while (Date.now() < deadline) {
+    const counts = await page.evaluate(() => {
+      const app = (window as any).galata.app;
+      const notebook = app.shell.currentWidget?.content;
+      return JSON.stringify(
+        notebook?.widgets
+          .filter((cell: any) => cell.model.type === "code")
+          .map((cell: any) => cell.model.executionCount) ?? []
+      );
+    });
+
+    if (counts !== previousCounts) {
+      previousCounts = counts;
+      stableSince = Date.now();
+      idleSince = undefined;
+    }
+
+    const kernelIsIdle = await page
+      .locator('#jp-main-statusbar >> text=Idle')
+      .isVisible();
+    if (kernelIsIdle) {
+      idleSince ??= performance.now();
+    } else {
+      idleSince = undefined;
+    }
+    if (kernelIsIdle && Date.now() - stableSince >= quietPeriodMs) {
+      return idleSince ?? performance.now();
+    }
+    await page.waitForTimeout(pollIntervalMs);
+  }
+
+  throw new Error("Timed out waiting for reactive cell executions to settle");
+}
+
+/**
+ * Wait for a "Run All Cells" to finish and return the instant execution settled.
+ *
+ * Replaces Galata's page.notebook.waitForRun() for the initial run: waitForRun
+ * only returns once EVERY code cell has an execution count, so a notebook whose
+ * run halts partway (a cell errors -> JupyterLab stops, or a cell blocks the
+ * kernel) never satisfies it and hangs until the per-test timeout. This instead
+ * (1) confirms the run actually started, then (2) returns as soon as the kernel
+ * is idle and execution counts have been stable for a short quiet period --
+ * correct whether the run completes, errors partway, or a cell blocks, and
+ * immune to the pre-run-idle race that produced bogus near-zero timings.
+ */
+async function waitForRunAllToSettle(page: Page): Promise<number> {
+  const startTimeoutMs = 180_000;
+  const settleTimeoutMs = 20 * 60 * 1000;
+  const quietPeriodMs = 1_000;
+  const pollIntervalMs = 100;
+
+  const codeExecCounts = () => page.evaluate(() => {
+    const app = (window as any).galata.app;
+    const notebook = app.shell.currentWidget?.content;
+    return JSON.stringify(
+      notebook?.widgets
+        .filter((cell: any) => cell.model.type === "code")
+        .map((cell: any) => cell.model.executionCount) ?? []
+    );
+  });
+  const kernelIsIdle = () =>
+    page.locator('#jp-main-statusbar >> text=Idle').isVisible();
+
+  // Phase 1: wait until a cell actually executes (an execution count appears),
+  // not merely "kernel not idle" -- the kernel can read as busy during startup,
+  // which would make phase 2 settle on the pre-run idle state and capture an
+  // un-run notebook (bogus near-zero timing). Fail fast if nothing ever runs.
+  const before = await codeExecCounts();
+  const startDeadline = Date.now() + startTimeoutMs;
+  let started = false;
+  while (Date.now() < startDeadline) {
+    if ((await codeExecCounts()) !== before) {
+      started = true;
+      break;
+    }
+    await page.waitForTimeout(pollIntervalMs);
+  }
+  if (!started) {
+    throw new Error(`Run All Cells produced no execution within ${startTimeoutMs / 1000}s`);
+  }
+
+  // Phase 2: settle on kernel-idle + stable counts.
+  const deadline = Date.now() + settleTimeoutMs;
+  let previousCounts = "";
+  let stableSince = Date.now();
+  let idleSince: number | undefined;
+  while (Date.now() < deadline) {
+    const counts = await codeExecCounts();
+    if (counts !== previousCounts) {
+      previousCounts = counts;
+      stableSince = Date.now();
+      idleSince = undefined;
+    }
+    if (await kernelIsIdle()) {
+      idleSince ??= performance.now();
+    } else {
+      idleSince = undefined;
+    }
+    if (idleSince !== undefined && Date.now() - stableSince >= quietPeriodMs) {
+      return idleSince;
+    }
+    await page.waitForTimeout(pollIntervalMs);
+  }
+  throw new Error("Timed out waiting for Run All Cells to settle");
+}
+
+async function prepareExecution(page: Page, cellIndex?: number): Promise<void> {
+  await page.evaluate((index) => {
+    (window as any).galata.resetExecutionCount(index);
+  }, cellIndex);
+  await page.waitForFunction(() => {
+    const text = document.querySelector('#jp-main-statusbar')?.textContent ?? '';
+    return !['Connecting', 'Initializing', 'Starting'].some(status =>
+      text.includes(status)
+    );
+  });
+}
 
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
@@ -83,44 +226,121 @@ test.describe.serial("Notebook Run", () => {
 
     // Run all cells
     console.log(`=== [UI] RUNNING ALL CELLS`);
-    await page.notebook.run();
+    await prepareExecution(page);
+    const initialRunStartedAt = performance.now();
+    await page.menu.clickMenuItem('Run>Run All Cells');
+    const initialRunSettledAt = await waitForRunAllToSettle(page);
+    const initialWallTimeSeconds =
+      (initialRunSettledAt - initialRunStartedAt) / 1000;
     await page.notebook.save();
 
     // Download notebook (for identifying how many cells have reran later)
     console.log(
       `=== [UI] SAVING INITIAL RUN NOTEBOOK IN: ${downloadInitialPath}`
     );
-    await page.getByText("File", { exact: true }).click();
+    // Open File>Download via the galata menu helper (same one used for
+    // Run>Run All Cells above). A bare getByText("File") matched any element
+    // whose text is exactly "File" -- including cell outputs / tracebacks that
+    // print "File ~/..." -- so notebooks with such output hit Playwright's
+    // strict-mode violation and the download click failed the whole benchmark.
     const downloadOriginalPathPromise = page.waitForEvent("download");
-    await page.getByRole("menuitem", { name: "Download" }).click();
+    await page.menu.clickMenuItem("File>Download");
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
-    // Make change
+    // Make change. cellIndex is the ABSOLUTE JupyterLab cell index (markdown
+    // included), which is what the Galata helpers below address by.
     console.log(
-      `=== [UI] MAKING MODIFICATION TO CELL INDEX: ${modification.cellIndex}`
+      `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
     );
-    const cell = await page.notebook.getCellLocator(modification.cellIndex);
-    if (!cell) {
-      console.log(
-        `=== [UI] CELL WITH CELL INDEX ${modification.cellIndex} FOUND, CLOSING TEST`
+
+    let reactiveRunStartedAt: number;
+
+    if (modOp === "delete") {
+      // Deletion has no user-triggered execution: the reactive cascade is
+      // driven by the frontend's debounced content_changed message, which the
+      // nnb kernel diffs to detect the removed cell and returns rerun_cells.
+      // Start the timer immediately before the delete and settle afterwards.
+      const beforeCount = await page.notebook.getCellCount();
+      await page.notebook.selectCells(modification.cellIndex);
+      await prepareExecution(page);
+      reactiveRunStartedAt = performance.now();
+      await page.notebook.deleteCells();
+      await page.waitForFunction(
+        (c) => {
+          const app = (window as any).galata.app;
+          const nb = app.shell.currentWidget?.content;
+          return (nb?.widgets.length ?? 0) === c - 1;
+        },
+        beforeCount
       );
-      return;
+    } else {
+      // "add": insert an empty cell at the target index, then fall through to
+      // the same "set source + run one cell" path used by "edit".
+      if (modOp === "add") {
+        const beforeCount = await page.notebook.getCellCount();
+        if (modification.cellIndex === 0) {
+          // Insert above the first cell ('a' = insert above in command mode).
+          await page.notebook.selectCells(0);
+          await page.keyboard.press("a");
+        } else {
+          // Insert below the preceding cell (same toolbar item Galata's
+          // addCell uses), which lands the new cell at cellIndex.
+          await page.notebook.selectCells(modification.cellIndex - 1);
+          await page.notebook.clickToolbarItem("insert");
+        }
+        await page.waitForFunction(
+          (c) => {
+            const app = (window as any).galata.app;
+            const nb = app.shell.currentWidget?.content;
+            return (nb?.widgets.length ?? 0) === c + 1;
+          },
+          beforeCount
+        );
+      }
+
+      // Use Galata's setCell to write the cell source: it is windowing-aware
+      // (scrolls the target cell into the windowed viewport and enters edit
+      // mode to materialize the CodeMirror editor before typing).
+      const modApplied = await page.notebook.setCell(
+        modification.cellIndex, "code", modification.source
+      );
+      if (!modApplied) {
+        console.log(
+          `=== [UI] COULD NOT SET CELL ${modification.cellIndex}, CLOSING TEST`
+        );
+        return;
+      }
+      await page.notebook.selectCells(modification.cellIndex);
+      await prepareExecution(page, modification.cellIndex);
+      reactiveRunStartedAt = performance.now();
+      await page.keyboard.press('Control+Enter');
+      await page.notebook.waitForRun();
     }
-    await cell.getByRole("textbox").press("ControlOrMeta+a");
-    await cell.getByRole("textbox").press("Backspace");
-    await cell.getByRole("textbox").fill(modification.source);
-    await page.notebook.runCell(modification.cellIndex, true);
-    await page.notebook.waitForRun();
+
+    const reactiveRunSettledAt = await waitForReactiveExecutionsToSettle(page);
+    const reactiveWallTimeSeconds =
+      (reactiveRunSettledAt - reactiveRunStartedAt) / 1000;
+    const totalWallTimeSeconds =
+      initialWallTimeSeconds + reactiveWallTimeSeconds;
+    console.log(`=== [METRICS] ${JSON.stringify({
+      schemaVersion: 1,
+      initialWallTimeSeconds,
+      reactiveWallTimeSeconds,
+      totalWallTimeSeconds,
+    })}`);
     await page.notebook.save();
 
-    // Save modified notebook output
-    const cellOutput = await page.notebook.getCellTextOutput(
-      modification.cellIndex
-    );
-    console.log(
-      `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
-    );
+    // Save modified notebook output. For a deletion the target cell no longer
+    // exists, so there is nothing to read.
+    if (modOp !== "delete") {
+      const cellOutput = await page.notebook.getCellTextOutput(
+        modification.cellIndex
+      );
+      console.log(
+        `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+      );
+    }
 
     // Note: a second waitForRun()+save() used to happen here, immediately
     // after the one above with nothing state-changing in between besides a
@@ -137,9 +357,10 @@ test.describe.serial("Notebook Run", () => {
     console.log(
       `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
     );
-    await page.getByText("File", { exact: true }).click();
+    // See note above: menubar-scoped File>Download avoids the getByText("File")
+    // strict-mode violation when cell output contains the text "File".
     const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("menuitem", { name: "Download" }).click();
+    await page.menu.clickMenuItem("File>Download");
     const download = await downloadPromise;
     await download.saveAs(downloadReactivePath);
 

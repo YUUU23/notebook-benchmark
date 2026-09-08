@@ -1,6 +1,6 @@
-from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff, get_cells_reran
+from utils.notebook_diff import get_all_cell_output_diff, get_cells_reran, detect_modification, relabel_reran_positions
 from utils.notebook_manager import NotebookManager
-from utils.supporting_scripts import find_supporting_scripts
+from utils.supporting_scripts import find_supporting_scripts, find_data_dependencies
 import json, subprocess, os, time, urllib.request
 
 class BenchmarkRunner:
@@ -32,32 +32,62 @@ class BenchmarkRunner:
         nb_modified_manager = NotebookManager(nb_path=nb_modified, 
                                               kernel_config=self.kernel_spec) 
         
-        cell_idx, cell_id, change, original = get_first_cell_source_diff(nb_original_manager.nb_json, nb_modified_manager.nb_json)
-        cell_idx_print = cell_idx + 1
-        print(f"=== [RUN] Found source diff: at cell index: {cell_idx_print} with cell ID: {cell_id}")
-        print(f"=== [RUN] Code of original cell {cell_idx_print}: \n{original}")
-        print(f"=== [RUN] Code to be changed into cell {cell_idx_print}: \n{change}") 
-        if cell_idx > -1:
+        mod = detect_modification(nb_original_manager.nb_json, nb_modified_manager.nb_json)
+        code_idx_print = mod.code_idx + 1
+        abs_idx_print = mod.abs_idx + 1
+        print(f"=== [RUN] Detected modification: op={mod.op} at code-cell {code_idx_print} "
+              f"(abs cell {abs_idx_print}) with cell ID: {mod.cell_id}")
+        if mod.op == "edit":
+            print(f"=== [RUN] Code of original cell {code_idx_print}: \n{mod.original}")
+            print(f"=== [RUN] Code to be changed into cell {code_idx_print}: \n{mod.source}")
+        elif mod.op == "add":
+            print(f"=== [RUN] Code of cell to be added at cell {code_idx_print}: \n{mod.source}")
+        elif mod.op == "delete":
+            print(f"=== [RUN] Code of cell to be deleted at cell {code_idx_print}: \n{mod.original}")
+        if mod.op != "none":
             nb_initial_file = f"reactive-results/initial/{nb_original_manager.nb_file_name}"
-            nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}" 
+            nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}"
             supporting_scripts = find_supporting_scripts(nb_original_manager.nb_json, nb_original_manager.nb_dir)
-            self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name,
+            # Also stage relative data files the notebook reads (e.g. ./data/x),
+            # which break once the notebook is uploaded to a fresh temp dir.
+            supporting_scripts += find_data_dependencies(
+                nb_original_manager.nb_json, nb_original_manager.nb_dir,
+                exclude={s["sourcePath"] for s in supporting_scripts},
+            )
+            self._generate_ui_config_file(mod, nb_original_manager.nb_file_name,
                                           nb_original_manager.nb_dir, nb_reactive_file, nb_initial_file,
                                           data_directory, supporting_scripts)
-            self._run_ui_to_execute_modifications() 
-        
+            self._run_ui_to_execute_modifications()
+
             nb_initial_run_manager = NotebookManager(nb_path=nb_initial_file)
             nb_after_reactive_manager = NotebookManager(nb_path=nb_reactive_file)
-            nb_after_reactive_manager.delete_last_empty_cell() 
-            nb_expected_json = nb_modified_manager.nb_run(save_to_original_file=False) 
-            
-            print("=== [RUN] PRINTING DIFF: ")
-            print(get_all_cell_output_diff(nb_actual=nb_after_reactive_manager.nb_json, nb_expected=nb_expected_json))
-            
-            print(f"=== [RUN] PRINTING CELLS EXECUTED:") 
-            reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json, cell_idx, cell_id)
-            cells_reran_print = [idx + 1 for idx in cells_reran]
-            print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {cells_reran_print}; modification made to cell: {cell_idx_print}")
+            nb_after_reactive_manager.delete_last_empty_cell()
+
+            # Reran cells needs only the initial + reactive notebooks, so compute
+            # and print it FIRST -- this drives column F and must survive even if
+            # the (heavier) expected-output run or the fragile output diff below
+            # fails. Realworld notebooks with added/idless/output-less cells make
+            # get_all_cell_output_diff / nb_run raise; isolate those so a
+            # correctness-diff failure never costs us the reran + wall-time data.
+            print(f"=== [RUN] PRINTING CELLS EXECUTED:")
+            try:
+                reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json)
+                # Report in ORIGINAL numbering: added cell -> "n", originals keep
+                # their pre-modification positions.
+                labels = relabel_reran_positions(cells_reran, mod.op, mod.code_idx)
+                reran_str = "[" + ", ".join(str(x) for x in labels) + "]"
+                mod_cell_label = "n" if mod.op == "add" else code_idx_print
+                print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {reran_str}; modification ({mod.op}) made to cell: {mod_cell_label}")
+            except Exception as e:
+                print(f"=== [RUN] WARNING: cells-reran computation failed: {e}")
+
+            # Correctness diff is best-effort and must not abort the step.
+            try:
+                nb_expected_json = nb_modified_manager.nb_run(save_to_original_file=False)
+                print("=== [RUN] PRINTING DIFF: ")
+                print(get_all_cell_output_diff(nb_actual=nb_after_reactive_manager.nb_json, nb_expected=nb_expected_json))
+            except Exception as e:
+                print(f"=== [RUN] WARNING: correctness diff skipped: {e}")
         else:
             print(f'notebooks is not different after modification; no rerun will trigger')
     
@@ -92,16 +122,48 @@ class BenchmarkRunner:
                 time.sleep(0.5)
         print(f"=== [SETUP] WARNING: Jupyter server did not respond at {url} within {timeout}s")
          
-    def _generate_ui_config_file(self, 
-                                 cell_idx: int, 
-                                 change: str, 
+    def reap_kernels(self, base_url: str = "http://localhost:8888") -> None:
+        """Shut down every kernel on the shared Jupyter server.
+
+        The server started by _setup_ui_kernel is reused for the whole suite, but
+        the Playwright test (ui/autotest.spec.ts) never shuts down the kernel it
+        spawns per notebook -- its afterAll only deletes uploaded files. Without
+        this, each benchmark leaves a fully-populated kernel resident (up to several
+        GB), memory grows across benchmarks, and the run gets OOM-killed. Called at
+        each benchmark-step boundary (main.py) so at most ~1 kernel stays resident.
+        Best-effort: a failed reap must never abort the run.
+        """
+        try:
+            with urllib.request.urlopen(f"{base_url}/api/kernels", timeout=10) as resp:
+                kernels = json.load(resp)
+        except Exception as e:
+            print(f"=== [RUN] WARNING: could not list kernels to reap: {e}")
+            return
+        reaped = 0
+        for k in kernels:
+            kid = k.get("id")
+            if not kid:
+                continue
+            try:
+                req = urllib.request.Request(f"{base_url}/api/kernels/{kid}", method="DELETE")
+                urllib.request.urlopen(req, timeout=10)
+                reaped += 1
+            except Exception as e:
+                print(f"=== [RUN] WARNING: failed to reap kernel {kid}: {e}")
+        print(f"=== [RUN] REAPED {reaped} kernels")
+
+    def _generate_ui_config_file(self,
+                                 mod,
                                  nb_to_modify_name: str,
-                                 nb_to_modify_dir: str, 
-                                 save_reactive_result_to: str, 
+                                 nb_to_modify_dir: str,
+                                 save_reactive_result_to: str,
                                  save_initial_result_to: str,
                                  data_directory: str,
                                  supporting_scripts: list = None) -> None:
-        modification = {"cellIndex": cell_idx, "source": change}
+        # cellIndex is the ABSOLUTE JupyterLab cell index (markdown included),
+        # which is what the Galata helpers in the UI spec address by. op tells
+        # the spec whether to edit in place, insert, or delete the cell.
+        modification = {"op": mod.op, "cellIndex": mod.abs_idx, "source": mod.source}
         benchmark_file_info = {"benchmarkFileName": nb_to_modify_name, "benchmarkFileDir": nb_to_modify_dir}
         config = {"modification": modification, "file": benchmark_file_info, 
                   "downloadReactivePath": save_reactive_result_to, 

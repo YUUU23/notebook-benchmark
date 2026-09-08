@@ -1,14 +1,25 @@
+from dataclasses import dataclass
+from difflib import SequenceMatcher
 from itertools import zip_longest
 
 
-def is_cell_source_diff(actual_cell, modified_cell) -> bool: 
+def _source_str(cell) -> str:
+    """Return a cell's source as a single string.
+
+    nbformat stores ``source`` either as one string or as a list of line
+    strings; normalize to a string so sources are hashable (SequenceMatcher)
+    and comparable regardless of how the file was written.
     """
-    Return whether or not the source of the actual cell is different from the 
-    modified cell. 
+    src = cell.get("source", "")
+    return "".join(src) if isinstance(src, list) else src
+
+
+def is_cell_source_diff(actual_cell, modified_cell) -> bool:
     """
-    actual_cell_source = actual_cell["source"]
-    modified_cell_source = modified_cell["source"]
-    return actual_cell_source != modified_cell_source
+    Return whether or not the source of the actual cell is different from the
+    modified cell.
+    """
+    return _source_str(actual_cell) != _source_str(modified_cell)
 
 def get_code_cells(nb_json: str) -> list[str]: 
     """
@@ -166,16 +177,18 @@ def parse_and_compare(nb_json_expected: dict[str, any], nb_json_actual: dict[str
     
     return msg
 
-def get_all_cell_output_diff(nb_expected, nb_actual) -> str: 
+def get_all_cell_output_diff(nb_expected, nb_actual) -> str:
     """
-    Print diff of two notebook outputs. 
+    Print diff of two notebook outputs.
 
-    Uses cell-ID-based matching when the notebooks carry cell IDs (nbformat >= 4.5).
-    Falls back to position-based matching for older notebooks that lack cell IDs.
+    The actual (reactive) notebook and the expected notebook (the modified
+    notebook run fresh) represent the same final notebook, so they have the same
+    code cells in the same order and are matched by position. Their cell ids are
+    NOT comparable -- they come from two independent pipelines (JupyterLab vs
+    nbconvert) -- so id matching is not required. This position matching is what
+    lets add/delete steps produce a real output diff instead of misaligning.
     """
-    expected_cells = get_code_cells(nb_expected)
-    has_ids = bool(expected_cells) and expected_cells[0].get("id") is not None
-    return "\n".join(parse_and_compare(nb_expected, nb_actual, field="outputs", cell_id_must_match=has_ids))
+    return "\n".join(parse_and_compare(nb_expected, nb_actual, field="outputs", cell_id_must_match=0))
 
 def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> tuple[int, str, str, str]: 
     """
@@ -191,39 +204,199 @@ def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> 
     
     for cell_i, (original_cells, modified_cells) in enumerate(zip(original_cells, modified_cells)):
         if is_cell_source_diff(original_cells, modified_cells):
-            change = modified_cells["source"]
-            original = original_cells["source"]
+            change = _source_str(modified_cells)
+            original = _source_str(original_cells)
             cell_id = original_cells.get("id", "")
             return (cell_i, cell_id, change, original)
-    
+
     return (-1, "", "", "")
 
-def get_cells_reran(nb_json_original: str, nb_json_modified: str, modified_cell_idx: int, modified_cell_id: str) -> tuple[int, int, list[int]]: 
-    """
-    Return execution count difference of two notebooks given, and a list of 
-    cell indexes for those cells where the execution count differs. 
-    """
-    original_cells = get_code_cells(nb_json_original)
-    modified_cells = get_code_cells(nb_json_modified)
-    
-    reran_count = 0
-    cells_reran = []
-    for cell_i, (original_cell, modified_cell) in enumerate(zip(original_cells, modified_cells)):
-        if cell_i == modified_cell_idx: 
-            orig_id = modified_cell.get("id")
-            if orig_id and modified_cell_id and orig_id != modified_cell_id:
-                raise ValueError(f"Cell ID mismatch for modified cell {modified_cell_idx}")
-            else: 
-                continue
 
-        orig_id = original_cell.get("id")
-        mod_id = modified_cell.get("id")
-        if orig_id and mod_id and orig_id != mod_id:
-            raise ValueError("Cell ID mismatch")
-        
-        if original_cell["execution_count"] != modified_cell["execution_count"]:
-            reran_count += 1
-            cells_reran.append(cell_i)
-    
-    return (reran_count, len(original_cells), cells_reran)
-        
+def code_index_to_abs_index(nb_json, code_idx: int) -> int:
+    """Map a code-cell ordinal to its absolute cell index in the notebook.
+
+    The diff functions count code cells only, but JupyterLab (Galata's
+    setCell/getCellLocator/selectCells/deleteCells) addresses cells by their
+    absolute position in the full cell list, markdown included. Returns -1 if
+    code_idx is out of range.
+    """
+    seen = 0
+    for abs_i, cell in enumerate(nb_json["cells"]):
+        if cell["cell_type"] != "code":
+            continue
+        if seen == code_idx:
+            return abs_i
+        seen += 1
+    return -1
+
+
+@dataclass
+class Modification:
+    """A single structural change between an original and a modified notebook.
+
+    op        -- "edit" | "add" | "delete" | "none"
+    code_idx  -- code-cell index of the change (in the modified notebook for
+                 edit/add, in the original for delete); -1 for "none"
+    abs_idx   -- absolute cell index for the UI to act on; -1 for "none"
+    source    -- new source for edit/add; "" for delete/none
+    cell_id   -- id of the target cell if the source file carries one; "" otherwise
+    original  -- original source for edit; "" otherwise
+    """
+    op: str
+    code_idx: int
+    abs_idx: int
+    source: str
+    cell_id: str
+    original: str
+
+
+def _best_match_extra(shorter: list[str], longer: list[str]) -> int:
+    """Return the index in ``longer`` of its one 'extra' element.
+
+    Precondition: len(longer) == len(shorter) + 1. Tries removing each element
+    of ``longer`` and scores how well the remainder aligns positionally with
+    ``shorter`` (exact match, else SequenceMatcher ratio); the removal that
+    aligns best identifies the added/deleted cell. This disambiguates an
+    add/delete that sits adjacent to an in-place edit, which SequenceMatcher
+    reports as one unequal-length 'replace' block.
+    """
+    best_p, best_score = 0, -1.0
+    for p in range(len(longer)):
+        remaining = longer[:p] + longer[p + 1:]
+        score = sum(1.0 if a == b else SequenceMatcher(a=a, b=b, autojunk=False).ratio()
+                    for a, b in zip(shorter, remaining))
+        if score > best_score:
+            best_score, best_p = score, p
+    return best_p
+
+
+def detect_modification(nb_json_original, nb_json_modified) -> Modification:
+    """Classify the modification between two notebooks as edit / add / delete.
+
+    Uses the code-cell-count delta as the structural signal and
+    difflib.SequenceMatcher over code-cell sources to locate the change, so it
+    is independent of whether the source files carry cell ids (they often do
+    not). Only a single structural op per step is supported (the runner's
+    model): exactly one op block may change the code-cell count, by +/-1.
+    Incidental in-place edits elsewhere are tolerated; a multi-cell or
+    otherwise un-isolable structural change raises ValueError so the step fails
+    loudly rather than silently mislabelling the modification.
+    """
+    orig_code = get_code_cells(nb_json_original)
+    mod_code = get_code_cells(nb_json_modified)
+    delta = len(mod_code) - len(orig_code)
+
+    if delta == 0:
+        code_idx, cell_id, change, original = get_first_cell_source_diff(
+            nb_json_original, nb_json_modified)
+        if code_idx < 0:
+            return Modification("none", -1, -1, "", "", "")
+        abs_idx = code_index_to_abs_index(nb_json_modified, code_idx)
+        return Modification("edit", code_idx, abs_idx, change, cell_id, original)
+
+    if abs(delta) > 1:
+        raise ValueError(
+            f"unsupported multi-cell structural change: code-cell count differs "
+            f"by {delta} (only a single add/delete per step is supported)")
+
+    orig_srcs = [_source_str(c) for c in orig_code]
+    mod_srcs = [_source_str(c) for c in mod_code]
+    opcodes = SequenceMatcher(a=orig_srcs, b=mod_srcs, autojunk=False).get_opcodes()
+
+    # Exactly one opcode may change the count (equal-length 'replace' blocks are
+    # incidental edits and ignored). Its net change must equal the overall delta.
+    structural = [(tag, i1, i2, j1, j2) for tag, i1, i2, j1, j2 in opcodes
+                  if (i2 - i1) != (j2 - j1)]
+    if len(structural) != 1:
+        raise ValueError(
+            f"could not isolate a single structural change; found {len(structural)} "
+            f"count-changing blocks: {structural}")
+    tag, i1, i2, j1, j2 = structural[0]
+    if (j2 - j1) - (i2 - i1) != delta:
+        raise ValueError(f"structural block {structural[0]} does not net {delta:+d}")
+
+    if delta == 1:
+        # Pure insert -> whole block is the added cell; replace(+1) -> the extra
+        # modified cell in the block is the add, the rest are edits.
+        offset = 0 if tag == "insert" else _best_match_extra(
+            orig_srcs[i1:i2], mod_srcs[j1:j2])
+        j = j1 + offset
+        added = mod_code[j]
+        return Modification("add", j, code_index_to_abs_index(nb_json_modified, j),
+                            _source_str(added), added.get("id", ""), "")
+
+    # delta == -1
+    offset = 0 if tag == "delete" else _best_match_extra(
+        mod_srcs[j1:j2], orig_srcs[i1:i2])
+    i = i1 + offset
+    removed = orig_code[i]
+    return Modification("delete", i, code_index_to_abs_index(nb_json_original, i),
+                        "", removed.get("id", ""), _source_str(removed))
+
+def get_cells_reran(nb_initial_json, nb_reactive_json) -> tuple[int, int, list[int]]:
+    """
+    Return the ordered execution events of a reactive episode.
+
+    Both arguments are JupyterLab downloads from the same session: the initial
+    run (before the modification) and the result after the modification plus its
+    reactive cascade. A cell participated in the episode iff its execution count
+    in the reactive notebook exceeds every count present in the initial run --
+    i.e. it is >= baseline, where baseline = max(initial counts) + 1. The
+    user-triggered cell (edit or added cell) executes at exactly baseline; the
+    scheduler's reactive reruns get successively higher counts. Ordering by
+    execution count therefore puts the triggering cell first (for edit/add) and
+    the reactive reruns after it. A deletion has no triggering execution, so
+    every participating cell is a reactive rerun.
+
+    This reads only the reactive notebook's counts, so it is immune to the
+    positional/id shifts introduced by an added or deleted cell.
+
+    Returns (count, total_code_cells, positions) where positions are 0-based
+    code-cell indices in the reactive notebook.
+    """
+    initial_cells = get_code_cells(nb_initial_json)
+    reactive_cells = get_code_cells(nb_reactive_json)
+
+    initial_counts = [
+        cell.get("execution_count")
+        for cell in initial_cells
+        if isinstance(cell.get("execution_count"), int)
+    ]
+    baseline = max(initial_counts, default=0) + 1
+
+    events = []
+    for pos, cell in enumerate(reactive_cells):
+        ec = cell.get("execution_count")
+        if isinstance(ec, int) and ec >= baseline:
+            events.append((ec, pos))
+
+    events.sort()
+    cells_executed = [pos for _, pos in events]
+    return (len(cells_executed), len(reactive_cells), cells_executed)
+
+
+def relabel_reran_positions(positions, op, code_idx):
+    """Map 0-based reactive code-cell positions to 1-based ORIGINAL numbering.
+
+    Reran positions from get_cells_reran count code cells in the post-modification
+    notebook, so an add/delete shifts every downstream original cell. Relabel so
+    the report uses the original notebook's numbering: the added cell is "n" and
+    the surviving originals keep their pre-modification positions. code_idx is the
+    change's code-cell index (in the modified notebook for add, in the original for
+    delete). edit/none are identity.
+    """
+    labels = []
+    for p in positions:
+        if op == "add":
+            if p == code_idx:
+                labels.append("n")
+            elif p < code_idx:
+                labels.append(p + 1)
+            else:
+                labels.append(p)  # original 0-based p-1 -> 1-based p
+        elif op == "delete":
+            orig = p if p < code_idx else p + 1
+            labels.append(orig + 1)
+        else:
+            labels.append(p + 1)
+    return labels
