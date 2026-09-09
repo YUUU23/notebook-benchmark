@@ -14,6 +14,9 @@ jupyter-run/config/mod_config_file.json
 **/*.pkl
 
 **/data/
-*/dataset/
+**/dataset/
+**/logs/
+**/results/
 jupyter-run/.jupyter_server.pid
 benchmarks/realworld/auc_tables/generated_tabulars
+**/config/**/ipython/profile_default/history.sqlite
