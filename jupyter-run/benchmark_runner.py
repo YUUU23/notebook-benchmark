@@ -1,4 +1,4 @@
-from utils.notebook_diff import get_all_cell_output_diff, get_first_cell_source_diff, get_cells_reran
+from utils.notebook_diff import get_all_cell_output_diff, get_notebook_modification, get_cells_reran
 from utils.notebook_manager import NotebookManager
 from utils.supporting_scripts import find_supporting_scripts
 import json, subprocess, os, time, urllib.request
@@ -32,18 +32,25 @@ class BenchmarkRunner:
         nb_modified_manager = NotebookManager(nb_path=nb_modified, 
                                               kernel_config=self.kernel_spec) 
         
-        cell_idx, cell_id, change, original = get_first_cell_source_diff(nb_original_manager.nb_json, nb_modified_manager.nb_json)
+        mod_type, cell_idx, cell_id, change, original = get_notebook_modification(nb_original_manager.nb_json, nb_modified_manager.nb_json)
         cell_idx_print = cell_idx + 1
-        print(f"=== [RUN] Found source diff: at cell index: {cell_idx_print} with cell ID: {cell_id}")
-        print(f"=== [RUN] Code of original cell {cell_idx_print}: \n{original}")
-        print(f"=== [RUN] Code to be changed into cell {cell_idx_print}: \n{change}") 
+        if mod_type == "insert":
+            print(f"=== [RUN] Found inserted cell: at cell index: {cell_idx_print}")
+            print(f"=== [RUN] Code of inserted cell {cell_idx_print}: \n{change}")
+        elif mod_type == "delete":
+            print(f"=== [RUN] Found deleted cell: at cell index: {cell_idx_print} with cell ID: {cell_id}")
+            print(f"=== [RUN] Code of deleted cell {cell_idx_print}: \n{original}")
+        else:
+            print(f"=== [RUN] Found source diff: at cell index: {cell_idx_print} with cell ID: {cell_id}")
+            print(f"=== [RUN] Code of original cell {cell_idx_print}: \n{original}")
+            print(f"=== [RUN] Code to be changed into cell {cell_idx_print}: \n{change}")
         if cell_idx > -1:
             nb_initial_file = f"reactive-results/initial/{nb_original_manager.nb_file_name}"
             nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}" 
             supporting_scripts = find_supporting_scripts(nb_original_manager.nb_json, nb_original_manager.nb_dir)
             self._generate_ui_config_file(cell_idx, change, nb_original_manager.nb_file_name,
                                           nb_original_manager.nb_dir, nb_reactive_file, nb_initial_file,
-                                          data_directory, supporting_scripts)
+                                          data_directory, supporting_scripts, mod_type)
             self._run_ui_to_execute_modifications() 
         
             nb_initial_run_manager = NotebookManager(nb_path=nb_initial_file)
@@ -55,7 +62,7 @@ class BenchmarkRunner:
             print(get_all_cell_output_diff(nb_actual=nb_after_reactive_manager.nb_json, nb_expected=nb_expected_json))
             
             print(f"=== [RUN] PRINTING CELLS EXECUTED:") 
-            reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json, cell_idx, cell_id)
+            reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json, cell_idx, cell_id, mod_type)
             cells_reran_print = [idx + 1 for idx in cells_reran]
             print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {cells_reran_print}; modification made to cell: {cell_idx_print}")
         else:
@@ -100,8 +107,9 @@ class BenchmarkRunner:
                                  save_reactive_result_to: str, 
                                  save_initial_result_to: str,
                                  data_directory: str,
-                                 supporting_scripts: list = None) -> None:
-        modification = {"cellIndex": cell_idx, "source": change}
+                                 supporting_scripts: list = None,
+                                 mod_type: str = "replace") -> None:
+        modification = {"type": mod_type, "cellIndex": cell_idx, "source": change}
         benchmark_file_info = {"benchmarkFileName": nb_to_modify_name, "benchmarkFileDir": nb_to_modify_dir}
         config = {"modification": modification, "file": benchmark_file_info, 
                   "downloadReactivePath": save_reactive_result_to, 

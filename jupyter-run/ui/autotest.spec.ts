@@ -96,31 +96,73 @@ test.describe.serial("Notebook Run", () => {
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
-    // Make change
-    console.log(
-      `=== [UI] MAKING MODIFICATION TO CELL INDEX: ${modification.cellIndex}`
-    );
-    const cell = await page.notebook.getCellLocator(modification.cellIndex);
-    if (!cell) {
+    // Make change. modification.type is "replace" (edit an existing cell's
+    // source -- the default when the field is absent, preserving the old
+    // config format), "insert" (add a new cell at cellIndex holding
+    // modification.source), or "delete" (remove the cell at cellIndex).
+    const modType = (modification as { type?: string }).type ?? "replace";
+    if (modType === "delete") {
       console.log(
-        `=== [UI] CELL WITH CELL INDEX ${modification.cellIndex} FOUND, CLOSING TEST`
+        `=== [UI] DELETING CELL AT INDEX: ${modification.cellIndex}`
       );
-      return;
-    }
-    await cell.getByRole("textbox").press("ControlOrMeta+a");
-    await cell.getByRole("textbox").press("Backspace");
-    await cell.getByRole("textbox").fill(modification.source);
-    await page.notebook.runCell(modification.cellIndex, true);
-    await page.notebook.waitForRun();
-    await page.notebook.save();
+      const cell = await page.notebook.getCellLocator(modification.cellIndex);
+      if (!cell) {
+        console.log(
+          `=== [UI] CELL WITH CELL INDEX ${modification.cellIndex} NOT FOUND, CLOSING TEST`
+        );
+        return;
+      }
+      await cell.click();
+      await page.keyboard.press("Escape"); // command mode
+      await page.keyboard.press("d");
+      await page.keyboard.press("d"); // d,d deletes the selected cell
+      await page.notebook.waitForRun();
+      await page.notebook.save();
+    } else {
+      if (modType === "insert") {
+        // Create the new empty cell at cellIndex first; the shared
+        // fill-and-run code below then targets it like any other cell.
+        console.log(
+          `=== [UI] INSERTING NEW CELL AT INDEX: ${modification.cellIndex}`
+        );
+        const anchorIndex = Math.max(modification.cellIndex - 1, 0);
+        const anchor = await page.notebook.getCellLocator(anchorIndex);
+        if (!anchor) {
+          console.log(
+            `=== [UI] CELL WITH CELL INDEX ${anchorIndex} NOT FOUND, CLOSING TEST`
+          );
+          return;
+        }
+        await anchor.click();
+        await page.keyboard.press("Escape"); // command mode
+        // "b" inserts below the anchor; "a" inserts above it (cellIndex 0)
+        await page.keyboard.press(modification.cellIndex === 0 ? "a" : "b");
+      }
+      console.log(
+        `=== [UI] MAKING MODIFICATION TO CELL INDEX: ${modification.cellIndex}`
+      );
+      const cell = await page.notebook.getCellLocator(modification.cellIndex);
+      if (!cell) {
+        console.log(
+          `=== [UI] CELL WITH CELL INDEX ${modification.cellIndex} FOUND, CLOSING TEST`
+        );
+        return;
+      }
+      await cell.getByRole("textbox").press("ControlOrMeta+a");
+      await cell.getByRole("textbox").press("Backspace");
+      await cell.getByRole("textbox").fill(modification.source);
+      await page.notebook.runCell(modification.cellIndex, true);
+      await page.notebook.waitForRun();
+      await page.notebook.save();
 
-    // Save modified notebook output
-    const cellOutput = await page.notebook.getCellTextOutput(
-      modification.cellIndex
-    );
-    console.log(
-      `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
-    );
+      // Save modified notebook output
+      const cellOutput = await page.notebook.getCellTextOutput(
+        modification.cellIndex
+      );
+      console.log(
+        `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+      );
+    }
 
     // Note: a second waitForRun()+save() used to happen here, immediately
     // after the one above with nothing state-changing in between besides a

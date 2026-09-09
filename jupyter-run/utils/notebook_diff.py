@@ -198,32 +198,115 @@ def get_first_cell_source_diff(nb_json_original: str, nb_json_modified: str) -> 
     
     return (-1, "", "", "")
 
-def get_cells_reran(nb_json_original: str, nb_json_modified: str, modified_cell_idx: int, modified_cell_id: str) -> tuple[int, int, list[int]]: 
+def get_notebook_modification(nb_json_original: str, nb_json_modified: str) -> tuple[str, int, str, str, str]:
     """
-    Return execution count difference of two notebooks given, and a list of 
-    cell indexes for those cells where the execution count differs. 
+    Identify the single modification turning the original notebook into the
+    modified notebook.
+
+    Returns (mod_type, cell_idx, cell_id, change, original):
+      - ("replace", idx, id, new_source, old_source): same cell count; first
+        cell whose source differs (via get_first_cell_source_diff; idx is -1
+        when no cell differs).
+      - ("insert", idx, "", inserted_source, ""): the modified notebook has
+        exactly one extra cell, at idx; every other cell's source is unchanged.
+      - ("delete", idx, id, "", deleted_source): the modified notebook is
+        missing the original cell at idx; every other cell's source is
+        unchanged.
+    cell_idx is 0-based. For insert it is the new cell's position in the
+    modified notebook; for delete it is the removed cell's position in the
+    original notebook.
+
+    Raises IOError when the difference is not exactly one of the three
+    supported single-cell modifications (e.g. a cell inserted AND another
+    cell edited, or the cell count differing by more than one).
     """
     original_cells = get_code_cells(nb_json_original)
     modified_cells = get_code_cells(nb_json_modified)
-    
+
+    if len(original_cells) == len(modified_cells):
+        cell_idx, cell_id, change, original = get_first_cell_source_diff(nb_json_original, nb_json_modified)
+        return ("replace", cell_idx, cell_id, change, original)
+
+    if abs(len(original_cells) - len(modified_cells)) != 1:
+        raise IOError(
+            f"unsupported modification: cell count differs by more than one "
+            f"({len(original_cells)} -> {len(modified_cells)} code cells)")
+
+    # Exactly one extra cell on one side: find the first index where the two
+    # notebooks diverge, then require every cell after it to line up shifted
+    # by one -- otherwise this is not a single-cell insert/delete.
+    shorter, longer = ((original_cells, modified_cells)
+                       if len(modified_cells) > len(original_cells)
+                       else (modified_cells, original_cells))
+    cell_idx = 0
+    while cell_idx < len(shorter) and not is_cell_source_diff(shorter[cell_idx], longer[cell_idx]):
+        cell_idx += 1
+    for i in range(cell_idx, len(shorter)):
+        if is_cell_source_diff(shorter[i], longer[i + 1]):
+            raise IOError(
+                "unsupported modification: notebooks differ in more than a "
+                f"single inserted/deleted cell (extra cell at index {cell_idx}, "
+                f"but cell {i} also differs)")
+
+    if len(modified_cells) > len(original_cells):
+        return ("insert", cell_idx, "", longer[cell_idx]["source"], "")
+    return ("delete", cell_idx, longer[cell_idx].get("id", ""), "", longer[cell_idx]["source"])
+
+def get_cells_reran(nb_json_original: str, nb_json_modified: str, modified_cell_idx: int, modified_cell_id: str, mod_type: str = "replace") -> tuple[int, int, list[int]]:
+    """
+    Return execution count difference of two notebooks given, and a list of
+    cell indexes for those cells where the execution count differs.
+
+    mod_type describes how the modified notebook's cell layout relates to the
+    original's: "replace" (same layout; default, previous behavior), "insert"
+    (modified has one extra cell at modified_cell_idx), or "delete" (modified
+    is missing the original cell at modified_cell_idx). For insert/delete the
+    two notebooks' cells are aligned across the offset, the inserted/deleted
+    cell itself is excluded from the count, and reported indexes are positions
+    in the modified notebook.
+    """
+    original_cells = get_code_cells(nb_json_original)
+    modified_cells = get_code_cells(nb_json_modified)
+
+    if mod_type in ("insert", "delete"):
+        # (original_idx, modified_idx) for every cell present in both notebooks.
+        if mod_type == "insert":
+            pairs = [(m - 1 if m > modified_cell_idx else m, m)
+                     for m in range(len(modified_cells)) if m != modified_cell_idx]
+        else:
+            pairs = [(o, o - 1 if o > modified_cell_idx else o)
+                     for o in range(len(original_cells)) if o != modified_cell_idx]
+        reran_count = 0
+        cells_reran = []
+        for orig_i, mod_i in pairs:
+            original_cell = original_cells[orig_i]
+            modified_cell = modified_cells[mod_i]
+            orig_id = original_cell.get("id")
+            mod_id = modified_cell.get("id")
+            if orig_id and mod_id and orig_id != mod_id:
+                raise ValueError("Cell ID mismatch")
+            if original_cell["execution_count"] != modified_cell["execution_count"]:
+                reran_count += 1
+                cells_reran.append(mod_i)
+        return (reran_count, len(modified_cells), cells_reran)
+
     reran_count = 0
     cells_reran = []
     for cell_i, (original_cell, modified_cell) in enumerate(zip(original_cells, modified_cells)):
-        if cell_i == modified_cell_idx: 
+        if cell_i == modified_cell_idx:
             orig_id = modified_cell.get("id")
             if orig_id and modified_cell_id and orig_id != modified_cell_id:
                 raise ValueError(f"Cell ID mismatch for modified cell {modified_cell_idx}")
-            else: 
+            else:
                 continue
 
         orig_id = original_cell.get("id")
         mod_id = modified_cell.get("id")
         if orig_id and mod_id and orig_id != mod_id:
             raise ValueError("Cell ID mismatch")
-        
+
         if original_cell["execution_count"] != modified_cell["execution_count"]:
             reran_count += 1
             cells_reran.append(cell_i)
-    
+
     return (reran_count, len(original_cells), cells_reran)
-        
