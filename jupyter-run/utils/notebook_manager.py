@@ -45,7 +45,7 @@ class NotebookManager:
         if code_cells: 
             last_cell = code_cells[-1]
             if last_cell["execution_count"] == None and len(last_cell["outputs"]) == 0:
-                self.nb_json = nb_json_cells[:-1]
+                self.nb_json["cells"] = nb_json_cells[:-1]
     
     def _change_kernel_spec(self) -> bool: 
         if self.kernel_spec:

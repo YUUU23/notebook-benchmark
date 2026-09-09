@@ -165,3 +165,27 @@ cd ./ui-tests
 jlpm up "@playwright/test"
 jlpm playwright install
 ```
+
+## Benchmark modification types
+
+A benchmark's `mN_` notebook must differ from its base notebook by **exactly one
+modification**. Three types are supported; the type is detected automatically
+(`utils/notebook_diff.py: get_notebook_modification`) and carried through the
+generated mod config's `modification.type` field to the UI test:
+
+| type | meaning | how the UI applies it |
+|---|---|---|
+| `replace` | same cell count; one cell's source changed | overwrite that cell's source and run it (previous behavior; the default when `type` is absent) |
+| `insert` | one extra cell at `cellIndex` | create a new cell at that position, fill it with `source`, run it **exactly once** (inserted mutations like `list.append`/`dict.pop` are often non-idempotent) |
+| `delete` | one cell removed from the base | delete the cell at `cellIndex` (command-mode `d,d`), then save; nothing is executed, so the recorded reaction is whatever the reactive system reruns on its own |
+
+For insert/delete, the rerun comparison (`get_cells_reran`) aligns the initial-run
+and post-reaction notebooks across the one-cell offset; the inserted/deleted cell
+itself is excluded from the reran count and reported indexes are positions in the
+modified notebook. Anything that is not a single-cell replace/insert/delete
+(e.g. an inserted cell **plus** an edit to another cell, or several cells removed
+at once) is rejected with an explicit error instead of producing wrong results.
+
+A minimal end-to-end check for the insert path lives in
+`benchmarks/test/insert_smoke/`; `benchmarks/py-built-in/del_list_append/`
+exercises the delete path.
