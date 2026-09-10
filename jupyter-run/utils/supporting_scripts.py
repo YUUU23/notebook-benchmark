@@ -3,11 +3,32 @@ import os
 from pathlib import Path
 
 
+def _strip_ipython_magics(source: str) -> str:
+    """Drop IPython line magics (%foo), cell magics (%%foo) and shell escapes
+    (!cmd) so ast.parse succeeds on the remaining Python.
+
+    Without this, a cell like `%load_ext autoreload\\nfrom utils import x`
+    raises SyntaxError in ast.parse, and EVERY import / string / sys.path call in
+    that cell is silently missed (that dependency then never gets staged).
+    Best-effort and line-oriented: a `%%cell-magic` transforms the whole cell, so
+    once one is seen the rest of the cell is not Python and is dropped too.
+    """
+    out: list[str] = []
+    for line in source.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith("%%"):
+            break  # cell magic: remainder of the cell is not Python
+        if stripped.startswith("%") or stripped.startswith("!"):
+            continue  # line magic / shell escape
+        out.append(line)
+    return "\n".join(out)
+
+
 def _extract_imported_names(source: str) -> set[str]:
     """Return top-level module names from import statements in Python source."""
     names = set()
     try:
-        tree = ast.parse(source)
+        tree = ast.parse(_strip_ipython_magics(source))
     except SyntaxError:
         return names
     for node in ast.walk(tree):
@@ -27,7 +48,7 @@ def _extract_sys_path_dirs(source: str) -> list[str]:
     """
     dirs = []
     try:
-        tree = ast.parse(source)
+        tree = ast.parse(_strip_ipython_magics(source))
     except SyntaxError:
         return dirs
     for node in ast.walk(tree):
@@ -55,7 +76,7 @@ def _extract_string_literals(source: str) -> list[str]:
     """Return string constants appearing anywhere in Python source."""
     out: list[str] = []
     try:
-        tree = ast.parse(source)
+        tree = ast.parse(_strip_ipython_magics(source))
     except SyntaxError:
         return out
     for node in ast.walk(tree):
@@ -234,6 +255,21 @@ def find_supporting_scripts(nb_json: dict, nb_dir: str) -> list[dict]:
         source = "".join(cell.get("source", []))
         for rel in _extract_sys_path_dirs(source):
             candidate = (nb_dir_path / rel).resolve()
+            # Never upload the suite root or an ancestor. `sys.path.append("..")`
+            # resolves to nb_dir's parent -- the whole benchmark suite -- so
+            # staging it would upload every sibling benchmark and its multi-GB
+            # datasets (which also overflows Node's base64 string limit in the
+            # Galata uploader). `.` (nb_dir itself) stays allowed -- a benchmark
+            # legitimately uploads its own dir that way. Sibling folders (e.g.
+            # `../shared_lib`) are NOT ancestors and stay allowed too; modules the
+            # notebook actually imports are staged individually by Strategy 2.
+            if candidate in nb_dir_path.parents:
+                print(
+                    f"=== [RUN] WARNING: sys.path dir {rel!r} resolves to the "
+                    f"suite root or above ({candidate}); not uploading it whole "
+                    f"-- imported modules are staged individually instead"
+                )
+                continue
             if candidate.is_dir() and str(candidate) not in seen:
                 seen.add(str(candidate))
                 sys_path_added.add(candidate)

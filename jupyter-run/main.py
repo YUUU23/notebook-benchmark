@@ -2,18 +2,19 @@
 import argparse, os, re, subprocess, shutil
 from pathlib import Path
 from benchmark_runner import BenchmarkRunner
-    
+from utils.rerun_sheet import fetch_rerun_sets, WEB_APP_URL
 
-def run_benchmarks(b: BenchmarkRunner, name:str, 
-                   original_nb_path: str, modified_nb_path: str, 
-                   data_directory: str): 
+
+def run_benchmarks(b: BenchmarkRunner, name:str,
+                   original_nb_path: str, modified_nb_path: str,
+                   data_directory: str, rerun_set: str = None):
     """
-    Run single benchmark with benchmark runner. 
+    Run single benchmark with benchmark runner.
     """
     print(f"============================ ")
     print(f"=== [RUN] RUNNING {name} === ")
-    try: 
-        b.run(original_nb_path, modified_nb_path, data_directory)
+    try:
+        b.run(original_nb_path, modified_nb_path, data_directory, rerun_set)
     except Exception as e:
         print(f"Failed to run benchamrk {name}, with files {original_nb_path} and {modified_nb_path}, {e}")
     print(f"=== [RUN] COMPLETE RUNNING {name} ===")
@@ -137,6 +138,9 @@ def main():
     parser.add_argument("--run_in_copy", action="store_true", help="make copy of original benchmarks and run in copy directory for isolation") 
     parser.add_argument("--auto_cleanup", action="store_true", help="automatically cleanup after run")
     parser.add_argument("--resume-log", type=str, help="prior run log; skip benchmarks already marked COMPLETE in it")
+    parser.add_argument("--rerun-sheet-url", type=str, default=WEB_APP_URL,
+                        help="Apps Script /exec URL to pull the python3 baseline rerun "
+                             "set (results-sheet column D) from; only used for the python3 kernel")
     args = parser.parse_args()
     
     if args.config == None: 
@@ -174,6 +178,13 @@ def main():
         
         if benchmark_to_run:
             completed = load_completed_labels(args.resume_log) if args.resume_log else set()
+            # The python3 baseline reruns a manually-maintained cell set (sheet
+            # column D). Pull it once, keyed by step label (== sheet column A), so
+            # column D can be edited in the sheet without a CSV round-trip. Only
+            # python3 needs it; reactive kernels cascade on their own.
+            kernel_name = os.path.basename(os.path.normpath(args.config))
+            rerun_sets = (fetch_rerun_sets(args.rerun_sheet_url)
+                          if kernel_name == "python3" else {})
             spawn_ui_kernel = args.start_ui_kernel
             b = BenchmarkRunner(args.config, spawn_ui_kernel=spawn_ui_kernel)
             for name, steps in benchmark_to_run:
@@ -185,7 +196,8 @@ def main():
                     if step_label in completed:
                         print(f"=== [RUN] SKIP (already complete) {step_label} ===")
                         continue
-                    run_benchmarks(b, step_label, original_nb_path, modified_nb_path, data_directory)
+                    run_benchmarks(b, step_label, original_nb_path, modified_nb_path,
+                                   data_directory, rerun_sets.get(step_label))
                     # Reclaim the kernel(s) this step left on the shared server so
                     # memory does not accumulate across benchmarks (see reap_kernels).
                     b.reap_kernels()

@@ -7,8 +7,8 @@ module.exports = {
   ...baseConfig,
   ...defineConfig({
     testDir: "../../ui",
-    testMatch: "autotest-baseline.spec.ts", // plain run-all baseline (column E)
-    // 20 min: realworld initial run-all can be slow.
+    testMatch: "autotest-python3.spec.ts", // run-all (col E) + rerun manual set (col F)
+    // 20 min: realworld initial run-all + manual rerun can be slow.
     timeout: 20 * 60 * 1000,
   }),
   webServer: {

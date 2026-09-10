@@ -7,7 +7,7 @@ module.exports = {
   ...baseConfig,
   ...defineConfig({
     testDir: "../../ui",
-    testMatch: "autotest.spec.ts", // Matches only this file
+    testMatch: "autotest-ipyflow.spec.ts", // ipyflow-only: full initial run + keyboard edit
     // 20 min: realworld reactive runs are heavier than the automatable suites.
     timeout: 20 * 60 * 1000,
   }),

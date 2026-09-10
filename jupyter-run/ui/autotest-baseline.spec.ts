@@ -4,15 +4,17 @@ import * as path from "path";
 import * as fs from "fs";
 import test_config from "../config/mod_config_file.json";
 
-// Baseline "run all cells top-to-bottom" timing (Google Sheet column E). Unlike
-// autotest.spec.ts this makes no modification and does no reactive cascade:
-// it opens the notebook, runs all cells once, and reports only
-// initialWallTimeSeconds. Used with the plain python3 kernel (config/python3).
+// Plain "run all cells top-to-bottom" timing, no modification, no rerun: opens
+// the notebook, runs all cells once, and reports only initialWallTimeSeconds.
+//
+// NOTE: config/python3 now uses autotest-python3.spec.ts (run-all for column E
+// PLUS a manual rerun set for column F). This spec is kept as a standalone
+// run-all-only baseline; point a config's testMatch at it to use it.
 //
 // It still downloads the executed notebook to BOTH the initial and reactive
 // paths that BenchmarkRunner.run() reads back for its diff step, so run()
 // completes cleanly instead of throwing on a missing file (the diff result is
-// irrelevant here -- only column E is consumed for python3).
+// irrelevant here).
 
 const fileName = test_config.file.benchmarkFileName;
 const benchmarks_dir = test_config.file.benchmarkFileDir;

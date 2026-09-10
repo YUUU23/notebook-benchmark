@@ -400,3 +400,52 @@ def relabel_reran_positions(positions, op, code_idx):
         else:
             labels.append(p + 1)
     return labels
+
+
+def rerun_labels_to_abs_indices(labels, op, code_idx, nb_modified_json) -> list[int]:
+    """Map manual rerun-set labels to absolute cell indices in the modified notebook.
+
+    Inverse of relabel_reran_positions: labels use ORIGINAL 1-based code-cell
+    numbering ("n" == the added cell), the convention maintained by hand in the
+    results sheet's column D. Each label is resolved to a 0-based code-cell
+    position in the MODIFIED notebook (accounting for the add/delete shift), then
+    to an absolute cell index (markdown included) via code_index_to_abs_index --
+    which is what the Galata helpers in the python3 spec address by.
+
+    labels may be an iterable of ints/strings or a comma string like "n,2,3".
+    code_idx is the change's code-cell index (modified notebook for add/edit,
+    original for delete). Unresolvable labels (the deleted cell itself, or an
+    out-of-range index) are skipped. Returns positions sorted ascending so the
+    baseline reruns cells top-to-bottom.
+    """
+    if isinstance(labels, str):
+        labels = [t for t in labels.replace(" ", "").split(",") if t]
+
+    positions = []
+    for label in labels:
+        label = str(label).strip()
+        if not label:
+            continue
+        if label == "n":
+            pos = code_idx if op == "add" else -1  # "n" only meaningful for add
+        else:
+            try:
+                v = int(label)
+            except ValueError:
+                continue
+            if op == "add":
+                pos = v - 1 if v <= code_idx else v
+            elif op == "delete":
+                orig0 = v - 1
+                if orig0 == code_idx:
+                    continue  # the deleted cell cannot be rerun
+                pos = orig0 if orig0 < code_idx else orig0 - 1
+            else:  # edit / none: no structural shift
+                pos = v - 1
+        if pos < 0:
+            continue
+        abs_idx = code_index_to_abs_index(nb_modified_json, pos)
+        if abs_idx >= 0:
+            positions.append(abs_idx)
+
+    return sorted(set(positions))

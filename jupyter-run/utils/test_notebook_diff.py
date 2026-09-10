@@ -18,6 +18,7 @@ from utils.notebook_diff import (
     code_index_to_abs_index,
     get_cells_reran,
     relabel_reran_positions,
+    rerun_labels_to_abs_indices,
 )
 
 
@@ -226,6 +227,78 @@ def test_relabel_delete_middle():
     # delete original code cell at idx 2 (1-based 3); survivors at/after it shift
     # up to their original numbering. reactive positions [1,2] -> orig [2, 4].
     assert relabel_reran_positions([1, 2], "delete", 2) == [2, 4]
+
+
+# --- rerun_labels_to_abs_indices (inverse of relabel, col D -> abs indices) ---
+
+def test_rerun_labels_edit_plain():
+    # edit: original 1-based labels -> abs indices (all-code nb: abs == code pos).
+    nb_mod = nb([code("a"), code("b2"), code("c")])
+    assert rerun_labels_to_abs_indices("2,3", "edit", 1, nb_mod) == [1, 2]
+
+
+def test_rerun_labels_edit_with_markdown():
+    # markdown shifts absolute indices; code positions 1,2 -> abs 4,5.
+    nb_mod = nb([md("#"), md("#"), code("a"), md("#"), code("b2"), code("c")])
+    assert rerun_labels_to_abs_indices("2,3", "edit", 1, nb_mod) == [4, 5]
+
+
+def test_rerun_labels_add_with_n():
+    # add at code_idx 1: modified nb = [a, new, b, c]. Labels "n,2,3":
+    # "n"->pos1, orig 2->pos2, orig 3->pos3 (all code -> abs == pos).
+    nb_mod = nb([code("a"), code("x"), code("b"), code("c")])
+    assert rerun_labels_to_abs_indices("n,2,3", "add", 1, nb_mod) == [1, 2, 3]
+
+
+def test_rerun_labels_add_before_insert():
+    # orig label 1 is before the insert (code_idx 1) -> modified pos 0.
+    nb_mod = nb([code("a"), code("x"), code("b"), code("c")])
+    assert rerun_labels_to_abs_indices("1,n", "add", 1, nb_mod) == [0, 1]
+
+
+def test_rerun_labels_delete():
+    # delete original code_idx 1 (1-based 2). modified nb = [a, c, d].
+    # dependents orig 3,4 -> modified pos 1,2.
+    nb_mod = nb([code("a"), code("c"), code("d")])
+    assert rerun_labels_to_abs_indices("3,4", "delete", 1, nb_mod) == [1, 2]
+
+
+def test_rerun_labels_delete_skips_deleted_cell():
+    # a label pointing at the deleted cell itself (orig 2, code_idx 1) is dropped.
+    nb_mod = nb([code("a"), code("c"), code("d")])
+    assert rerun_labels_to_abs_indices("2,3", "delete", 1, nb_mod) == [1]
+
+
+def test_rerun_labels_accepts_list_and_ints():
+    nb_mod = nb([code("a"), code("b2"), code("c")])
+    assert rerun_labels_to_abs_indices([2, 3], "edit", 1, nb_mod) == [1, 2]
+
+
+def test_rerun_labels_empty():
+    nb_mod = nb([code("a"), code("b")])
+    assert rerun_labels_to_abs_indices("", "edit", 0, nb_mod) == []
+
+
+def test_rerun_labels_out_of_range_dropped():
+    nb_mod = nb([code("a"), code("b")])
+    # label 9 has no code cell -> dropped, not an error.
+    assert rerun_labels_to_abs_indices("1,9", "edit", 0, nb_mod) == [0]
+
+
+def test_rerun_labels_roundtrip_against_relabel_add():
+    # relabel(add) turns modified 0-based positions into labels; feeding those
+    # labels back must recover the same positions (as abs indices, all-code nb).
+    nb_mod = nb([code("a"), code("x"), code("b"), code("c")])
+    positions = [1, 2, 3]  # 0-based code positions in modified nb
+    labels = relabel_reran_positions(positions, "add", 1)  # -> ["n", 2, 3]
+    assert rerun_labels_to_abs_indices(labels, "add", 1, nb_mod) == positions
+
+
+def test_rerun_labels_roundtrip_against_relabel_delete():
+    nb_mod = nb([code("a"), code("c"), code("d")])
+    positions = [1, 2]
+    labels = relabel_reran_positions(positions, "delete", 1)  # -> [3, 4] (orig numbering)
+    assert rerun_labels_to_abs_indices(labels, "delete", 1, nb_mod) == positions
 
 
 def _run():
