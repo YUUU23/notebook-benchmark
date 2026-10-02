@@ -30,6 +30,7 @@ ipyflow failed to rerun any cell automatically and suggest running cell 13-18 af
 ```python
 # additional cell before cell 11
 # to use previously downloaded image to ./img/ dir
+import shutil
 import os
 if os.path.exists('Picture1.jpg'):
     shutil.move('Picture1.jpg', './img/Picture1.jpg')
