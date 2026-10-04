@@ -12,7 +12,7 @@ Modification added to the original notebook as the base:
 n_samples_per_task = 2000
 
 # modified
-n_samples_per_task = 500
+n_samples_per_task = 4000
 
 ```
 ipyflow reruns 3-12 correctly.
@@ -21,7 +21,7 @@ ipyflow reruns 3-12 correctly.
 
 ```python
 # new standalone cell between cell 4 and 5
-df_cf.loc[df_cf["Cause"] == "Shari", "True (cause = True)"] = 0
+df_cf.loc[df_cf["Cause"] == "Bertha", "True (cause = True)"] = 0
 ```
 Expect to run: {new cell, 6,7,9}
 ipyflow does not rerun nor suggest any cell.
