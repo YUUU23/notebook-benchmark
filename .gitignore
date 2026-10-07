@@ -6,6 +6,7 @@ node_modules
 **/__pycache__/
 **/*.py[cod]
 jupyter-run/reactive-results/
+jupyter-run/galata-root/
 test-results/
 jupyter-run/config/mod_config_file.json
 
