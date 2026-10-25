@@ -73,7 +73,11 @@ def _extract_sys_path_dirs(source: str) -> list[str]:
 
 
 def _extract_string_literals(source: str) -> list[str]:
-    """Return string constants appearing anywhere in Python source."""
+    """Return string constants appearing anywhere in Python source.
+
+    For an f-string, also return the directory part of its static prefix
+    (f"../d/r/x-{s}.csv" -> "../d/r/"), since the full path is only known at run time.
+    """
     out: list[str] = []
     try:
         tree = ast.parse(_strip_ipython_magics(source))
@@ -82,6 +86,11 @@ def _extract_string_literals(source: str) -> list[str]:
     for node in ast.walk(tree):
         if isinstance(node, ast.Constant) and isinstance(node.value, str):
             out.append(node.value)
+        elif isinstance(node, ast.JoinedStr) and node.values:
+            head = node.values[0]
+            if (isinstance(head, ast.Constant) and isinstance(head.value, str)
+                    and "/" in head.value):
+                out.append(head.value.rsplit("/", 1)[0] + "/")
     return out
 
 
@@ -104,6 +113,7 @@ def find_data_dependencies(
     exclude: set[str] | None = None,
     size_cap_bytes: int = 200 * 1024 * 1024,
     file_count_cap: int = 500,
+    oversize_out: list[dict] | None = None,
 ) -> list[dict]:
     """
     Detect the relative data files a notebook reads and stage them so the
@@ -122,11 +132,14 @@ def find_data_dependencies(
       * skip run-output artifacts (trace.db / log / .ipynb_checkpoints) so the
         accumulated manual-run logs under data/ are not uploaded;
       * skip anything already staged as an import/sys.path dep (``exclude``);
-      * skip a reference whose files exceed ``size_cap_bytes`` or
-        ``file_count_cap`` (e.g. multi-hundred-MB datasets) -- those stay manual.
+      * a reference whose files exceed ``size_cap_bytes`` or ``file_count_cap``
+        (e.g. multi-hundred-MB datasets) is not HTTP-uploaded: if ``oversize_out``
+        is given it is appended there (as a {sourcePath, targetRelPath} dir entry)
+        for the caller to filesystem-stage; otherwise it is skipped with a warning.
 
     Returns the same {sourcePath, targetRelPath, isDirectory} dicts as
     find_supporting_scripts, so the caller can concatenate the two lists.
+    ``oversize_out`` (when provided) is filled with the over-cap dirs instead.
     """
     nb_dir_path = Path(nb_dir).resolve()
     suite_root = nb_dir_path.parent  # allow ../dataset style, but no higher
@@ -198,11 +211,22 @@ def find_data_dependencies(
 
         total = sum(f.stat().st_size for f in files)
         if len(files) > file_count_cap or total > size_cap_bytes:
-            print(
-                f"=== [RUN] WARNING: data dependency {os.path.relpath(cand, nb_dir_path)!r} "
-                f"skipped ({len(files)} files, {total / 1e6:.0f}MB exceeds cap) -- "
-                f"benchmark may fail; stage it manually"
-            )
+            rel = os.path.relpath(cand, nb_dir_path)
+            if oversize_out is not None:
+                # Too big for the per-file HTTP upload the spec does; hand the
+                # whole dir back for filesystem (hardlink) staging into the
+                # server working dir instead (see BenchmarkRunner._stage_oversize_data).
+                oversize_out.append({"sourcePath": str(cand), "targetRelPath": rel})
+                print(
+                    f"=== [RUN] data dependency {rel!r} ({len(files)} files, "
+                    f"{total / 1e6:.0f}MB) over HTTP-upload cap -- filesystem-staging"
+                )
+            else:
+                print(
+                    f"=== [RUN] WARNING: data dependency {rel!r} "
+                    f"skipped ({len(files)} files, {total / 1e6:.0f}MB exceeds cap) -- "
+                    f"benchmark may fail; stage it manually"
+                )
             continue
 
         for f in files:

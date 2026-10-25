@@ -15,8 +15,18 @@ class BenchmarkRunner:
     
     def __init__(self, config_dir: str, spawn_ui_kernel: bool = True):
         self.config_dir = config_dir
+        # Pin the Galata server root_dir to a fixed dir on the repo filesystem.
+        # Galata otherwise defaults it to a fresh mkdtemp("galata-test-") (often
+        # tmpfs, and an unpredictable path each launch). A fixed path lets
+        # _stage_oversize_data locate notebook-test AND hardlink into it (source
+        # data and the staging target must share a filesystem). Honor an
+        # external override. The env var must be set before the server launches
+        # so its child (ui_setup.sh) inherits it. See configure_jupyter_server.
+        self.ui_root_dir = os.environ.setdefault(
+            "JUPYTERLAB_GALATA_ROOT_DIR", os.path.abspath("galata-root"))
+        os.makedirs(self.ui_root_dir, exist_ok=True)
         self._check_and_parse_config_files()
-        if spawn_ui_kernel: 
+        if spawn_ui_kernel:
             self._setup_ui_kernel()
     
     def run(self, nb_original: str, nb_modified: str, data_directory: str,
@@ -52,14 +62,22 @@ class BenchmarkRunner:
         elif mod.op == "delete":
             print(f"=== [RUN] Code of cell to be deleted at cell {code_idx_print}: \n{mod.original}")
         if mod.op != "none":
-            nb_initial_file = f"reactive-results/initial/{nb_original_manager.nb_file_name}"
-            nb_reactive_file = f"reactive-results/reactive/{nb_original_manager.nb_file_name}"
+            # Key result files by the MODIFIED notebook name (unique per step, e.g.
+            # m2_explore_siren.ipynb) so a step's download never collides with, or
+            # reads back, another step's file. The UI still uploads/runs the ORIGINAL
+            # notebook -- these are only the download destinations.
+            nb_initial_file = f"reactive-results/initial/{nb_modified_manager.nb_file_name}"
+            nb_reactive_file = f"reactive-results/reactive/{nb_modified_manager.nb_file_name}"
             supporting_scripts = find_supporting_scripts(nb_original_manager.nb_json, nb_original_manager.nb_dir)
             # Also stage relative data files the notebook reads (e.g. ./data/x),
             # which break once the notebook is uploaded to a fresh temp dir.
+            # Over-cap dirs (too big for per-file HTTP upload) come back in
+            # oversize_data_deps for filesystem (hardlink) staging below.
+            oversize_data_deps: list[dict] = []
             supporting_scripts += find_data_dependencies(
                 nb_original_manager.nb_json, nb_original_manager.nb_dir,
                 exclude={s["sourcePath"] for s in supporting_scripts},
+                oversize_out=oversize_data_deps,
             )
             rerun_cell_indices = []
             if rerun_set:
@@ -71,6 +89,17 @@ class BenchmarkRunner:
                                           nb_original_manager.nb_dir, nb_reactive_file, nb_initial_file,
                                           data_directory, supporting_scripts,
                                           rerun_cell_indices)
+            # Remove any stale result files from a prior run of THIS step so a UI
+            # failure (e.g. a timeout) surfaces as ERROR on the missing-file read
+            # below instead of silently reporting the previous run's numbers.
+            for stale in (nb_initial_file, nb_reactive_file):
+                if os.path.exists(stale):
+                    os.remove(stale)
+            # Hardlink over-cap data dirs into the server working dir so the
+            # uploaded notebook can read them (the spec only HTTP-uploads the
+            # under-cap files). Done just before the UI run; the spec's afterAll
+            # deleteDirectory() unlinks them afterwards, so re-stage each step.
+            self._stage_oversize_data(oversize_data_deps)
             self._run_ui_to_execute_modifications()
 
             nb_initial_run_manager = NotebookManager(nb_path=nb_initial_file)
@@ -91,17 +120,31 @@ class BenchmarkRunner:
                 # their pre-modification positions.
                 labels = relabel_reran_positions(cells_reran, mod.op, mod.code_idx)
                 mod_cell_label = "n" if mod.op == "add" else code_idx_print
-                # nnb executes the modified/added cell FIRST, then cascades. That
-                # first run is invisible to get_cells_reran (which orders by each
-                # cell's FINAL execution count -- the modified cell reruns inside
-                # the cascade with a higher count, so it lands in its positional
-                # slot, not first). Prepend it so nnb's reported sequence starts
-                # with the modified cell (e.g. [4, 1,2,3,4,5,6,7]). Reactive
-                # kernels that refresh ancestors first (ipyflow) keep the plain
-                # count-ordered list. reran_count stays the unique-cell count.
+                # nnb runs the modified/added cell FIRST (the trigger), then runs a
+                # one-shot, de-duplicated reactive cascade. get_cells_reran orders by
+                # each cell's FINAL execution count, so for nnb that ordering equals
+                # the true execution order and only the trigger can appear twice.
+                # Reconstruct the faithful sequence WITHOUT blindly prepending:
+                #   - if the trigger re-ran inside the cascade (its reactive exec
+                #     count exceeds the baseline), it lands at its cascade slot in
+                #     `labels` and is missing only its leading trigger run -> prepend
+                #     it (e.g. [7, 6,7,8,...]).
+                #   - if it ran only once (exec count == baseline), it is already the
+                #     first entry in the count-ordered `labels` -> do NOT prepend, or
+                #     it would be double-counted (e.g. [4, 6,7,...], not [4,4,...]).
+                # Reactive kernels that refresh ancestors first (ipyflow) keep the
+                # plain count-ordered list. reran_count stays the unique-cell count.
                 kernel_name = (self.kernel_spec or {}).get("name", "")
                 if kernel_name == "nnb" and mod.op in ("edit", "add"):
-                    labels = [mod_cell_label] + labels
+                    initial_counts = [c.get("execution_count")
+                                      for c in get_code_cells(nb_initial_run_manager.nb_json)
+                                      if isinstance(c.get("execution_count"), int)]
+                    baseline = max(initial_counts, default=0) + 1
+                    reactive_code = get_code_cells(nb_after_reactive_manager.nb_json)
+                    trigger_ec = (reactive_code[mod.code_idx].get("execution_count")
+                                  if 0 <= mod.code_idx < len(reactive_code) else None)
+                    if isinstance(trigger_ec, int) and trigger_ec > baseline:
+                        labels = [mod_cell_label] + labels
                 reran_str = "[" + ", ".join(str(x) for x in labels) + "]"
                 print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {reran_str}; modification ({mod.op}) made to cell: {mod_cell_label}")
             except Exception as e:
