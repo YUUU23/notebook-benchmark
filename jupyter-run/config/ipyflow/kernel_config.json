@@ -1,7 +1,7 @@
 {
   "kernelspec": {
-    "display_name": "Python 3 (ipyflow reactive)",
+    "display_name": "Python 3 (ipyflow monitor)",
     "language": "python",
-    "name": "ipyflow-reactive"
+    "name": "ipyflow-monitoring"
   }
 }

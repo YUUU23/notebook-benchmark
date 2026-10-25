@@ -7,7 +7,7 @@ module.exports = {
   ...baseConfig,
   ...defineConfig({
     testDir: "../../ui",
-    testMatch: "autotest-ipyflow.spec.ts", // ipyflow-only: full initial run + keyboard edit
+    testMatch: "autotest-ipyflow.spec.ts", // kernel = ipyflow-monitoring (the compared ipyflow); stock: config/ipyflow-reactive
     // 20 min: realworld reactive runs are heavier than the automatable suites.
     timeout: 20 * 60 * 1000,
   }),
