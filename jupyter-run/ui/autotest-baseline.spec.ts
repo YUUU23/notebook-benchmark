@@ -154,6 +154,60 @@ test.describe.serial("Notebook Run", () => {
 
   test.beforeEach(async ({ page, tmpPath }) => {
     await page.filebrowser.openDirectory(tmpPath);
+    // A "File Changed on disk" conflict dialog (docregistry context._raiseConflict)
+    // is a server/client mtime race that otherwise intercepts pointer events and
+    // hangs a click for the full test timeout (see doc/journal.md, explore_siren m2).
+    // Auto-dismiss it by keeping the in-browser executed version ("Overwrite" ->
+    // contents.save), which is the version we then download.
+    await page.addLocatorHandler(
+      page.getByRole("dialog", { name: /File Changed/ }),
+      async (dialog) => {
+        await dialog.getByRole("button", { name: "Overwrite" }).click();
+      }
+    );
+  });
+
+  test.afterEach(async ({ page }) => {
+    // Shut down every running kernel through the app's authenticated kernel
+    // manager before the page + per-test webServer are torn down. Playwright
+    // kills the "jlpm start" webServer abruptly, orphaning its kernels; across a
+    // multi-step run they accumulate and OOM the machine, and
+    // benchmark_runner.reap_kernels() cannot reach the per-step server between
+    // steps (Connection refused). See doc/journal.md.
+    try {
+      await page.evaluate(async () => {
+        // Wait for the kernel to be idle for a continuous quiet period before
+        // shutting it down, so we never close its ZMQ sockets mid-execute_request
+        // (-> ZMQError: ENOTSOCK on the kernel side). A single idle check is not
+        // enough for a reactive (ipyflow) kernel: it flickers idle between cascade
+        // steps, so a trailing reactive execute can still race the shutdown.
+        // Bounded. See doc/journal.md.
+        const app = (window as any).galata?.app;
+        const kernelOf = () =>
+          app?.shell?.currentWidget?.sessionContext?.session?.kernel;
+        const deadline = Date.now() + 15_000;
+        const quietMs = 1_500;
+        let idleSince = 0;
+        while (Date.now() < deadline) {
+          const k = kernelOf();
+          if (!k || k.status === "dead") break;
+          if (k.status === "idle") {
+            if (idleSince === 0) idleSince = Date.now();
+            if (Date.now() - idleSince >= quietMs) break;
+          } else {
+            idleSince = 0;
+          }
+          await new Promise((r) => setTimeout(r, 50));
+        }
+        const km = app?.serviceManager?.kernels;
+        if (!km) return;
+        await km.refreshRunning();
+        const ids = Array.from(km.running()).map((m: any) => m.id);
+        await Promise.all(ids.map((id: string) => km.shutdown(id)));
+      });
+    } catch (e) {
+      console.log(`=== [UI] WARNING: kernel shutdown in afterEach failed: ${e}`);
+    }
   });
 
   test.afterAll(async ({ request, tmpPath }) => {

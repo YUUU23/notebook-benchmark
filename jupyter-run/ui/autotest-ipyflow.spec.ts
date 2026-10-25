@@ -47,19 +47,51 @@ const supportingScripts: { sourcePath: string; targetRelPath: string; isDirector
  * returning the beginning of that period keeps the validation delay out of
  * the wall-clock measurement.
  */
-async function waitForReactiveExecutionsToSettle(page: Page): Promise<number> {
-  // Long enough for heavy realworld reactive cascades; bounded by the
-  // Playwright per-test timeout in the active playwright.config.js.
+async function waitForReactiveExecutionsToSettle(
+  page: Page,
+  opts: { startGraceMs?: number; quietPeriodMs?: number } = {}
+): Promise<number> {
+  // A reactive cascade does NOT begin the instant the trigger cell finishes:
+  // the nnb frontend debounces its content_changed trigger by 500ms
+  // (kernels/nnb/frontend/src/connect.ts) then does a kernel round-trip before
+  // running descendants, and ipyflow's kernel-side reactive scheduler has its
+  // own latency. So there is an idle+stable window right AFTER the trigger, and
+  // gaps BETWEEN reran cells. A single "idle + counts stable for 1s" check
+  // settles inside one of those gaps and saves a half-run notebook, which
+  // get_cells_reran then reports as a truncated (and flaky) reran set.
+  //
+  // Two bounded phases fix this without reintroducing the 20-min hang the no-arg
+  // page.notebook.waitForRun() had (it required EVERY code cell to be non-null,
+  // so an initial run that halted partway never satisfied it):
+  //   Phase A -- wait up to startGraceMs for the cascade to START (a code-cell
+  //     exec count changes, or the kernel goes Busy). If nothing starts, the
+  //     modification has no reactive dependents (or the initial run errored) --
+  //     return the trigger-idle instant.
+  //   Phase B -- once started, settle on kernel-Idle + counts stable for
+  //     quietPeriodMs (sized above inter-cell gaps).
+  // Returns idleSince (the START of the final quiet window), so enlarging either
+  // window never inflates the caller's reactiveWallTimeSeconds -- only real
+  // wall-clock. Both windows are env-tunable (REACTIVE_START_GRACE_MS /
+  // REACTIVE_QUIET_MS) and both phases are bounded by timeoutMs. See doc/journal.md.
+  // Windows widened from 6s/3s: on heavier realworld notebooks ipyflow's
+  // kernel-side reactive scheduler is slow to start and/or leaves idle gaps
+  // between cascade cells, so the old windows settled mid-cascade and captured a
+  // truncated (and flaky) reran set -- e.g. complexity_analysis_m1 flipped between
+  // [2] and the correct [1,2,3,4,5]. 12s/8s makes it reliable (8/9 in testing; the
+  // sole miss was a cold, stressed kernel). Neither window enters the reported
+  // reactiveWallTimeSeconds (that returns idleSince, the start of the quiet
+  // window), so this costs real wall-clock only, not the metric. See doc/journal.md.
+  const startGraceMs =
+    opts.startGraceMs ?? Number(process.env.REACTIVE_START_GRACE_MS ?? 12_000);
+  const quietPeriodMs =
+    opts.quietPeriodMs ?? Number(process.env.REACTIVE_QUIET_MS ?? 8_000);
   const timeoutMs = 20 * 60 * 1000;
-  const quietPeriodMs = 1_000;
   const pollIntervalMs = 100;
-  const deadline = Date.now() + timeoutMs;
-  let previousCounts = "";
-  let stableSince = Date.now();
-  let idleSince: number | undefined;
+  const trace = !!process.env.REACTIVE_TRACE;
+  const t0 = performance.now();
 
-  while (Date.now() < deadline) {
-    const counts = await page.evaluate(() => {
+  const codeCounts = () =>
+    page.evaluate(() => {
       const app = (window as any).galata.app;
       const notebook = app.shell.currentWidget?.content;
       return JSON.stringify(
@@ -68,28 +100,182 @@ async function waitForReactiveExecutionsToSettle(page: Page): Promise<number> {
           .map((cell: any) => cell.model.executionCount) ?? []
       );
     });
+  const kernelIsIdle = () =>
+    page.locator('#jp-main-statusbar >> text=Idle').isVisible();
+  const logTrace = (phase: string, counts: string, idle: boolean) => {
+    if (trace)
+      console.log(
+        `=== [TRACE] ${JSON.stringify({
+          t: Math.round(performance.now() - t0),
+          phase,
+          idle,
+          counts: JSON.parse(counts),
+        })}`
+      );
+  };
 
+  const overallDeadline = Date.now() + timeoutMs;
+  const entryCounts = await codeCounts();
+
+  // Phase A: bounded wait for the cascade to START. No settling here -- this is
+  // exactly the pre-cascade idle window the old 1s quiet period settled on.
+  const graceDeadline = Date.now() + startGraceMs;
+  let idleSince: number | undefined = (await kernelIsIdle())
+    ? performance.now()
+    : undefined;
+  let cascadeStarted = false;
+  let seedCounts = entryCounts;
+  while (Date.now() < graceDeadline) {
+    const counts = await codeCounts();
+    const idle = await kernelIsIdle();
+    logTrace("A", counts, idle);
+    if (counts !== entryCounts) {
+      cascadeStarted = true;
+      seedCounts = counts;
+      break;
+    }
+    if (!idle) {
+      cascadeStarted = true;
+      break;
+    }
+    idleSince ??= performance.now();
+    await page.waitForTimeout(pollIntervalMs);
+  }
+  if (!cascadeStarted) {
+    // No dependents fired (or the initial run halted early so they cannot).
+    // Bounded return -> never the 20-min hang.
+    return idleSince ?? performance.now();
+  }
+
+  // Phase B: settle on kernel-Idle + counts stable for quietPeriodMs. Seed
+  // previousCounts with the last-seen array (not "") so the first poll does not
+  // read as a spurious change.
+  let previousCounts = seedCounts;
+  let stableSince = Date.now();
+  idleSince = undefined;
+  while (Date.now() < overallDeadline) {
+    const counts = await codeCounts();
     if (counts !== previousCounts) {
       previousCounts = counts;
       stableSince = Date.now();
       idleSince = undefined;
     }
-
-    const kernelIsIdle = await page
-      .locator('#jp-main-statusbar >> text=Idle')
-      .isVisible();
-    if (kernelIsIdle) {
+    const idle = await kernelIsIdle();
+    logTrace("B", counts, idle);
+    if (idle) {
       idleSince ??= performance.now();
     } else {
       idleSince = undefined;
     }
-    if (kernelIsIdle && Date.now() - stableSince >= quietPeriodMs) {
-      return idleSince ?? performance.now();
+    if (idleSince !== undefined && Date.now() - stableSince >= quietPeriodMs) {
+      return idleSince;
     }
     await page.waitForTimeout(pollIntervalMs);
   }
 
   throw new Error("Timed out waiting for reactive cell executions to settle");
+}
+
+/**
+ * Wait until the reactive cascade after an edit/add/delete is COMPLETE, and
+ * return the instant it settled (start of the confirming quiet window, so the
+ * quiet wait stays out of the caller's wall-clock).
+ *
+ * "Complete" = every code cell has a non-null execution count (none still
+ * scheduled/pending) AND the kernel is idle, stable for a short quiet period.
+ * This mirrors the bare page.notebook.waitForRun() the initial version used --
+ * which reliably captured the full cascade -- but bounded by a timeout, so a
+ * genuinely un-runnable cell (a halted initial run leaving a permanent null)
+ * fails fast instead of hanging. A prior variant settled on "idle + stable
+ * counts" alone, which fired during a transient idle gap mid-cascade and
+ * captured a TRUNCATED reran set (e.g. mse_fitting_m2 -> [1,2] instead of the
+ * full cascade). Requiring no-null before settling fixes that. See doc/journal.md.
+ */
+async function waitForReactiveCascadeComplete(page: Page): Promise<number> {
+  const completeTimeoutMs = Number(
+    process.env.REACTIVE_COMPLETE_TIMEOUT_MS ?? String(5 * 60 * 1000)
+  );
+  const quietPeriodMs = Number(process.env.REACTIVE_QUIET_MS ?? 1_000);
+  const pollIntervalMs = 100;
+
+  const state = () =>
+    page.evaluate(() => {
+      const app = (window as any).galata.app;
+      const nb = app.shell.currentWidget?.content;
+      const counts = (nb?.widgets ?? [])
+        .filter((c: any) => c.model.type === "code")
+        .map((c: any) => c.model.executionCount ?? null);
+      const idle = (
+        document.querySelector("#jp-main-statusbar")?.textContent ?? ""
+      ).includes("Idle");
+      return { counts, idle };
+    });
+
+  const deadline = Date.now() + completeTimeoutMs;
+  let previousCounts = "";
+  let stableSince = Date.now();
+  let idleSince: number | undefined;
+  while (Date.now() < deadline) {
+    const s = await state();
+    const counts = JSON.stringify(s.counts);
+    if (counts !== previousCounts) {
+      previousCounts = counts;
+      stableSince = Date.now();
+      idleSince = undefined;
+    }
+    if (s.idle) {
+      idleSince ??= performance.now();
+    } else {
+      idleSince = undefined;
+    }
+    const complete = !s.counts.includes(null);
+    if (complete && idleSince !== undefined && Date.now() - stableSince >= quietPeriodMs) {
+      return idleSince;
+    }
+    await page.waitForTimeout(pollIntervalMs);
+  }
+  // Deadline hit. If the cascade is actually complete (no pending cell) it just
+  // never got its quiet-window confirmation -> return gracefully. Otherwise a
+  // cell is stuck pending (a genuine stall / halted init): fail LOUDLY rather
+  // than emit a silently-truncated reran set.
+  const finalState = await state();
+  if (!finalState.counts.includes(null)) {
+    return idleSince ?? performance.now();
+  }
+  throw new Error(
+    `Reactive cascade did not complete within ${completeTimeoutMs / 1000}s ` +
+    `(cells still pending: ${JSON.stringify(finalState.counts)})`
+  );
+}
+
+/**
+ * Resolves once the kernel has handled every request sent before it: a
+ * kernel_info request is queued behind cell executions on the shell channel
+ * (checked 2026-10-22 for the nnb, python3 and ipyflow-monitoring kernels). Used
+ * when cells are still pending although the status bar reads Idle, which it can
+ * while a cell is still running (GGAE cell 5; doc/journal.md 2026-10-22).
+ */
+async function kernelBarrier(page: Page): Promise<void> {
+  await page.evaluate(async () => {
+    const app = (window as any).galata.app;
+    await app.shell.currentWidget?.sessionContext?.session?.kernel?.requestKernelInfo();
+  });
+}
+
+/**
+ * Number of code cells JupyterLab still marks as running or queued
+ * (`executionState === 'running'`; cleared when the execute reply arrives,
+ * including the aborted replies for cells skipped after an error).
+ * Copied verbatim from autotest-python3.spec.ts.
+ */
+async function pendingCodeCells(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const app = (window as any).galata.app;
+    const cells = app.shell.currentWidget?.content?.widgets ?? [];
+    return cells.filter((c: any) =>
+      c.model.type === "code" && c.model.executionState === "running"
+    ).length;
+  });
 }
 
 /**
@@ -108,6 +294,7 @@ async function waitForRunAllToSettle(page: Page): Promise<number> {
   const startTimeoutMs = 180_000;
   const settleTimeoutMs = 20 * 60 * 1000;
   const quietPeriodMs = 1_000;
+  const pendingGraceMs = 10_000;
   const pollIntervalMs = 100;
 
   const codeExecCounts = () => page.evaluate(() => {
@@ -140,16 +327,17 @@ async function waitForRunAllToSettle(page: Page): Promise<number> {
     throw new Error(`Run All Cells produced no execution within ${startTimeoutMs / 1000}s`);
   }
 
-  // Phase 2: settle on kernel-idle + stable counts.
+  // Phase 2: settle once no code cell is pending and the kernel has been idle,
+  // counts unchanged, for quietPeriodMs (window starts at the first idle sample
+  // after the last busy sample or count change). See doc/journal.md 2026-10-14.
   const deadline = Date.now() + settleTimeoutMs;
   let previousCounts = "";
-  let stableSince = Date.now();
   let idleSince: number | undefined;
+  let barrierDone = false;
   while (Date.now() < deadline) {
     const counts = await codeExecCounts();
     if (counts !== previousCounts) {
       previousCounts = counts;
-      stableSince = Date.now();
       idleSince = undefined;
     }
     if (await kernelIsIdle()) {
@@ -157,8 +345,21 @@ async function waitForRunAllToSettle(page: Page): Promise<number> {
     } else {
       idleSince = undefined;
     }
-    if (idleSince !== undefined && Date.now() - stableSince >= quietPeriodMs) {
-      return idleSince;
+    const pending = await pendingCodeCells(page);
+    const quietFor = idleSince === undefined ? 0 : performance.now() - idleSince;
+    if (quietFor >= quietPeriodMs && pending === 0) {
+      return idleSince!;
+    }
+    if (quietFor >= pendingGraceMs) {
+      if (pending > 0 && !barrierDone) {
+        // Idle with cells pending: confirm with the kernel before assuming lost replies.
+        await kernelBarrier(page);
+        barrierDone = true;
+        idleSince = undefined;
+        continue;
+      }
+      console.log(`=== [UI] WARNING: run-all settled with ${pending} cell(s) still pending`);
+      return idleSince!;
     }
     await page.waitForTimeout(pollIntervalMs);
   }
@@ -202,15 +403,25 @@ async function codeCellAbsIndices(page: Page): Promise<number[]> {
  * completed. Returns the instant execution settled.
  */
 async function completeInitialRun(page: Page): Promise<number> {
+  // Returns the actual cell-execution MILLISECONDS this loop adds (sum of each
+  // run cell's execute+settle span), NOT wall-clock. The per-cell settle windows
+  // (grace/quiet) are pure confirmation waits and must not inflate the initial
+  // time -- nnb/python3 do a single Run-All settle with no such loop, so counting
+  // the windows here would make ipyflow's initialWallTimeSeconds unfair. Each
+  // waitForReactiveExecutionsToSettle returns idleSince (the settle instant,
+  // before its quiet window), so (settled - start) is that cell's real run time.
   const absIdx = await codeCellAbsIndices(page);
+  let execMs = 0;
   for (let i = 0; i < absIdx.length; i++) {
     const counts = await codeCellExecCounts(page);
     if (counts[i] === null) {
+      const start = performance.now();
       await page.notebook.runCell(absIdx[i]);
-      await waitForReactiveExecutionsToSettle(page);
+      const settled = await waitForReactiveExecutionsToSettle(page);
+      execMs += settled - start;
     }
   }
-  return waitForReactiveExecutionsToSettle(page);
+  return execMs;
 }
 
 async function prepareExecution(page: Page, cellIndex?: number): Promise<void> {
@@ -271,6 +482,60 @@ test.describe.serial("Notebook Run", () => {
 
   test.beforeEach(async ({ page, tmpPath }) => {
     await page.filebrowser.openDirectory(tmpPath);
+    // A "File Changed on disk" conflict dialog (docregistry context._raiseConflict)
+    // is a server/client mtime race that otherwise intercepts pointer events and
+    // hangs a click for the full test timeout (see doc/journal.md, explore_siren m2).
+    // Auto-dismiss it by keeping the in-browser executed version ("Overwrite" ->
+    // contents.save), which is the version we then download.
+    await page.addLocatorHandler(
+      page.getByRole("dialog", { name: /File Changed/ }),
+      async (dialog) => {
+        await dialog.getByRole("button", { name: "Overwrite" }).click();
+      }
+    );
+  });
+
+  test.afterEach(async ({ page }) => {
+    // Shut down every running kernel through the app's authenticated kernel
+    // manager before the page + per-test webServer are torn down. Playwright
+    // kills the "jlpm start" webServer abruptly, orphaning its kernels (each
+    // heavy ipyflow/torch kernel ~1.3GB); across a multi-step run they accumulate
+    // and OOM the machine, and benchmark_runner.reap_kernels() cannot reach the
+    // per-step server between steps (Connection refused). See doc/journal.md.
+    try {
+      await page.evaluate(async () => {
+        // Wait for the kernel to be idle for a continuous quiet period before
+        // shutting it down, so we never close its ZMQ sockets mid-execute_request
+        // (-> ZMQError: ENOTSOCK on the kernel side). A single idle check is not
+        // enough for a reactive (ipyflow) kernel: it flickers idle between cascade
+        // steps, so a trailing reactive execute can still race the shutdown.
+        // Bounded. See doc/journal.md.
+        const app = (window as any).galata?.app;
+        const kernelOf = () =>
+          app?.shell?.currentWidget?.sessionContext?.session?.kernel;
+        const deadline = Date.now() + 15_000;
+        const quietMs = 1_500;
+        let idleSince = 0;
+        while (Date.now() < deadline) {
+          const k = kernelOf();
+          if (!k || k.status === "dead") break;
+          if (k.status === "idle") {
+            if (idleSince === 0) idleSince = Date.now();
+            if (Date.now() - idleSince >= quietMs) break;
+          } else {
+            idleSince = 0;
+          }
+          await new Promise((r) => setTimeout(r, 50));
+        }
+        const km = app?.serviceManager?.kernels;
+        if (!km) return;
+        await km.refreshRunning();
+        const ids = Array.from(km.running()).map((m: any) => m.id);
+        await Promise.all(ids.map((id: string) => km.shutdown(id)));
+      });
+    } catch (e) {
+      console.log(`=== [UI] WARNING: kernel shutdown in afterEach failed: ${e}`);
+    }
   });
 
   test.afterAll(async ({ request, tmpPath }) => {
@@ -290,14 +555,17 @@ test.describe.serial("Notebook Run", () => {
     // Run all cells
     console.log(`=== [UI] RUNNING ALL CELLS`);
     await prepareExecution(page);
-    const initialRunStartedAt = performance.now();
+    const runAllStartedAt = performance.now();
     await page.menu.clickMenuItem('Run>Run All Cells');
-    await waitForRunAllToSettle(page);
+    const runAllSettledAt = await waitForRunAllToSettle(page);
     // ipyflow reactive Run-All halts at a symbol-reassigning cell; finish the
     // rest so the initial state matches a manual full run (see completeInitialRun).
-    const initialRunSettledAt = await completeInitialRun(page);
+    // initialWallTime is actual execution time only: Run-All's execute span plus
+    // each individually-run cell's execute span. The per-cell settle/confirmation
+    // windows are excluded so ipyflow is comparable to nnb/python3's single Run-All.
+    const completeInitialExecMs = await completeInitialRun(page);
     const initialWallTimeSeconds =
-      (initialRunSettledAt - initialRunStartedAt) / 1000;
+      ((runAllSettledAt - runAllStartedAt) + completeInitialExecMs) / 1000;
     await page.notebook.save();
 
     // Download notebook (for identifying how many cells have reran later)
@@ -386,14 +654,24 @@ test.describe.serial("Notebook Run", () => {
       await page.keyboard.press("Delete");
       await page.keyboard.insertText(modification.source);
       await page.keyboard.press("Escape");
+      // Let ipyflow's frontend register the content change before running, so the
+      // reactive cascade is computed on the UPDATED dependency graph. A fast
+      // edit->run races that registration and yields a flaky/partial cascade
+      // (e.g. mse m1/m3 flipping run-to-run); 1.5s made them deterministic across
+      // repeated runs. Not timed (before reactiveRunStartedAt). Tune via
+      // REACTIVE_POST_EDIT_MS. See doc/journal.md.
+      const postEditMs = Number(process.env.REACTIVE_POST_EDIT_MS ?? 1500);
+      if (postEditMs > 0) await page.waitForTimeout(postEditMs);
       await page.notebook.selectCells(modification.cellIndex);
       await prepareExecution(page, modification.cellIndex);
       reactiveRunStartedAt = performance.now();
       await page.keyboard.press('Control+Enter');
-      await page.notebook.waitForRun();
     }
 
-    const reactiveRunSettledAt = await waitForReactiveExecutionsToSettle(page);
+    // Block until the reactive cascade is COMPLETE (every code cell executed),
+    // bounded -- not just "idle + stable", which truncated the reran set when the
+    // kernel went briefly idle mid-cascade. See waitForReactiveCascadeComplete.
+    const reactiveRunSettledAt = await waitForReactiveCascadeComplete(page);
     const reactiveWallTimeSeconds =
       (reactiveRunSettledAt - reactiveRunStartedAt) / 1000;
     const totalWallTimeSeconds =

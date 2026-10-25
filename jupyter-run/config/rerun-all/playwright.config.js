@@ -8,7 +8,7 @@ module.exports = {
   ...defineConfig({
     testDir: "../../ui",
     testMatch: "autotest-rerun-all.spec.ts", // Matches only this file
-    timeout: 600 * 1000,
+    timeout: 20 * 60 * 1000, // two full run-alls; chaomi_rq4_epassport needs ~680 s
   }),
   webServer: {
     command: "jlpm start",
