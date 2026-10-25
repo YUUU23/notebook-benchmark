@@ -1,4 +1,4 @@
-from utils.notebook_diff import get_all_cell_output_diff, get_cells_reran, detect_modification, relabel_reran_positions, rerun_labels_to_abs_indices
+from utils.notebook_diff import get_all_cell_output_diff, get_cells_reran, detect_modification, relabel_reran_positions, rerun_labels_to_abs_indices, get_code_cells
 from utils.notebook_manager import NotebookManager
 from utils.supporting_scripts import find_supporting_scripts, find_data_dependencies
 import json, subprocess, os, time, urllib.request
@@ -247,13 +247,54 @@ class BenchmarkRunner:
             json.dump(config, f, indent=4)
         return config
     
-    def _run_ui_to_execute_modifications(self) -> None: 
+    def _stage_oversize_data(self, oversize_deps: list[dict]) -> None:
+        """Hardlink over-HTTP-cap data dependencies into the server working dir.
+
+        The spec uploads the notebook under tmpPath "notebook-test" relative to
+        the server root_dir (pinned to self.ui_root_dir in __init__), and the
+        kernel's cwd is that notebook dir -- so the notebook's ``./data`` paths
+        resolve to <root_dir>/notebook-test. The spec's beforeAll only
+        HTTP-uploads under-cap files; large dirs (e.g. the 655MB
+        llm-elicited-priors results) would be prohibitively slow to upload one
+        file at a time, so hardlink them instead -- same filesystem, instant, no
+        extra space. The spec's afterAll deleteDirectory() unlinks these copies
+        (the SOURCE data is untouched); re-staged each step.
+        """
+        tmp_dir = os.path.join(self.ui_root_dir, "notebook-test")
+        for dep in oversize_deps:
+            src = dep["sourcePath"]
+            dst = os.path.normpath(os.path.join(tmp_dir, dep["targetRelPath"]))
+            if not os.path.exists(src):
+                print(f"=== [RUN] WARNING: oversize data dep source missing: {src}")
+                continue
+            if os.path.exists(dst):
+                subprocess.run(["rm", "-rf", dst], check=False)
+            os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
+            # cp -al: recursive hardlink copy (requires src+dst on one filesystem).
+            res = subprocess.run(["cp", "-al", src, dst], capture_output=True, text=True)
+            if res.returncode != 0:
+                print(f"=== [RUN] WARNING: hardlink staging failed for "
+                      f"{dep['targetRelPath']}: {res.stderr.strip()}; copying instead")
+                subprocess.run(["cp", "-a", src, dst], check=False)
+            else:
+                print(f"=== [RUN] filesystem-staged {dep['targetRelPath']} -> {dst}")
+
+    # Bound the UI run above the 20-min Playwright per-test timeout (+ up to 2-min
+    # webServer startup) so a stuck run fails loudly instead of freezing forever.
+    ui_run_timeout_s = 25 * 60
+
+    def _run_ui_to_execute_modifications(self) -> None:
         script_path = "./ui/run_ui.sh"
+        # Inherit the parent's stdout/stderr (no capture) so the Playwright/[UI] output
+        # streams live into the run log; a hang is then visible instead of silent.
         try:
-            result = subprocess.run([script_path, self.playwright_config_path], capture_output=True, text=True, check=True)
-            print(f"=== [RUN] Output from running {script_path}: {result.stdout}") 
+            subprocess.run([script_path, self.playwright_config_path],
+                           check=True, timeout=self.ui_run_timeout_s)
+        except subprocess.TimeoutExpired:
+            print(f"=== [RUN] ERROR: {script_path} timed out after "
+                  f"{self.ui_run_timeout_s}s (config {self.playwright_config_path})")
         except subprocess.CalledProcessError as e:
-            print(f"Error executing ui script: {e} \n {e.stderr}")
+            print(f"=== [RUN] ERROR: {script_path} exited {e.returncode}")
     
     def _check_and_parse_config_files(self): 
         dir_path = self.config_dir
