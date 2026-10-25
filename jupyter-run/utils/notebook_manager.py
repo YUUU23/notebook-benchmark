@@ -39,13 +39,17 @@ class NotebookManager:
             else:
                 return nb_res[0]
     
-    def delete_last_empty_cell(self) -> str: 
+    def delete_last_empty_cell(self) -> str:
+        # Drop a trailing empty code cell in place. Must assign back into
+        # self.nb_json["cells"], not self.nb_json -- overwriting the whole notebook
+        # dict with a bare cells list breaks every later nb_json["cells"] access
+        # (e.g. get_code_cells -> "list indices must be integers or slices, not str").
         nb_json_cells = self.nb_json["cells"]
-        code_cells = [c for c in nb_json_cells if c["cell_type"] == "code"] 
-        if code_cells: 
+        code_cells = [c for c in nb_json_cells if c["cell_type"] == "code"]
+        if code_cells:
             last_cell = code_cells[-1]
             if last_cell["execution_count"] == None and len(last_cell["outputs"]) == 0:
-                self.nb_json = nb_json_cells[:-1]
+                self.nb_json["cells"] = nb_json_cells[:-1]
     
     def _change_kernel_spec(self) -> bool: 
         if self.kernel_spec:

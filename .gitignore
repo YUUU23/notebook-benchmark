@@ -9,6 +9,7 @@ jupyter-run/reactive-results/
 jupyter-run/galata-root/
 test-results/
 jupyter-run/config/mod_config_file.json
+**/history.sqlite-journal
 
 **/*.npy
 **/*.pth
