@@ -179,7 +179,9 @@ async function prepareExecution(page: Page): Promise<void> {
  */
 function reportMetrics(step: Step, metrics: object): void {
   if (sequential && step.metricsPath) {
-    fs.writeFileSync(path.join(__dirname, "..", step.metricsPath), JSON.stringify(metrics));
+    const metricsFile = path.join(__dirname, "..", step.metricsPath);
+    fs.mkdirSync(path.dirname(metricsFile), { recursive: true });
+    fs.writeFileSync(metricsFile, JSON.stringify(metrics));
   } else {
     console.log(`=== [METRICS] ${JSON.stringify(metrics)}`);
   }
