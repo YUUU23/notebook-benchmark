@@ -1,5 +1,6 @@
 import { expect, galata, test } from "@jupyterlab/galata";
 import type { Page } from "@playwright/test";
+import * as fs from "fs";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
 
@@ -17,21 +18,18 @@ import test_config from "../config/mod_config_file.json";
 
 const fileName = test_config.file.benchmarkFileName;
 const benchmarks_dir = test_config.file.benchmarkFileDir;
-const downloadReactivePath = path.join(
-  __dirname,
-  "..",
-  test_config.downloadReactivePath
-);
 const downloadInitialPath = path.join(
   __dirname,
   "..",
   test_config.downloadInitialPath
 );
-const modification = test_config.modification;
-const modOp: string = (modification as any).op ?? "edit";
-// Absolute cell indices (markdown included, ascending) to rerun after the
-// modification -- the baseline's manual dependency set. Empty => rerun nothing.
-const rerunCellIndices: number[] = (modification as any).rerunCellIndices ?? [];
+// One entry per modification to apply, in order, in the same session. Without
+// "steps" in the config (individual mode) this is the single top-level one.
+type Step = { modification: any; downloadReactivePath: string; metricsPath?: string };
+const sequential = Array.isArray((test_config as any).steps);
+const steps: Step[] = sequential
+  ? (test_config as any).steps
+  : [{ modification: test_config.modification, downloadReactivePath: test_config.downloadReactivePath }];
 const datadirectory = test_config.dataDirectory;
 const supportingScripts: { sourcePath: string; targetRelPath: string; isDirectory: boolean }[] =
   (test_config as any).supportingScripts ?? [];
@@ -303,6 +301,18 @@ async function runCellsBatchedAndSettle(
   );
 }
 
+/**
+ * Print a step's wall-clock metrics, or in sequential mode write them to the
+ * step's metricsPath so the runner can print them under that step's label.
+ */
+function reportMetrics(step: Step, metrics: object): void {
+  if (sequential && step.metricsPath) {
+    fs.writeFileSync(path.join(__dirname, "..", step.metricsPath), JSON.stringify(metrics));
+  } else {
+    console.log(`=== [METRICS] ${JSON.stringify(metrics)}`);
+  }
+}
+
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
   test.beforeAll(async ({ request, tmpPath }) => {
@@ -416,6 +426,7 @@ test.describe.serial("Notebook Run", () => {
     page,
     tmpPath,
   }) => {
+    if (sequential) test.setTimeout(20 * 60 * 1000 * steps.length);
     // Open notebook
     console.log(`=== [UI] OPENING NOTEBOOK: ${fileName}`);
     await page.notebook.openByPath(`${tmpPath}/${fileName}`);
@@ -442,89 +453,98 @@ test.describe.serial("Notebook Run", () => {
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
-    // Apply the modification (NOT timed -- matches autotest.spec.ts which times
-    // execution, not typing). cellIndex is the ABSOLUTE JupyterLab cell index.
-    console.log(
-      `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
-    );
+    for (const step of steps) {
+      const modification = step.modification;
+      const modOp: string = modification.op ?? "edit";
+      // Absolute cell indices (markdown included, ascending) to rerun after the
+      // modification -- the baseline's manual dependency set. Empty => rerun nothing.
+      const rerunCellIndices: number[] = modification.rerunCellIndices ?? [];
+      const downloadReactivePath = path.join(__dirname, "..", step.downloadReactivePath);
 
-    if (modOp === "delete") {
-      const beforeCount = await page.notebook.getCellCount();
-      await page.notebook.selectCells(modification.cellIndex);
-      await page.notebook.deleteCells();
-      await page.waitForFunction(
-        (c) => {
-          const app = (window as any).galata.app;
-          const nb = app.shell.currentWidget?.content;
-          return (nb?.widgets.length ?? 0) === c - 1;
-        },
-        beforeCount
+      // Apply the modification (NOT timed -- matches autotest.spec.ts which times
+      // execution, not typing). cellIndex is the ABSOLUTE JupyterLab cell index.
+      console.log(
+        `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
       );
-    } else {
-      if (modOp === "add") {
+
+      if (modOp === "delete") {
         const beforeCount = await page.notebook.getCellCount();
-        if (modification.cellIndex === 0) {
-          await page.notebook.selectCells(0);
-          await page.keyboard.press("a");
-        } else {
-          await page.notebook.selectCells(modification.cellIndex - 1);
-          await page.notebook.clickToolbarItem("insert");
-        }
+        await page.notebook.selectCells(modification.cellIndex);
+        await page.notebook.deleteCells();
         await page.waitForFunction(
           (c) => {
             const app = (window as any).galata.app;
             const nb = app.shell.currentWidget?.content;
-            return (nb?.widgets.length ?? 0) === c + 1;
+            return (nb?.widgets.length ?? 0) === c - 1;
           },
           beforeCount
         );
-      }
+      } else {
+        if (modOp === "add") {
+          const beforeCount = await page.notebook.getCellCount();
+          if (modification.cellIndex === 0) {
+            await page.notebook.selectCells(0);
+            await page.keyboard.press("a");
+          } else {
+            await page.notebook.selectCells(modification.cellIndex - 1);
+            await page.notebook.clickToolbarItem("insert");
+          }
+          await page.waitForFunction(
+            (c) => {
+              const app = (window as any).galata.app;
+              const nb = app.shell.currentWidget?.content;
+              return (nb?.widgets.length ?? 0) === c + 1;
+            },
+            beforeCount
+          );
+        }
 
-      // Enter the edit with one keyboard.insertText, not Galata's setCell: setCell
-      // types key by key and CodeMirror's auto-indent mangles multi-line source
-      // (same edit as autotest-ipyflow.spec.ts; doc/journal.md 2026-10-24).
-      const entered = await page.notebook.enterCellEditingMode(
-        modification.cellIndex
-      );
-      if (!entered) {
-        console.log(
-          `=== [UI] COULD NOT EDIT CELL ${modification.cellIndex}, CLOSING TEST`
+        // Enter the edit with one keyboard.insertText, not Galata's setCell: setCell
+        // types key by key and CodeMirror's auto-indent mangles multi-line source
+        // (same edit as autotest-ipyflow.spec.ts; doc/journal.md 2026-10-24).
+        const entered = await page.notebook.enterCellEditingMode(
+          modification.cellIndex
         );
-        return;
+        if (!entered) {
+          console.log(
+            `=== [UI] COULD NOT EDIT CELL ${modification.cellIndex}, CLOSING TEST`
+          );
+          return;
+        }
+        await page.keyboard.press("Control+A");
+        await page.keyboard.press("Delete");
+        await page.keyboard.insertText(modification.source);
+        await page.keyboard.press("Escape");
       }
-      await page.keyboard.press("Control+A");
-      await page.keyboard.press("Delete");
-      await page.keyboard.insertText(modification.source);
-      await page.keyboard.press("Escape");
+
+      // Rerun the manual set (sheet column D) as ONE batch, timed like Run All:
+      // every cell queued at once, settle once on kernel idle. See
+      // runCellsBatchedAndSettle.
+      console.log(
+        `=== [UI] RERUNNING MANUAL CELL SET (col D): ${JSON.stringify(rerunCellIndices)}`
+      );
+      await prepareExecution(page);
+      const rerunStartedAt = performance.now();
+      const rerunSettledAt = await runCellsBatchedAndSettle(page, rerunCellIndices);
+      const reactiveWallTimeSeconds = (rerunSettledAt - rerunStartedAt) / 1000;
+      const totalWallTimeSeconds =
+        initialWallTimeSeconds + reactiveWallTimeSeconds;
+      reportMetrics(step, {
+        schemaVersion: 1,
+        initialWallTimeSeconds,
+        reactiveWallTimeSeconds,
+        totalWallTimeSeconds,
+      });
+      await page.notebook.save();
+
+      // Download the modified notebook so benchmark_runner post-processing works.
+      console.log(
+        `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
+      );
+      const downloadPromise = page.waitForEvent("download");
+      await page.menu.clickMenuItem("File>Download");
+      const download = await downloadPromise;
+      await download.saveAs(downloadReactivePath);
     }
-
-    // Rerun the manual set (sheet column D) as ONE batch, timed like Run All:
-    // every cell queued at once, settle once on kernel idle. See
-    // runCellsBatchedAndSettle.
-    console.log(
-      `=== [UI] RERUNNING MANUAL CELL SET (col D): ${JSON.stringify(rerunCellIndices)}`
-    );
-    await prepareExecution(page);
-    const rerunStartedAt = performance.now();
-    const rerunSettledAt = await runCellsBatchedAndSettle(page, rerunCellIndices);
-    const reactiveWallTimeSeconds = (rerunSettledAt - rerunStartedAt) / 1000;
-    const totalWallTimeSeconds =
-      initialWallTimeSeconds + reactiveWallTimeSeconds;
-    console.log(`=== [METRICS] ${JSON.stringify({
-      schemaVersion: 1,
-      initialWallTimeSeconds,
-      reactiveWallTimeSeconds,
-      totalWallTimeSeconds,
-    })}`);
-    await page.notebook.save();
-
-    // Download the modified notebook so benchmark_runner post-processing works.
-    console.log(
-      `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
-    );
-    const downloadPromise = page.waitForEvent("download");
-    await page.menu.clickMenuItem("File>Download");
-    const download = await downloadPromise;
-    await download.saveAs(downloadReactivePath);
   });
 });

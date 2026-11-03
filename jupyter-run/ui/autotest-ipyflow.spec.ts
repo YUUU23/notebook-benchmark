@@ -15,26 +15,24 @@
  */
 import { expect, galata, test } from "@jupyterlab/galata";
 import type { Page } from "@playwright/test";
+import * as fs from "fs";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
 
 const fileName = test_config.file.benchmarkFileName;
 const benchmarks_dir = test_config.file.benchmarkFileDir;
-const downloadReactivePath = path.join(
-  __dirname,
-  "..",
-  test_config.downloadReactivePath
-);
 const downloadInitialPath = path.join(
   __dirname,
   "..",
   test_config.downloadInitialPath
 );
-const modification = test_config.modification;
-// "edit" (in-place source change) | "add" (insert + run a new cell) |
-// "delete" (remove a cell, reactive cascade with no user execution).
-// Default "edit" keeps older mod configs working.
-const modOp: string = (modification as any).op ?? "edit";
+// One entry per modification to apply, in order, in the same session. Without
+// "steps" in the config (individual mode) this is the single top-level one.
+type Step = { modification: any; downloadReactivePath: string; metricsPath?: string };
+const sequential = Array.isArray((test_config as any).steps);
+const steps: Step[] = sequential
+  ? (test_config as any).steps
+  : [{ modification: test_config.modification, downloadReactivePath: test_config.downloadReactivePath }];
 const datadirectory = test_config.dataDirectory;
 const supportingScripts: { sourcePath: string; targetRelPath: string; isDirectory: boolean }[] =
   (test_config as any).supportingScripts ?? [];
@@ -436,6 +434,18 @@ async function prepareExecution(page: Page, cellIndex?: number): Promise<void> {
   });
 }
 
+/**
+ * Print a step's wall-clock metrics, or in sequential mode write them to the
+ * step's metricsPath so the runner can print them under that step's label.
+ */
+function reportMetrics(step: Step, metrics: object): void {
+  if (sequential && step.metricsPath) {
+    fs.writeFileSync(path.join(__dirname, "..", step.metricsPath), JSON.stringify(metrics));
+  } else {
+    console.log(`=== [METRICS] ${JSON.stringify(metrics)}`);
+  }
+}
+
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
   test.beforeAll(async ({ request, tmpPath }) => {
@@ -547,6 +557,7 @@ test.describe.serial("Notebook Run", () => {
     page,
     tmpPath,
   }) => {
+    if (sequential) test.setTimeout(20 * 60 * 1000 * steps.length);
     // Open notebook
     console.log(`=== [UI] OPENING NOTEBOOK: ${fileName}`);
     await page.notebook.openByPath(`${tmpPath}/${fileName}`);
@@ -582,140 +593,149 @@ test.describe.serial("Notebook Run", () => {
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
-    // Make change. cellIndex is the ABSOLUTE JupyterLab cell index (markdown
-    // included), which is what the Galata helpers below address by.
-    console.log(
-      `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
-    );
+    for (const step of steps) {
+      const modification = step.modification;
+      // "edit" (in-place source change) | "add" (insert + run a new cell) |
+      // "delete" (remove a cell, reactive cascade with no user execution).
+      // Default "edit" keeps older mod configs working.
+      const modOp: string = modification.op ?? "edit";
+      const downloadReactivePath = path.join(__dirname, "..", step.downloadReactivePath);
 
-    let reactiveRunStartedAt: number;
-
-    if (modOp === "delete") {
-      // Deletion has no user-triggered execution: the reactive cascade is
-      // driven by the frontend's debounced content_changed message, which the
-      // nnb kernel diffs to detect the removed cell and returns rerun_cells.
-      // Start the timer immediately before the delete and settle afterwards.
-      const beforeCount = await page.notebook.getCellCount();
-      await page.notebook.selectCells(modification.cellIndex);
-      await prepareExecution(page);
-      reactiveRunStartedAt = performance.now();
-      await page.notebook.deleteCells();
-      await page.waitForFunction(
-        (c) => {
-          const app = (window as any).galata.app;
-          const nb = app.shell.currentWidget?.content;
-          return (nb?.widgets.length ?? 0) === c - 1;
-        },
-        beforeCount
+      // Make change. cellIndex is the ABSOLUTE JupyterLab cell index (markdown
+      // included), which is what the Galata helpers below address by.
+      console.log(
+        `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
       );
-    } else {
-      // "add": insert an empty cell at the target index, then fall through to
-      // the same "set source + run one cell" path used by "edit".
-      if (modOp === "add") {
+
+      let reactiveRunStartedAt: number;
+
+      if (modOp === "delete") {
+        // Deletion has no user-triggered execution: the reactive cascade is
+        // driven by the frontend's debounced content_changed message, which the
+        // nnb kernel diffs to detect the removed cell and returns rerun_cells.
+        // Start the timer immediately before the delete and settle afterwards.
         const beforeCount = await page.notebook.getCellCount();
-        if (modification.cellIndex === 0) {
-          // Insert above the first cell ('a' = insert above in command mode).
-          await page.notebook.selectCells(0);
-          await page.keyboard.press("a");
-        } else {
-          // Insert below the preceding cell (same toolbar item Galata's
-          // addCell uses), which lands the new cell at cellIndex.
-          await page.notebook.selectCells(modification.cellIndex - 1);
-          await page.notebook.clickToolbarItem("insert");
-        }
+        await page.notebook.selectCells(modification.cellIndex);
+        await prepareExecution(page);
+        reactiveRunStartedAt = performance.now();
+        await page.notebook.deleteCells();
         await page.waitForFunction(
           (c) => {
             const app = (window as any).galata.app;
             const nb = app.shell.currentWidget?.content;
-            return (nb?.widgets.length ?? 0) === c + 1;
+            return (nb?.widgets.length ?? 0) === c - 1;
           },
           beforeCount
         );
-      }
+      } else {
+        // "add": insert an empty cell at the target index, then fall through to
+        // the same "set source + run one cell" path used by "edit".
+        if (modOp === "add") {
+          const beforeCount = await page.notebook.getCellCount();
+          if (modification.cellIndex === 0) {
+            // Insert above the first cell ('a' = insert above in command mode).
+            await page.notebook.selectCells(0);
+            await page.keyboard.press("a");
+          } else {
+            // Insert below the preceding cell (same toolbar item Galata's
+            // addCell uses), which lands the new cell at cellIndex.
+            await page.notebook.selectCells(modification.cellIndex - 1);
+            await page.notebook.clickToolbarItem("insert");
+          }
+          await page.waitForFunction(
+            (c) => {
+              const app = (window as any).galata.app;
+              const nb = app.shell.currentWidget?.content;
+              return (nb?.widgets.length ?? 0) === c + 1;
+            },
+            beforeCount
+          );
+        }
 
-      // Apply the edit through the KEYBOARD (enter edit mode, select-all,
-      // delete, insert text) rather than Galata's setCell. setCell writes the
-      // cell model programmatically and ipyflow's frontend does not treat it as
-      // a human edit, so the reactive DESCENDANT reruns are suppressed; a
-      // keyboard edit reproduces the manual reactive cascade. enterCellEditingMode
-      // is windowing-aware (scrolls the cell in, materializes CodeMirror);
-      // keyboard.insertText avoids the auto-indent that mangles multi-line source
-      // typed key-by-key.
-      const entered = await page.notebook.enterCellEditingMode(
-        modification.cellIndex
-      );
-      if (!entered) {
-        console.log(
-          `=== [UI] COULD NOT EDIT CELL ${modification.cellIndex}, CLOSING TEST`
+        // Apply the edit through the KEYBOARD (enter edit mode, select-all,
+        // delete, insert text) rather than Galata's setCell. setCell writes the
+        // cell model programmatically and ipyflow's frontend does not treat it as
+        // a human edit, so the reactive DESCENDANT reruns are suppressed; a
+        // keyboard edit reproduces the manual reactive cascade. enterCellEditingMode
+        // is windowing-aware (scrolls the cell in, materializes CodeMirror);
+        // keyboard.insertText avoids the auto-indent that mangles multi-line source
+        // typed key-by-key.
+        const entered = await page.notebook.enterCellEditingMode(
+          modification.cellIndex
         );
-        return;
+        if (!entered) {
+          console.log(
+            `=== [UI] COULD NOT EDIT CELL ${modification.cellIndex}, CLOSING TEST`
+          );
+          return;
+        }
+        await page.keyboard.press("Control+A");
+        await page.keyboard.press("Delete");
+        await page.keyboard.insertText(modification.source);
+        await page.keyboard.press("Escape");
+        // Let ipyflow's frontend register the content change before running, so the
+        // reactive cascade is computed on the UPDATED dependency graph. A fast
+        // edit->run races that registration and yields a flaky/partial cascade
+        // (e.g. mse m1/m3 flipping run-to-run); 1.5s made them deterministic across
+        // repeated runs. Not timed (before reactiveRunStartedAt). Tune via
+        // REACTIVE_POST_EDIT_MS. See doc/journal.md.
+        const postEditMs = Number(process.env.REACTIVE_POST_EDIT_MS ?? 1500);
+        if (postEditMs > 0) await page.waitForTimeout(postEditMs);
+        await page.notebook.selectCells(modification.cellIndex);
+        await prepareExecution(page, modification.cellIndex);
+        reactiveRunStartedAt = performance.now();
+        await page.keyboard.press('Control+Enter');
       }
-      await page.keyboard.press("Control+A");
-      await page.keyboard.press("Delete");
-      await page.keyboard.insertText(modification.source);
-      await page.keyboard.press("Escape");
-      // Let ipyflow's frontend register the content change before running, so the
-      // reactive cascade is computed on the UPDATED dependency graph. A fast
-      // edit->run races that registration and yields a flaky/partial cascade
-      // (e.g. mse m1/m3 flipping run-to-run); 1.5s made them deterministic across
-      // repeated runs. Not timed (before reactiveRunStartedAt). Tune via
-      // REACTIVE_POST_EDIT_MS. See doc/journal.md.
-      const postEditMs = Number(process.env.REACTIVE_POST_EDIT_MS ?? 1500);
-      if (postEditMs > 0) await page.waitForTimeout(postEditMs);
-      await page.notebook.selectCells(modification.cellIndex);
-      await prepareExecution(page, modification.cellIndex);
-      reactiveRunStartedAt = performance.now();
-      await page.keyboard.press('Control+Enter');
-    }
 
-    // Block until the reactive cascade is COMPLETE (every code cell executed),
-    // bounded -- not just "idle + stable", which truncated the reran set when the
-    // kernel went briefly idle mid-cascade. See waitForReactiveCascadeComplete.
-    const reactiveRunSettledAt = await waitForReactiveCascadeComplete(page);
-    const reactiveWallTimeSeconds =
-      (reactiveRunSettledAt - reactiveRunStartedAt) / 1000;
-    const totalWallTimeSeconds =
-      initialWallTimeSeconds + reactiveWallTimeSeconds;
-    console.log(`=== [METRICS] ${JSON.stringify({
-      schemaVersion: 1,
-      initialWallTimeSeconds,
-      reactiveWallTimeSeconds,
-      totalWallTimeSeconds,
-    })}`);
-    await page.notebook.save();
+      // Block until the reactive cascade is COMPLETE (every code cell executed),
+      // bounded -- not just "idle + stable", which truncated the reran set when the
+      // kernel went briefly idle mid-cascade. See waitForReactiveCascadeComplete.
+      const reactiveRunSettledAt = await waitForReactiveCascadeComplete(page);
+      const reactiveWallTimeSeconds =
+        (reactiveRunSettledAt - reactiveRunStartedAt) / 1000;
+      const totalWallTimeSeconds =
+        initialWallTimeSeconds + reactiveWallTimeSeconds;
+      reportMetrics(step, {
+        schemaVersion: 1,
+        initialWallTimeSeconds,
+        reactiveWallTimeSeconds,
+        totalWallTimeSeconds,
+      });
+      await page.notebook.save();
 
-    // Save modified notebook output. For a deletion the target cell no longer
-    // exists, so there is nothing to read.
-    if (modOp !== "delete") {
-      const cellOutput = await page.notebook.getCellTextOutput(
-        modification.cellIndex
-      );
+      // Save modified notebook output. For a deletion the target cell no longer
+      // exists, so there is nothing to read.
+      if (modOp !== "delete") {
+        const cellOutput = await page.notebook.getCellTextOutput(
+          modification.cellIndex
+        );
+        console.log(
+          `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+        );
+      }
+
+      // Note: a second waitForRun()+save() used to happen here, immediately
+      // after the one above with nothing state-changing in between besides a
+      // read-only getCellTextOutput() call. JupyterLab's save() re-fetches the
+      // server's current content hash right before writing and compares it to
+      // what the client last cached (see DocumentWidgetManager._maybeSave /
+      // _raiseConflict in @jupyterlab/docregistry, bundled into
+      // jlab_core.*.js): two save() calls fired back-to-back was the suspected
+      // trigger for a "File Changed on disk" conflict dialog blocking the
+      // download step below. Removed as the fix; if a second save is later
+      // found necessary, re-add it but confirm this race doesn't reappear.
+
+      // Download notebook
       console.log(
-        `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+        `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
       );
+      // See note above: menubar-scoped File>Download avoids the getByText("File")
+      // strict-mode violation when cell output contains the text "File".
+      const downloadPromise = page.waitForEvent("download");
+      await page.menu.clickMenuItem("File>Download");
+      const download = await downloadPromise;
+      await download.saveAs(downloadReactivePath);
     }
-
-    // Note: a second waitForRun()+save() used to happen here, immediately
-    // after the one above with nothing state-changing in between besides a
-    // read-only getCellTextOutput() call. JupyterLab's save() re-fetches the
-    // server's current content hash right before writing and compares it to
-    // what the client last cached (see DocumentWidgetManager._maybeSave /
-    // _raiseConflict in @jupyterlab/docregistry, bundled into
-    // jlab_core.*.js): two save() calls fired back-to-back was the suspected
-    // trigger for a "File Changed on disk" conflict dialog blocking the
-    // download step below. Removed as the fix; if a second save is later
-    // found necessary, re-add it but confirm this race doesn't reappear.
-
-    // Download notebook
-    console.log(
-      `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
-    );
-    // See note above: menubar-scoped File>Download avoids the getByText("File")
-    // strict-mode violation when cell output contains the text "File".
-    const downloadPromise = page.waitForEvent("download");
-    await page.menu.clickMenuItem("File>Download");
-    const download = await downloadPromise;
-    await download.saveAs(downloadReactivePath);
 
     // await page.pause();
   });

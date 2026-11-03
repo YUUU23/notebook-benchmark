@@ -1,3 +1,4 @@
+import copy
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 from itertools import zip_longest
@@ -332,6 +333,51 @@ def detect_modification(nb_json_original, nb_json_modified) -> Modification:
     removed = orig_code[i]
     return Modification("delete", i, code_index_to_abs_index(nb_json_original, i),
                         "", removed.get("id", ""), _source_str(removed))
+
+
+def compose_modifications(nb_json_base, nb_json_mods) -> list:
+    """Apply each modification notebook's change, in order, on top of the previous.
+
+    Each entry of ``nb_json_mods`` is diffed against the BASE notebook with
+    detect_modification; that single change is then applied to the notebook
+    produced by the previous entries. Cells are located by their base position,
+    so earlier adds/deletes do not shift later targets. An added cell goes right
+    after the base cell that precedes it in its modification notebook, below any
+    cells earlier modifications added at the same spot. Returns one notebook per
+    modification (the notebook after that many steps). Raises ValueError when a
+    modification edits or deletes a base cell an earlier one deleted.
+    """
+    base_cells = nb_json_base["cells"]
+    # (base absolute index or None for an added cell, cell)
+    current = [(i, copy.deepcopy(c)) for i, c in enumerate(base_cells)]
+    results = []
+
+    def position_of(base_abs):
+        for p, (tag, _) in enumerate(current):
+            if tag == base_abs:
+                return p
+        raise ValueError(f"base cell {base_abs} was deleted by an earlier modification")
+
+    for nb_mod in nb_json_mods:
+        mod = detect_modification(nb_json_base, nb_mod)
+        if mod.op == "edit":
+            p = position_of(code_index_to_abs_index(nb_json_base, mod.code_idx))
+            current[p][1]["source"] = mod.source
+        elif mod.op == "delete":
+            del current[position_of(mod.abs_idx)]
+        elif mod.op == "add":
+            added = copy.deepcopy(nb_mod["cells"][mod.abs_idx])
+            added["outputs"], added["execution_count"] = [], None
+            # The modification notebook is the base plus this one cell, so the
+            # cell before it sits at the same absolute index in the base.
+            p = 0 if mod.abs_idx == 0 else position_of(mod.abs_idx - 1) + 1
+            while p < len(current) and current[p][0] is None:
+                p += 1
+            current.insert(p, (None, added))
+        nb_out = copy.deepcopy(nb_json_base)
+        nb_out["cells"] = [copy.deepcopy(c) for _, c in current]
+        results.append(nb_out)
+    return results
 
 def get_cells_reran(nb_initial_json, nb_reactive_json) -> tuple[int, int, list[int]]:
     """

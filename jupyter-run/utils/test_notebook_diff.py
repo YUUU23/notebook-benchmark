@@ -19,6 +19,7 @@ from utils.notebook_diff import (
     get_cells_reran,
     relabel_reran_positions,
     rerun_labels_to_abs_indices,
+    compose_modifications,
 )
 
 
@@ -299,6 +300,96 @@ def test_rerun_labels_roundtrip_against_relabel_delete():
     positions = [1, 2]
     labels = relabel_reran_positions(positions, "delete", 1)  # -> [3, 4] (orig numbering)
     assert rerun_labels_to_abs_indices(labels, "delete", 1, nb_mod) == positions
+
+
+# --- compose_modifications (sequential mode) ------------------------------
+
+def _srcs(n):
+    return [c["source"] for c in n["cells"]]
+
+
+def test_compose_edit_after_add_shifts_index():
+    base = nb([code("a"), code("b"), code("c")])
+    m1 = nb([code("a"), code("new"), code("b"), code("c")])
+    m2 = nb([code("a"), code("b"), code("c2")])
+    cur1, cur2 = compose_modifications(base, [m1, m2])
+    assert _srcs(cur1) == ["a", "new", "b", "c"]
+    assert _srcs(cur2) == ["a", "new", "b", "c2"]
+    step2 = detect_modification(cur1, cur2)
+    assert step2.op == "edit" and step2.code_idx == 3 and step2.abs_idx == 3, step2
+
+
+def test_compose_two_adds_same_position_keep_order():
+    base = nb([md("#"), code("a"), code("b")])
+    m1 = nb([md("#"), code("a"), code("x"), code("b")])
+    m2 = nb([md("#"), code("a"), code("y"), code("b")])
+    cur1, cur2 = compose_modifications(base, [m1, m2])
+    assert _srcs(cur2) == ["#", "a", "x", "y", "b"]
+    step2 = detect_modification(cur1, cur2)
+    assert step2.op == "add" and step2.abs_idx == 3 and step2.source == "y", step2
+
+
+def test_compose_add_at_top():
+    base = nb([code("a"), code("b")])
+    m1 = nb([code("x"), code("a"), code("b")])
+    m2 = nb([code("y"), code("a"), code("b")])
+    _, cur2 = compose_modifications(base, [m1, m2])
+    assert _srcs(cur2) == ["x", "y", "a", "b"]
+
+
+def test_compose_delete_then_edit_same_cell_raises():
+    base = nb([code("a"), code("b"), code("c")])
+    m1 = nb([code("a"), code("c")])
+    m2 = nb([code("a"), code("b2"), code("c")])
+    try:
+        compose_modifications(base, [m1, m2])
+    except ValueError:
+        return
+    raise AssertionError("expected ValueError")
+
+
+def test_compose_repeated_edit_overwrites():
+    base = nb([code("a"), code("b")])
+    m1 = nb([code("a"), code("b1")])
+    m2 = nb([code("a"), code("b2")])
+    cur1, cur2 = compose_modifications(base, [m1, m2])
+    assert _srcs(cur2) == ["a", "b2"]
+    assert detect_modification(cur1, cur2).source == "b2"
+
+
+def test_compose_does_not_mutate_inputs():
+    base = nb([code("a"), code("b")])
+    m1 = nb([code("a"), code("b1")])
+    compose_modifications(base, [m1])
+    assert _srcs(base) == ["a", "b"]
+
+
+def test_compose_realworld_chains():
+    # Every step of these chains must replay as exactly the change it makes
+    # against the base (same op and source).
+    import json
+    root = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "..", "..", "benchmarks", "realworld")
+    for d, base_name in [("forecasting-gmm", None), ("lpips", "lpips"),
+                         ("GGAE-public-01", None)]:
+        path = os.path.join(root, d)
+        if not os.path.isdir(path):
+            continue
+        files = sorted(f for f in os.listdir(path) if f.endswith(".ipynb"))
+        base_file = [f for f in files if not f.startswith("m")][0]
+        mods = sorted((f for f in files if f.startswith("m") and f.endswith("_" + base_file)),
+                      key=lambda f: int(f[1:f.index("_")]))
+        load = lambda f: json.load(open(os.path.join(path, f)))
+        base = load(base_file)
+        mod_nbs = [load(f) for f in mods]
+        prev = base
+        for m_nb, cur in zip(mod_nbs, compose_modifications(base, mod_nbs)):
+            want = detect_modification(base, m_nb)
+            got = detect_modification(prev, cur)
+            assert got.op in (want.op, "none"), (d, want, got)
+            if got.op != "none":
+                assert got.source == want.source, (d, want, got)
+            prev = cur
 
 
 def _run():

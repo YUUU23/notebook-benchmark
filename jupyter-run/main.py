@@ -64,7 +64,7 @@ def validate_benchmark_directory(directory: str) -> tuple[str, list[tuple[str, s
         file_path = f"{directory}{f}"
         if not Path(file_path).is_file(): 
             continue 
-        if not f.endswith(nb_extension): 
+        if not f.endswith(nb_extension) or f.startswith("."):
             continue
         stem = f[: -len(nb_extension)]
         nb_stems[stem] = file_path
@@ -106,6 +106,11 @@ def validate_benchmark_directory(directory: str) -> tuple[str, list[tuple[str, s
     steps = [(nb_stems[base], path) for _, path in ordered]
     return (base, steps)
 
+def shift_rerun_set(rerun_set: str, offset: int) -> str:
+    """Add offset to each numeric label of a column-D set ("n,3,5" -> "n,2,4")."""
+    return ",".join(str(int(t) + offset) if t.strip().isdigit() else t.strip()
+                    for t in rerun_set.split(","))
+
 def run_cleanup(): 
     """
     Clean up open kernels and remove files generated through the run. 
@@ -137,7 +142,18 @@ def main():
     parser.add_argument("--start_ui_kernel", action="store_true", help="start UI kernel")
     parser.add_argument("--run_in_copy", action="store_true", help="make copy of original benchmarks and run in copy directory for isolation") 
     parser.add_argument("--auto_cleanup", action="store_true", help="automatically cleanup after run")
+    parser.add_argument("--label-by-dir", action="store_true",
+                        help="label steps <benchmark dir name>_m<step> instead of "
+                             "<base notebook stem>_m<step> (ICSE2025 sheet rows)")
+    parser.add_argument("--rerun-set-shift", type=int, default=0,
+                        help="add this offset to every numeric cell label of the "
+                             "column-D rerun set (e.g. -1 for ICSE2025 rows numbered "
+                             "with the since-removed %%flow cell); 'n' is untouched")
     parser.add_argument("--resume-log", type=str, help="prior run log; skip benchmarks already marked COMPLETE in it")
+    parser.add_argument("--sequential", action="store_true",
+                        help="apply each benchmark's modifications one after another in one "
+                             "session (diff of m<k> against the base, applied on top of the "
+                             "earlier ones) instead of each one separately against the base")
     parser.add_argument("--rerun-sheet-url", type=str, default=WEB_APP_URL,
                         help="Apps Script /exec URL to pull the python3 baseline rerun "
                              "set (results-sheet column D) from; only used for the python3 kernel")
@@ -185,14 +201,44 @@ def main():
             kernel_name = os.path.basename(os.path.normpath(args.config))
             rerun_sets = (fetch_rerun_sets(args.rerun_sheet_url)
                           if kernel_name == "python3" else {})
+            if args.rerun_set_shift:
+                rerun_sets = {k: shift_rerun_set(v, args.rerun_set_shift)
+                              for k, v in rerun_sets.items()}
+            if args.sequential and kernel_name == "ec":
+                print("--sequential does not support the ec config")
+                return
+            if args.sequential and kernel_name == "python3" and args.rerun_sheet_url == WEB_APP_URL:
+                # The default sheet's sets are numbered against the base notebook.
+                print("=== [RUN] WARNING: --sequential without --rerun-sheet-url: python3 "
+                      "reruns no cells; pass a sheet whose column D is numbered as in the "
+                      "notebook before each sequential step")
+                rerun_sets = {}
             spawn_ui_kernel = args.start_ui_kernel
             b = BenchmarkRunner(args.config, spawn_ui_kernel=spawn_ui_kernel)
             for name, steps in benchmark_to_run:
+                if args.label_by_dir:
+                    name = os.path.basename(os.path.normpath(os.path.dirname(steps[0][0])))
+                if args.sequential:
+                    labels = [f"{name}_m{i + 1}" if len(steps) > 1 or args.label_by_dir else name
+                              for i in range(len(steps))]
+                    # A chain cannot restart midway: rerun it unless every step completed.
+                    if all(label in completed for label in labels):
+                        print(f"=== [RUN] SKIP (already complete) {name} ===")
+                        continue
+                    try:
+                        b.run_sequential(steps[0][0], [m for _, m in steps], labels, data_directory,
+                                         [rerun_sets.get(label) for label in labels])
+                    except Exception as e:
+                        print(f"Failed to run benchamrk {name} sequentially, {e}")
+                    b.reap_kernels()
+                    continue
                 for i, (original_nb_path, modified_nb_path) in enumerate(steps):
                     # Multi-step benchmarks (realworld m1..mN) are labelled
                     # "<name>_m<step>" to match the results sheet's col A. Single
-                    # step benchmarks keep the bare name (py-built-in / lib).
-                    step_label = f"{name}_m{i + 1}" if len(steps) > 1 else name
+                    # step benchmarks keep the bare name (py-built-in / lib), except
+                    # under --label-by-dir (ICSE2025 rows are always "_m<step>").
+                    multi = len(steps) > 1 or args.label_by_dir
+                    step_label = f"{name}_m{i + 1}" if multi else name
                     if step_label in completed:
                         print(f"=== [RUN] SKIP (already complete) {step_label} ===")
                         continue

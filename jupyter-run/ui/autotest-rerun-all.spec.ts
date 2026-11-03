@@ -1,5 +1,6 @@
 import { expect, galata, test } from "@jupyterlab/galata";
 import type { Page } from "@playwright/test";
+import * as fs from "fs";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
 import { ContentsHelper } from "@jupyterlab/galata/lib/contents";
@@ -14,21 +15,18 @@ import { ContentsHelper } from "@jupyterlab/galata/lib/contents";
 
 const fileName = test_config.file.benchmarkFileName;
 const benchmarks_dir = test_config.file.benchmarkFileDir;
-const downloadReactivePath = path.join(
-  __dirname,
-  "..",
-  test_config.downloadReactivePath
-);
 const downloadInitialPath = path.join(
   __dirname,
   "..",
   test_config.downloadInitialPath
 );
-const modification = test_config.modification;
-// Modification kind: "edit" (default), "add", or "delete". Mirrors the reactive
-// specs (autotest.spec.ts) so add/delete benchmarks apply the correct change; a
-// blanket edit-fill would leave the added/deleted cell wrong.
-const modOp: string = (modification as any).op ?? "edit";
+// One entry per modification to apply, in order, in the same session. Without
+// "steps" in the config (individual mode) this is the single top-level one.
+type Step = { modification: any; downloadReactivePath: string; metricsPath?: string };
+const sequential = Array.isArray((test_config as any).steps);
+const steps: Step[] = sequential
+  ? (test_config as any).steps
+  : [{ modification: test_config.modification, downloadReactivePath: test_config.downloadReactivePath }];
 const datadirectory = test_config.dataDirectory;
 const supportingScripts: { sourcePath: string; targetRelPath: string; isDirectory: boolean }[] =
   (test_config as any).supportingScripts ?? [];
@@ -175,6 +173,18 @@ async function prepareExecution(page: Page): Promise<void> {
   });
 }
 
+/**
+ * Print a step's wall-clock metrics, or in sequential mode write them to the
+ * step's metricsPath so the runner can print them under that step's label.
+ */
+function reportMetrics(step: Step, metrics: object): void {
+  if (sequential && step.metricsPath) {
+    fs.writeFileSync(path.join(__dirname, "..", step.metricsPath), JSON.stringify(metrics));
+  } else {
+    console.log(`=== [METRICS] ${JSON.stringify(metrics)}`);
+  }
+}
+
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
   test.beforeAll(async ({ request, tmpPath }) => {
@@ -284,6 +294,7 @@ test.describe.serial("Notebook Run", () => {
     tmpPath,
     request,
   }) => {
+    if (sequential) test.setTimeout(20 * 60 * 1000 * steps.length);
     // Open notebook
     console.log(`=== [UI] OPENING NOTEBOOK: ${fileName}`);
     await page.notebook.openByPath(`${tmpPath}/${fileName}`);
@@ -327,146 +338,155 @@ test.describe.serial("Notebook Run", () => {
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
-    // Make change (untimed). Apply the modification the same way the reactive
-    // spec does (autotest.spec.ts) so add/delete land correctly and an edit's
-    // source is committed to the cell MODEL -- a bare fill() can leave the
-    // windowed editor's source uncommitted, so the cell runs empty on Run All
-    // and is dropped (see doc/journal.md).
-    console.log(
-      `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
-    );
+    for (const step of steps) {
+      const modification = step.modification;
+      // Modification kind: "edit" (default), "add", or "delete". Mirrors the reactive
+      // specs (autotest.spec.ts) so add/delete benchmarks apply the correct change; a
+      // blanket edit-fill would leave the added/deleted cell wrong.
+      const modOp: string = modification.op ?? "edit";
+      const downloadReactivePath = path.join(__dirname, "..", step.downloadReactivePath);
 
-    if (modOp === "delete") {
-      const beforeCount = await page.notebook.getCellCount();
-      await page.notebook.selectCells(modification.cellIndex);
-      await page.notebook.deleteCells();
-      await page.waitForFunction(
-        (c) => {
-          const app = (window as any).galata.app;
-          const nb = app.shell.currentWidget?.content;
-          return (nb?.widgets.length ?? 0) === c - 1;
-        },
-        beforeCount
+      // Make change (untimed). Apply the modification the same way the reactive
+      // spec does (autotest.spec.ts) so add/delete land correctly and an edit's
+      // source is committed to the cell MODEL -- a bare fill() can leave the
+      // windowed editor's source uncommitted, so the cell runs empty on Run All
+      // and is dropped (see doc/journal.md).
+      console.log(
+        `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
       );
-    } else {
-      // "add": insert an empty cell at the target index, then fall through to the
-      // same set-source path as "edit".
-      if (modOp === "add") {
+
+      if (modOp === "delete") {
         const beforeCount = await page.notebook.getCellCount();
-        if (modification.cellIndex === 0) {
-          await page.notebook.selectCells(0);
-          await page.keyboard.press("a");
-        } else {
-          await page.notebook.selectCells(modification.cellIndex - 1);
-          await page.notebook.clickToolbarItem("insert");
-        }
+        await page.notebook.selectCells(modification.cellIndex);
+        await page.notebook.deleteCells();
         await page.waitForFunction(
           (c) => {
             const app = (window as any).galata.app;
             const nb = app.shell.currentWidget?.content;
-            return (nb?.widgets.length ?? 0) === c + 1;
+            return (nb?.widgets.length ?? 0) === c - 1;
           },
           beforeCount
         );
-      }
+      } else {
+        // "add": insert an empty cell at the target index, then fall through to the
+        // same set-source path as "edit".
+        if (modOp === "add") {
+          const beforeCount = await page.notebook.getCellCount();
+          if (modification.cellIndex === 0) {
+            await page.notebook.selectCells(0);
+            await page.keyboard.press("a");
+          } else {
+            await page.notebook.selectCells(modification.cellIndex - 1);
+            await page.notebook.clickToolbarItem("insert");
+          }
+          await page.waitForFunction(
+            (c) => {
+              const app = (window as any).galata.app;
+              const nb = app.shell.currentWidget?.content;
+              return (nb?.widgets.length ?? 0) === c + 1;
+            },
+            beforeCount
+          );
+        }
 
-      // Enter the edit with one keyboard.insertText, not Galata's setCell: setCell
-      // types key by key and CodeMirror's auto-indent mangles multi-line source
-      // (same edit as autotest-ipyflow.spec.ts; doc/journal.md 2026-10-24).
-      const entered = await page.notebook.enterCellEditingMode(
-        modification.cellIndex
-      );
-      if (!entered) {
-        console.log(
-          `=== [UI] COULD NOT EDIT CELL ${modification.cellIndex}, CLOSING TEST`
+        // Enter the edit with one keyboard.insertText, not Galata's setCell: setCell
+        // types key by key and CodeMirror's auto-indent mangles multi-line source
+        // (same edit as autotest-ipyflow.spec.ts; doc/journal.md 2026-10-24).
+        const entered = await page.notebook.enterCellEditingMode(
+          modification.cellIndex
         );
-        return;
+        if (!entered) {
+          console.log(
+            `=== [UI] COULD NOT EDIT CELL ${modification.cellIndex}, CLOSING TEST`
+          );
+          return;
+        }
+        await page.keyboard.press("Control+A");
+        await page.keyboard.press("Delete");
+        await page.keyboard.insertText(modification.source);
+        await page.keyboard.press("Escape");
+        await page.notebook.selectCells(modification.cellIndex);
+        // Commit the edited source onto the cell MODEL before Run All reads it.
+        await page.evaluate(
+          ({ i, src }) => {
+            const nb = (window as any).galata.app.shell.currentWidget?.content;
+            nb?.widgets[i]?.model.sharedModel.setSource(src);
+          },
+          { i: modification.cellIndex, src: modification.source }
+        );
       }
-      await page.keyboard.press("Control+A");
-      await page.keyboard.press("Delete");
-      await page.keyboard.insertText(modification.source);
-      await page.keyboard.press("Escape");
-      await page.notebook.selectCells(modification.cellIndex);
-      // Commit the edited source onto the cell MODEL before Run All reads it.
-      await page.evaluate(
-        ({ i, src }) => {
-          const nb = (window as any).galata.app.shell.currentWidget?.content;
-          nb?.widgets[i]?.model.sharedModel.setSource(src);
-        },
-        { i: modification.cellIndex, src: modification.source }
-      );
-    }
-    await page.notebook.save();
+      await page.notebook.save();
 
-    // Reset FS (untimed): delete only entries CREATED during run 1 (generated
-    // outputs), sparing the notebook and every staged input in stagedBefore, so
-    // the second run-all still finds its data/modules. Outputs written INSIDE a
-    // spared input dir persist to run 2 (minor warmth); acceptable vs. wiping
-    // inputs outright. See doc/journal.md.
-    const dirContent = await contents.getContentMetadata(tmpPath, "directory");
-    if (!(dirContent && dirContent.type === "directory")) {
-      console.log("DIR NOT FOUND!!");
-    } else {
-      for (const item of dirContent.content) {
-        if (item.name.endsWith(".ipynb")) {
-          continue;
-        }
-        if (stagedBefore.has(item.name)) {
-          continue;   // staged input -> spare
-        }
-        console.log("DELETING GENERATED: ", item.name);
-        if (item.type === "directory") {
-          if (!(await contents.deleteDirectory(item.path))) {
-            console.log("deleting failed for: ", item.name);
+      // Reset FS (untimed): delete only entries CREATED during run 1 (generated
+      // outputs), sparing the notebook and every staged input in stagedBefore, so
+      // the second run-all still finds its data/modules. Outputs written INSIDE a
+      // spared input dir persist to run 2 (minor warmth); acceptable vs. wiping
+      // inputs outright. See doc/journal.md.
+      const dirContent = await contents.getContentMetadata(tmpPath, "directory");
+      if (!(dirContent && dirContent.type === "directory")) {
+        console.log("DIR NOT FOUND!!");
+      } else {
+        for (const item of dirContent.content) {
+          if (item.name.endsWith(".ipynb")) {
+            continue;
           }
-        } else {
-          if (!(await contents.deleteFile(item.path))) {
-            console.log("deleting failed for: ", item.name);
+          if (stagedBefore.has(item.name)) {
+            continue;   // staged input -> spare
+          }
+          console.log("DELETING GENERATED: ", item.name);
+          if (item.type === "directory") {
+            if (!(await contents.deleteDirectory(item.path))) {
+              console.log("deleting failed for: ", item.name);
+            }
+          } else {
+            if (!(await contents.deleteFile(item.path))) {
+              console.log("deleting failed for: ", item.name);
+            }
           }
         }
       }
-    }
 
-    // Rerun entire notebook again (second, warm run-all), timed.
-    console.log(`=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS`);
-    await prepareExecution(page);
-    const rerunStartedAt = performance.now();
-    await page.menu.clickMenuItem('Run>Run All Cells');
-    const rerunSettledAt = await waitForRunAllToSettle(page);
-    const reactiveWallTimeSeconds =
-      (rerunSettledAt - rerunStartedAt) / 1000;
-    await page.notebook.save();
+      // Rerun entire notebook again (second, warm run-all), timed.
+      console.log(`=== [UI] RUN ENTIRE NOTEBOOK AGAIN CELLS`);
+      await prepareExecution(page);
+      const rerunStartedAt = performance.now();
+      await page.menu.clickMenuItem('Run>Run All Cells');
+      const rerunSettledAt = await waitForRunAllToSettle(page);
+      const reactiveWallTimeSeconds =
+        (rerunSettledAt - rerunStartedAt) / 1000;
+      await page.notebook.save();
 
-    const totalWallTimeSeconds =
-      initialWallTimeSeconds + reactiveWallTimeSeconds;
-    console.log(`=== [METRICS] ${JSON.stringify({
-      schemaVersion: 1,
-      initialWallTimeSeconds,
-      reactiveWallTimeSeconds,
-      totalWallTimeSeconds,
-    })}`);
+      const totalWallTimeSeconds =
+        initialWallTimeSeconds + reactiveWallTimeSeconds;
+      reportMetrics(step, {
+        schemaVersion: 1,
+        initialWallTimeSeconds,
+        reactiveWallTimeSeconds,
+        totalWallTimeSeconds,
+      });
 
-    // Save modified notebook output (skip for delete: that cell no longer exists).
-    if (modOp !== "delete") {
-      const cellOutput = await page.notebook.getCellTextOutput(
-        modification.cellIndex
-      );
+      // Save modified notebook output (skip for delete: that cell no longer exists).
+      if (modOp !== "delete") {
+        const cellOutput = await page.notebook.getCellTextOutput(
+          modification.cellIndex
+        );
+        console.log(
+          `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+        );
+      }
+
+      await page.notebook.save();
+
+      // Download notebook
       console.log(
-        `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+        `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
       );
+      // File>Download via the galata menu helper (see note above): avoids the
+      // getByText("File") strict-mode violation when cell output contains "File".
+      const downloadPromise = page.waitForEvent("download");
+      await page.menu.clickMenuItem("File>Download");
+      const download = await downloadPromise;
+      await download.saveAs(downloadReactivePath);
     }
-
-    await page.notebook.save();
-
-    // Download notebook
-    console.log(
-      `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
-    );
-    // File>Download via the galata menu helper (see note above): avoids the
-    // getByText("File") strict-mode violation when cell output contains "File".
-    const downloadPromise = page.waitForEvent("download");
-    await page.menu.clickMenuItem("File>Download");
-    const download = await downloadPromise;
-    await download.saveAs(downloadReactivePath);
   });
 });

@@ -1,25 +1,23 @@
 import { expect, galata, test } from "@jupyterlab/galata";
 import type { Page } from "@playwright/test";
+import * as fs from "fs";
 import * as path from "path";
 import test_config from "../config/mod_config_file.json";
 
 const fileName = test_config.file.benchmarkFileName;
 const benchmarks_dir = test_config.file.benchmarkFileDir;
-const downloadReactivePath = path.join(
-  __dirname,
-  "..",
-  test_config.downloadReactivePath
-);
 const downloadInitialPath = path.join(
   __dirname,
   "..",
   test_config.downloadInitialPath
 );
-const modification = test_config.modification;
-// "edit" (in-place source change) | "add" (insert + run a new cell) |
-// "delete" (remove a cell, reactive cascade with no user execution).
-// Default "edit" keeps older mod configs working.
-const modOp: string = (modification as any).op ?? "edit";
+// One entry per modification to apply, in order, in the same session. Without
+// "steps" in the config (individual mode) this is the single top-level one.
+type Step = { modification: any; downloadReactivePath: string; metricsPath?: string };
+const sequential = Array.isArray((test_config as any).steps);
+const steps: Step[] = sequential
+  ? (test_config as any).steps
+  : [{ modification: test_config.modification, downloadReactivePath: test_config.downloadReactivePath }];
 const datadirectory = test_config.dataDirectory;
 const supportingScripts: { sourcePath: string; targetRelPath: string; isDirectory: boolean }[] =
   (test_config as any).supportingScripts ?? [];
@@ -292,6 +290,18 @@ async function prepareExecution(page: Page, cellIndex?: number): Promise<void> {
   });
 }
 
+/**
+ * Print a step's wall-clock metrics, or in sequential mode write them to the
+ * step's metricsPath so the runner can print them under that step's label.
+ */
+function reportMetrics(step: Step, metrics: object): void {
+  if (sequential && step.metricsPath) {
+    fs.writeFileSync(path.join(__dirname, "..", step.metricsPath), JSON.stringify(metrics));
+  } else {
+    console.log(`=== [METRICS] ${JSON.stringify(metrics)}`);
+  }
+}
+
 test.use({ tmpPath: "notebook-test" });
 test.describe.serial("Notebook Run", () => {
   test.beforeAll(async ({ request, tmpPath }) => {
@@ -403,6 +413,7 @@ test.describe.serial("Notebook Run", () => {
     page,
     tmpPath,
   }) => {
+    if (sequential) test.setTimeout(20 * 60 * 1000 * steps.length);
     // Open notebook
     console.log(`=== [UI] OPENING NOTEBOOK: ${fileName}`);
     await page.notebook.openByPath(`${tmpPath}/${fileName}`);
@@ -432,161 +443,170 @@ test.describe.serial("Notebook Run", () => {
     const downloadOriginal = await downloadOriginalPathPromise;
     await downloadOriginal.saveAs(downloadInitialPath);
 
-    // Make change. cellIndex is the ABSOLUTE JupyterLab cell index (markdown
-    // included), which is what the Galata helpers below address by.
-    console.log(
-      `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
-    );
+    for (const step of steps) {
+      const modification = step.modification;
+      // "edit" (in-place source change) | "add" (insert + run a new cell) |
+      // "delete" (remove a cell, reactive cascade with no user execution).
+      // Default "edit" keeps older mod configs working.
+      const modOp: string = modification.op ?? "edit";
+      const downloadReactivePath = path.join(__dirname, "..", step.downloadReactivePath);
 
-    let reactiveRunStartedAt: number;
-
-    if (modOp === "delete") {
-      // Deletion has no user-triggered execution: the reactive cascade is
-      // driven by the frontend's debounced content_changed message, which the
-      // nnb kernel diffs to detect the removed cell and returns rerun_cells.
-      // Start the timer immediately before the delete and settle afterwards.
-      const beforeCount = await page.notebook.getCellCount();
-      await page.notebook.selectCells(modification.cellIndex);
-      await prepareExecution(page);
-      reactiveRunStartedAt = performance.now();
-      await page.notebook.deleteCells();
-      await page.waitForFunction(
-        (c) => {
-          const app = (window as any).galata.app;
-          const nb = app.shell.currentWidget?.content;
-          return (nb?.widgets.length ?? 0) === c - 1;
-        },
-        beforeCount
+      // Make change. cellIndex is the ABSOLUTE JupyterLab cell index (markdown
+      // included), which is what the Galata helpers below address by.
+      console.log(
+        `=== [UI] MAKING MODIFICATION (${modOp}) AT CELL INDEX: ${modification.cellIndex}`
       );
-    } else {
-      // "add": insert an empty cell at the target index, then fall through to
-      // the same "set source + run one cell" path used by "edit".
-      if (modOp === "add") {
+
+      let reactiveRunStartedAt: number;
+
+      if (modOp === "delete") {
+        // Deletion has no user-triggered execution: the reactive cascade is
+        // driven by the frontend's debounced content_changed message, which the
+        // nnb kernel diffs to detect the removed cell and returns rerun_cells.
+        // Start the timer immediately before the delete and settle afterwards.
         const beforeCount = await page.notebook.getCellCount();
-        if (modification.cellIndex === 0) {
-          // Insert above the first cell ('a' = insert above in command mode).
-          await page.notebook.selectCells(0);
-          await page.keyboard.press("a");
-        } else {
-          // Insert below the preceding cell (same toolbar item Galata's
-          // addCell uses), which lands the new cell at cellIndex.
-          await page.notebook.selectCells(modification.cellIndex - 1);
-          await page.notebook.clickToolbarItem("insert");
-        }
+        await page.notebook.selectCells(modification.cellIndex);
+        await prepareExecution(page);
+        reactiveRunStartedAt = performance.now();
+        await page.notebook.deleteCells();
         await page.waitForFunction(
           (c) => {
             const app = (window as any).galata.app;
             const nb = app.shell.currentWidget?.content;
-            return (nb?.widgets.length ?? 0) === c + 1;
+            return (nb?.widgets.length ?? 0) === c - 1;
           },
           beforeCount
         );
-      }
+      } else {
+        // "add": insert an empty cell at the target index, then fall through to
+        // the same "set source + run one cell" path used by "edit".
+        if (modOp === "add") {
+          const beforeCount = await page.notebook.getCellCount();
+          if (modification.cellIndex === 0) {
+            // Insert above the first cell ('a' = insert above in command mode).
+            await page.notebook.selectCells(0);
+            await page.keyboard.press("a");
+          } else {
+            // Insert below the preceding cell (same toolbar item Galata's
+            // addCell uses), which lands the new cell at cellIndex.
+            await page.notebook.selectCells(modification.cellIndex - 1);
+            await page.notebook.clickToolbarItem("insert");
+          }
+          await page.waitForFunction(
+            (c) => {
+              const app = (window as any).galata.app;
+              const nb = app.shell.currentWidget?.content;
+              return (nb?.widgets.length ?? 0) === c + 1;
+            },
+            beforeCount
+          );
+        }
 
-      // Use Galata's setCell to write the cell source: it is windowing-aware
-      // (scrolls the target cell into the windowed viewport and enters edit
-      // mode to materialize the CodeMirror editor before typing).
-      const modApplied = await page.notebook.setCell(
-        modification.cellIndex, "code", modification.source
-      );
-      if (!modApplied) {
-        console.log(
-          `=== [UI] COULD NOT SET CELL ${modification.cellIndex}, CLOSING TEST`
+        // Use Galata's setCell to write the cell source: it is windowing-aware
+        // (scrolls the target cell into the windowed viewport and enters edit
+        // mode to materialize the CodeMirror editor before typing).
+        const modApplied = await page.notebook.setCell(
+          modification.cellIndex, "code", modification.source
         );
-        return;
-      }
-      await page.notebook.selectCells(modification.cellIndex);
-      // Force the edited source onto the cell MODEL before executing. setCell
-      // types into the windowed CodeMirror editor, which can be re-virtualized
-      // before Ctrl+Enter reads the model -- leaving the manual execute_request
-      // with EMPTY source. The nnb kernel then hits its empty-cell bypass so the
-      // changed cell's body never runs, and nnb (which drops the changed cell
-      // from its own rerun set assuming the manual run executed it) yields a
-      // TRUNCATED cascade that diverges from a real manual run (see doc/journal.md,
-      // explore_siren m1/m3). Committing to sharedModel guarantees the execute
-      // carries the real code.
-      await page.evaluate(
-        ({ i, src }) => {
-          const nb = (window as any).galata.app.shell.currentWidget?.content;
-          nb?.widgets[i]?.model.sharedModel.setSource(src);
-        },
-        { i: modification.cellIndex, src: modification.source }
-      );
-      await prepareExecution(page, modification.cellIndex);
-      const changedEcBefore = await page.evaluate((i) => {
-        const nb = (window as any).galata.app.shell.currentWidget?.content;
-        return nb?.widgets[i]?.model.executionCount ?? null;
-      }, modification.cellIndex);
-      reactiveRunStartedAt = performance.now();
-      await page.keyboard.press('Control+Enter');
-      // Confirm the MODIFIED cell actually executed its new body: its execution
-      // count must move off the pre-run (reset) value. An empty execute_request
-      // leaves it unchanged, so the bare waitForRun() -- satisfied by any
-      // non-null count -- would silently accept a no-op run. If it never
-      // advances, log loudly; waitForReactiveExecutionsToSettle below still
-      // captures whatever cascade occurred. See doc/journal.md.
-      try {
-        await page.waitForFunction(
-          ({ i, before }) => {
+        if (!modApplied) {
+          console.log(
+            `=== [UI] COULD NOT SET CELL ${modification.cellIndex}, CLOSING TEST`
+          );
+          return;
+        }
+        await page.notebook.selectCells(modification.cellIndex);
+        // Force the edited source onto the cell MODEL before executing. setCell
+        // types into the windowed CodeMirror editor, which can be re-virtualized
+        // before Ctrl+Enter reads the model -- leaving the manual execute_request
+        // with EMPTY source. The nnb kernel then hits its empty-cell bypass so the
+        // changed cell's body never runs, and nnb (which drops the changed cell
+        // from its own rerun set assuming the manual run executed it) yields a
+        // TRUNCATED cascade that diverges from a real manual run (see doc/journal.md,
+        // explore_siren m1/m3). Committing to sharedModel guarantees the execute
+        // carries the real code.
+        await page.evaluate(
+          ({ i, src }) => {
             const nb = (window as any).galata.app.shell.currentWidget?.content;
-            const ec = nb?.widgets[i]?.model.executionCount ?? null;
-            return ec !== null && ec !== before;
+            nb?.widgets[i]?.model.sharedModel.setSource(src);
           },
-          { i: modification.cellIndex, before: changedEcBefore },
-          { timeout: 120000, polling: 100 }
+          { i: modification.cellIndex, src: modification.source }
         );
-      } catch {
+        await prepareExecution(page, modification.cellIndex);
+        const changedEcBefore = await page.evaluate((i) => {
+          const nb = (window as any).galata.app.shell.currentWidget?.content;
+          return nb?.widgets[i]?.model.executionCount ?? null;
+        }, modification.cellIndex);
+        reactiveRunStartedAt = performance.now();
+        await page.keyboard.press('Control+Enter');
+        // Confirm the MODIFIED cell actually executed its new body: its execution
+        // count must move off the pre-run (reset) value. An empty execute_request
+        // leaves it unchanged, so the bare waitForRun() -- satisfied by any
+        // non-null count -- would silently accept a no-op run. If it never
+        // advances, log loudly; waitForReactiveExecutionsToSettle below still
+        // captures whatever cascade occurred. See doc/journal.md.
+        try {
+          await page.waitForFunction(
+            ({ i, before }) => {
+              const nb = (window as any).galata.app.shell.currentWidget?.content;
+              const ec = nb?.widgets[i]?.model.executionCount ?? null;
+              return ec !== null && ec !== before;
+            },
+            { i: modification.cellIndex, before: changedEcBefore },
+            { timeout: 120000, polling: 100 }
+          );
+        } catch {
+          console.log(
+            `=== [UI] WARNING: modified cell ${modification.cellIndex} never registered a real execution (count stayed ${changedEcBefore}); nnb cascade may be truncated`
+          );
+        }
+      }
+
+      const reactiveRunSettledAt = await waitForReactiveExecutionsToSettle(page);
+      const reactiveWallTimeSeconds =
+        (reactiveRunSettledAt - reactiveRunStartedAt) / 1000;
+      const totalWallTimeSeconds =
+        initialWallTimeSeconds + reactiveWallTimeSeconds;
+      reportMetrics(step, {
+        schemaVersion: 1,
+        initialWallTimeSeconds,
+        reactiveWallTimeSeconds,
+        totalWallTimeSeconds,
+      });
+      await page.notebook.save();
+
+      // Save modified notebook output. For a deletion the target cell no longer
+      // exists, so there is nothing to read.
+      if (modOp !== "delete") {
+        const cellOutput = await page.notebook.getCellTextOutput(
+          modification.cellIndex
+        );
         console.log(
-          `=== [UI] WARNING: modified cell ${modification.cellIndex} never registered a real execution (count stayed ${changedEcBefore}); nnb cascade may be truncated`
+          `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
         );
       }
-    }
 
-    const reactiveRunSettledAt = await waitForReactiveExecutionsToSettle(page);
-    const reactiveWallTimeSeconds =
-      (reactiveRunSettledAt - reactiveRunStartedAt) / 1000;
-    const totalWallTimeSeconds =
-      initialWallTimeSeconds + reactiveWallTimeSeconds;
-    console.log(`=== [METRICS] ${JSON.stringify({
-      schemaVersion: 1,
-      initialWallTimeSeconds,
-      reactiveWallTimeSeconds,
-      totalWallTimeSeconds,
-    })}`);
-    await page.notebook.save();
+      // Note: a second waitForRun()+save() used to happen here, immediately
+      // after the one above with nothing state-changing in between besides a
+      // read-only getCellTextOutput() call. JupyterLab's save() re-fetches the
+      // server's current content hash right before writing and compares it to
+      // what the client last cached (see DocumentWidgetManager._maybeSave /
+      // _raiseConflict in @jupyterlab/docregistry, bundled into
+      // jlab_core.*.js): two save() calls fired back-to-back was the suspected
+      // trigger for a "File Changed on disk" conflict dialog blocking the
+      // download step below. Removed as the fix; if a second save is later
+      // found necessary, re-add it but confirm this race doesn't reappear.
 
-    // Save modified notebook output. For a deletion the target cell no longer
-    // exists, so there is nothing to read.
-    if (modOp !== "delete") {
-      const cellOutput = await page.notebook.getCellTextOutput(
-        modification.cellIndex
-      );
+      // Download notebook
       console.log(
-        `=== [UI] MODIFIED CELL (${modification.cellIndex}) OUTPUT: ${cellOutput}`
+        `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
       );
+      // See note above: menubar-scoped File>Download avoids the getByText("File")
+      // strict-mode violation when cell output contains the text "File".
+      const downloadPromise = page.waitForEvent("download");
+      await page.menu.clickMenuItem("File>Download");
+      const download = await downloadPromise;
+      await download.saveAs(downloadReactivePath);
     }
-
-    // Note: a second waitForRun()+save() used to happen here, immediately
-    // after the one above with nothing state-changing in between besides a
-    // read-only getCellTextOutput() call. JupyterLab's save() re-fetches the
-    // server's current content hash right before writing and compares it to
-    // what the client last cached (see DocumentWidgetManager._maybeSave /
-    // _raiseConflict in @jupyterlab/docregistry, bundled into
-    // jlab_core.*.js): two save() calls fired back-to-back was the suspected
-    // trigger for a "File Changed on disk" conflict dialog blocking the
-    // download step below. Removed as the fix; if a second save is later
-    // found necessary, re-add it but confirm this race doesn't reappear.
-
-    // Download notebook
-    console.log(
-      `=== [UI] SAVING MODIFIED NOTEBOOK IN: ${downloadReactivePath}`
-    );
-    // See note above: menubar-scoped File>Download avoids the getByText("File")
-    // strict-mode violation when cell output contains the text "File".
-    const downloadPromise = page.waitForEvent("download");
-    await page.menu.clickMenuItem("File>Download");
-    const download = await downloadPromise;
-    await download.saveAs(downloadReactivePath);
 
     // await page.pause();
   });

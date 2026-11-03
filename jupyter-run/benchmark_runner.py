@@ -1,7 +1,8 @@
-from utils.notebook_diff import get_all_cell_output_diff, get_cells_reran, detect_modification, relabel_reran_positions, rerun_labels_to_abs_indices, get_code_cells
+from utils.notebook_diff import get_all_cell_output_diff, get_cells_reran, detect_modification, relabel_reran_positions, rerun_labels_to_abs_indices, get_code_cells, compose_modifications
 from utils.notebook_manager import NotebookManager
 from utils.supporting_scripts import find_supporting_scripts, find_data_dependencies
 import json, subprocess, os, time, urllib.request
+import nbformat
 
 class BenchmarkRunner:
     config_root_dir = "./config"
@@ -50,17 +51,7 @@ class BenchmarkRunner:
                                               kernel_config=self.kernel_spec) 
         
         mod = detect_modification(nb_original_manager.nb_json, nb_modified_manager.nb_json)
-        code_idx_print = mod.code_idx + 1
-        abs_idx_print = mod.abs_idx + 1
-        print(f"=== [RUN] Detected modification: op={mod.op} at code-cell {code_idx_print} "
-              f"(abs cell {abs_idx_print}) with cell ID: {mod.cell_id}")
-        if mod.op == "edit":
-            print(f"=== [RUN] Code of original cell {code_idx_print}: \n{mod.original}")
-            print(f"=== [RUN] Code to be changed into cell {code_idx_print}: \n{mod.source}")
-        elif mod.op == "add":
-            print(f"=== [RUN] Code of cell to be added at cell {code_idx_print}: \n{mod.source}")
-        elif mod.op == "delete":
-            print(f"=== [RUN] Code of cell to be deleted at cell {code_idx_print}: \n{mod.original}")
+        self._print_modification(mod)
         if mod.op != "none":
             # Key result files by the MODIFIED notebook name (unique per step, e.g.
             # m2_explore_siren.ipynb) so a step's download never collides with, or
@@ -68,17 +59,7 @@ class BenchmarkRunner:
             # notebook -- these are only the download destinations.
             nb_initial_file = f"reactive-results/initial/{nb_modified_manager.nb_file_name}"
             nb_reactive_file = f"reactive-results/reactive/{nb_modified_manager.nb_file_name}"
-            supporting_scripts = find_supporting_scripts(nb_original_manager.nb_json, nb_original_manager.nb_dir)
-            # Also stage relative data files the notebook reads (e.g. ./data/x),
-            # which break once the notebook is uploaded to a fresh temp dir.
-            # Over-cap dirs (too big for per-file HTTP upload) come back in
-            # oversize_data_deps for filesystem (hardlink) staging below.
-            oversize_data_deps: list[dict] = []
-            supporting_scripts += find_data_dependencies(
-                nb_original_manager.nb_json, nb_original_manager.nb_dir,
-                exclude={s["sourcePath"] for s in supporting_scripts},
-                oversize_out=oversize_data_deps,
-            )
+            supporting_scripts, oversize_data_deps = self._find_supporting_files(nb_original_manager)
             rerun_cell_indices = []
             if rerun_set:
                 rerun_cell_indices = rerun_labels_to_abs_indices(
@@ -102,64 +83,203 @@ class BenchmarkRunner:
             self._stage_oversize_data(oversize_data_deps)
             self._run_ui_to_execute_modifications()
 
-            nb_initial_run_manager = NotebookManager(nb_path=nb_initial_file)
-            nb_after_reactive_manager = NotebookManager(nb_path=nb_reactive_file)
-            nb_after_reactive_manager.delete_last_empty_cell()
-
-            # Reran cells needs only the initial + reactive notebooks, so compute
-            # and print it FIRST -- this drives the reactive-kernel reran column
-            # (G for nnb / J for ipyflow) and must survive even if
-            # the (heavier) expected-output run or the fragile output diff below
-            # fails. Realworld notebooks with added/idless/output-less cells make
-            # get_all_cell_output_diff / nb_run raise; isolate those so a
-            # correctness-diff failure never costs us the reran + wall-time data.
-            print(f"=== [RUN] PRINTING CELLS EXECUTED:")
-            try:
-                reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_run_manager.nb_json, nb_after_reactive_manager.nb_json)
-                # Report in ORIGINAL numbering: added cell -> "n", originals keep
-                # their pre-modification positions.
-                labels = relabel_reran_positions(cells_reran, mod.op, mod.code_idx)
-                mod_cell_label = "n" if mod.op == "add" else code_idx_print
-                # nnb runs the modified/added cell FIRST (the trigger), then runs a
-                # one-shot, de-duplicated reactive cascade. get_cells_reran orders by
-                # each cell's FINAL execution count, so for nnb that ordering equals
-                # the true execution order and only the trigger can appear twice.
-                # Reconstruct the faithful sequence WITHOUT blindly prepending:
-                #   - if the trigger re-ran inside the cascade (its reactive exec
-                #     count exceeds the baseline), it lands at its cascade slot in
-                #     `labels` and is missing only its leading trigger run -> prepend
-                #     it (e.g. [7, 6,7,8,...]).
-                #   - if it ran only once (exec count == baseline), it is already the
-                #     first entry in the count-ordered `labels` -> do NOT prepend, or
-                #     it would be double-counted (e.g. [4, 6,7,...], not [4,4,...]).
-                # Reactive kernels that refresh ancestors first (ipyflow) keep the
-                # plain count-ordered list. reran_count stays the unique-cell count.
-                kernel_name = (self.kernel_spec or {}).get("name", "")
-                if kernel_name == "nnb" and mod.op in ("edit", "add"):
-                    initial_counts = [c.get("execution_count")
-                                      for c in get_code_cells(nb_initial_run_manager.nb_json)
-                                      if isinstance(c.get("execution_count"), int)]
-                    baseline = max(initial_counts, default=0) + 1
-                    reactive_code = get_code_cells(nb_after_reactive_manager.nb_json)
-                    trigger_ec = (reactive_code[mod.code_idx].get("execution_count")
-                                  if 0 <= mod.code_idx < len(reactive_code) else None)
-                    if isinstance(trigger_ec, int) and trigger_ec > baseline:
-                        labels = [mod_cell_label] + labels
-                reran_str = "[" + ", ".join(str(x) for x in labels) + "]"
-                print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {reran_str}; modification ({mod.op}) made to cell: {mod_cell_label}")
-            except Exception as e:
-                print(f"=== [RUN] WARNING: cells-reran computation failed: {e}")
-
-            # Correctness diff is best-effort and must not abort the step.
-            try:
-                nb_expected_json = nb_modified_manager.nb_run(save_to_original_file=False)
-                print("=== [RUN] PRINTING DIFF: ")
-                print(get_all_cell_output_diff(nb_actual=nb_after_reactive_manager.nb_json, nb_expected=nb_expected_json))
-            except Exception as e:
-                print(f"=== [RUN] WARNING: correctness diff skipped: {e}")
+            self._report_step(mod, NotebookManager(nb_path=nb_initial_file).nb_json,
+                              nb_reactive_file, nb_modified_manager)
         else:
             print(f'notebooks is not different after modification; no rerun will trigger')
     
+
+    def run_sequential(self, nb_original: str, nb_modified_list: list[str],
+                       step_labels: list[str], data_directory: str,
+                       rerun_sets: list = None) -> None:
+        """Apply every modification in one live session, one after another.
+
+        Each modified notebook's change against nb_original is applied on top of
+        the previous ones (compose_modifications); the UI runs the original once,
+        then applies each step and waits for its cascade without rerunning the
+        notebook in between. Prints one RUNNING/COMPLETE block per step label,
+        each with that step's METRICS, reran cells and output diff against a
+        fresh run of the notebook as it stands after that step. rerun_sets holds
+        one python3 rerun set (or None) per step, numbered as in the notebook
+        before that step.
+        """
+        nb_original_manager = NotebookManager(nb_path=nb_original,
+                                              kernel_config=self.kernel_spec)
+        base_name = nb_original_manager.nb_file_name
+        base_stem = base_name[: -len(".ipynb")]
+        composed = compose_modifications(
+            nb_original_manager.nb_json,
+            [NotebookManager(nb_path=p).nb_json for p in nb_modified_list])
+        # Composed notebooks sit next to the original so its relative paths
+        # resolve when the output diff runs them; the leading dot keeps the
+        # benchmark discovery in main.py from treating them as notebooks.
+        composed_paths = [os.path.join(nb_original_manager.nb_dir, f".{base_stem}.seq_m{k}.ipynb")
+                          for k in range(1, len(composed) + 1)]
+        try:
+            for path, nb_json in zip(composed_paths, composed):
+                with open(path, "w") as f:
+                    nbformat.write(nbformat.from_dict(nb_json), f)
+            steps, ui_steps = [], []
+            prev = nb_original_manager.nb_json
+            for k, (path, nb_json, label) in enumerate(zip(composed_paths, composed, step_labels), start=1):
+                mod = detect_modification(prev, nb_json)
+                prev = nb_json
+                step = {"label": label, "mod": mod, "path": path,
+                        "reactive": f"reactive-results/reactive/seq_m{k}_{base_name}",
+                        "metrics": f"reactive-results/reactive/seq_m{k}_{base_stem}.metrics.json"}
+                steps.append(step)
+                if mod.op == "none":
+                    continue
+                rerun_set = (rerun_sets or [None] * len(composed_paths))[k - 1]
+                rerun_cell_indices = (rerun_labels_to_abs_indices(
+                    rerun_set, mod.op, mod.code_idx, nb_json) if rerun_set else [])
+                ui_steps.append({
+                    "modification": self._ui_modification(mod, rerun_cell_indices),
+                    "downloadReactivePath": step["reactive"],
+                    "metricsPath": step["metrics"]})
+            nb_initial_file = f"reactive-results/initial/seq_{base_name}"
+            if ui_steps:
+                supporting_scripts, oversize_data_deps = self._find_supporting_files(nb_original_manager)
+                self._generate_ui_config_file(None, base_name, nb_original_manager.nb_dir,
+                                              ui_steps[0]["downloadReactivePath"], nb_initial_file,
+                                              data_directory, supporting_scripts, steps=ui_steps)
+                for stale in [nb_initial_file] + [p for s in steps for p in (s["reactive"], s["metrics"])]:
+                    if os.path.exists(stale):
+                        os.remove(stale)
+                self._stage_oversize_data(oversize_data_deps)
+                self._run_ui_to_execute_modifications(
+                    timeout_s=self.ui_step_timeout_s * len(ui_steps) + self.ui_startup_timeout_s)
+
+            # Highest execution count seen in any earlier download. A delete step
+            # clears every cell's count in the frontend, so the previous download
+            # alone can under-state it; get_cells_reran only needs this maximum.
+            max_ec = None
+            for step in steps:
+                label, mod = step["label"], step["mod"]
+                print(f"============================ ")
+                print(f"=== [RUN] RUNNING {label} === ")
+                expected_manager = NotebookManager(nb_path=step["path"],
+                                                   kernel_config=self.kernel_spec)
+                self._print_modification(mod)
+                if mod.op == "none":
+                    print(f'notebooks is not different after modification; no rerun will trigger')
+                else:
+                    try:
+                        with open(step["metrics"]) as f:
+                            print(f"=== [METRICS] {json.dumps(json.load(f))}")
+                        if max_ec is None:
+                            max_ec = self._max_execution_count(
+                                NotebookManager(nb_path=nb_initial_file).nb_json)
+                        before_json = {"cells": [{"cell_type": "code", "execution_count": max_ec}]}
+                        self._report_step(mod, before_json, step["reactive"], expected_manager)
+                        max_ec = max(max_ec, self._max_execution_count(
+                            NotebookManager(nb_path=step["reactive"]).nb_json))
+                    except Exception as e:
+                        print(f"Failed to run benchamrk {label}, {e}")
+                print(f"=== [RUN] COMPLETE RUNNING {label} ===")
+                print(f"============================ ")
+                print('\n')
+        finally:
+            for path in composed_paths:
+                if os.path.exists(path):
+                    os.remove(path)
+
+    @staticmethod
+    def _max_execution_count(nb_json) -> int:
+        return max((c.get("execution_count") for c in get_code_cells(nb_json)
+                    if isinstance(c.get("execution_count"), int)), default=0)
+
+    def _print_modification(self, mod) -> None:
+        code_idx_print = mod.code_idx + 1
+        abs_idx_print = mod.abs_idx + 1
+        print(f"=== [RUN] Detected modification: op={mod.op} at code-cell {code_idx_print} "
+              f"(abs cell {abs_idx_print}) with cell ID: {mod.cell_id}")
+        if mod.op == "edit":
+            print(f"=== [RUN] Code of original cell {code_idx_print}: \n{mod.original}")
+            print(f"=== [RUN] Code to be changed into cell {code_idx_print}: \n{mod.source}")
+        elif mod.op == "add":
+            print(f"=== [RUN] Code of cell to be added at cell {code_idx_print}: \n{mod.source}")
+        elif mod.op == "delete":
+            print(f"=== [RUN] Code of cell to be deleted at cell {code_idx_print}: \n{mod.original}")
+
+    def _find_supporting_files(self, nb_manager: NotebookManager) -> tuple[list[dict], list[dict]]:
+        """Return (files to upload, over-cap data dirs to hardlink) for a notebook."""
+        supporting_scripts = find_supporting_scripts(nb_manager.nb_json, nb_manager.nb_dir)
+        # Also stage relative data files the notebook reads (e.g. ./data/x),
+        # which break once the notebook is uploaded to a fresh temp dir.
+        # Over-cap dirs (too big for per-file HTTP upload) come back in
+        # oversize_data_deps for filesystem (hardlink) staging below.
+        oversize_data_deps: list[dict] = []
+        supporting_scripts += find_data_dependencies(
+            nb_manager.nb_json, nb_manager.nb_dir,
+            exclude={s["sourcePath"] for s in supporting_scripts},
+            oversize_out=oversize_data_deps,
+        )
+        return supporting_scripts, oversize_data_deps
+
+    def _report_step(self, mod, nb_initial_json, nb_reactive_file: str,
+                     nb_expected_manager: NotebookManager) -> None:
+        """Print the reran cells of one step and its output diff against a fresh
+        run of nb_expected_manager's notebook. nb_initial_json is the notebook
+        downloaded right before the step's modification."""
+        nb_after_reactive_manager = NotebookManager(nb_path=nb_reactive_file)
+        nb_after_reactive_manager.delete_last_empty_cell()
+
+        # Reran cells needs only the initial + reactive notebooks, so compute
+        # and print it FIRST -- this drives the reactive-kernel reran column
+        # (G for nnb / J for ipyflow) and must survive even if
+        # the (heavier) expected-output run or the fragile output diff below
+        # fails. Realworld notebooks with added/idless/output-less cells make
+        # get_all_cell_output_diff / nb_run raise; isolate those so a
+        # correctness-diff failure never costs us the reran + wall-time data.
+        print(f"=== [RUN] PRINTING CELLS EXECUTED:")
+        try:
+            reran_count, total_cells, cells_reran = get_cells_reran(nb_initial_json, nb_after_reactive_manager.nb_json)
+            # Report in the numbering of the notebook before the modification:
+            # added cell -> "n", other cells keep their pre-modification positions.
+            labels = relabel_reran_positions(cells_reran, mod.op, mod.code_idx)
+            mod_cell_label = "n" if mod.op == "add" else mod.code_idx + 1
+            # nnb runs the modified/added cell FIRST (the trigger), then runs a
+            # one-shot, de-duplicated reactive cascade. get_cells_reran orders by
+            # each cell's FINAL execution count, so for nnb that ordering equals
+            # the true execution order and only the trigger can appear twice.
+            # Reconstruct the faithful sequence WITHOUT blindly prepending:
+            #   - if the trigger re-ran inside the cascade (its reactive exec
+            #     count exceeds the baseline), it lands at its cascade slot in
+            #     `labels` and is missing only its leading trigger run -> prepend
+            #     it (e.g. [7, 6,7,8,...]).
+            #   - if it ran only once (exec count == baseline), it is already the
+            #     first entry in the count-ordered `labels` -> do NOT prepend, or
+            #     it would be double-counted (e.g. [4, 6,7,...], not [4,4,...]).
+            # Reactive kernels that refresh ancestors first (ipyflow) keep the
+            # plain count-ordered list. reran_count stays the unique-cell count.
+            kernel_name = (self.kernel_spec or {}).get("name", "")
+            if kernel_name == "nnb" and mod.op in ("edit", "add"):
+                initial_counts = [c.get("execution_count")
+                                  for c in get_code_cells(nb_initial_json)
+                                  if isinstance(c.get("execution_count"), int)]
+                baseline = max(initial_counts, default=0) + 1
+                reactive_code = get_code_cells(nb_after_reactive_manager.nb_json)
+                trigger = (reactive_code[mod.code_idx]
+                           if 0 <= mod.code_idx < len(reactive_code) else {})
+                trigger_ec = trigger.get("execution_count")
+                # nnb skipped the user's run of the trigger and ran it once,
+                # after the cells above it (RNB_DEFER_EDITED_RUN): no leading run.
+                deferred = bool(trigger.get("metadata", {}).get("nnb_deferred_run"))
+                if isinstance(trigger_ec, int) and trigger_ec > baseline and not deferred:
+                    labels = [mod_cell_label] + labels
+            reran_str = "[" + ", ".join(str(x) for x in labels) + "]"
+            print(f"=== [RUN] {reran_count} / {total_cells} cells reran; reran cells are: {reran_str}; modification ({mod.op}) made to cell: {mod_cell_label}")
+        except Exception as e:
+            print(f"=== [RUN] WARNING: cells-reran computation failed: {e}")
+
+        # Correctness diff is best-effort and must not abort the step.
+        try:
+            nb_expected_json = nb_expected_manager.nb_run(save_to_original_file=False)
+            print("=== [RUN] PRINTING DIFF: ")
+            print(get_all_cell_output_diff(nb_actual=nb_after_reactive_manager.nb_json, nb_expected=nb_expected_json))
+        except Exception as e:
+            print(f"=== [RUN] WARNING: correctness diff skipped: {e}")
 
     def _setup_ui_kernel(self):
         script_path = "./ui/ui_setup.sh"
@@ -229,24 +349,35 @@ class BenchmarkRunner:
                                  save_initial_result_to: str,
                                  data_directory: str,
                                  supporting_scripts: list = None,
-                                 rerun_cell_indices: list = None) -> None:
-        # cellIndex is the ABSOLUTE JupyterLab cell index (markdown included),
-        # which is what the Galata helpers in the UI spec address by. op tells
-        # the spec whether to edit in place, insert, or delete the cell.
-        # rerunCellIndices (absolute indices, ascending) is the python3 baseline's
-        # explicit rerun set; only that spec reads it, reactive specs ignore it.
-        modification = {"op": mod.op, "cellIndex": mod.abs_idx, "source": mod.source,
-                        "rerunCellIndices": rerun_cell_indices or []}
+                                 rerun_cell_indices: list = None,
+                                 steps: list = None) -> None:
+        """Write the UI spec's config. With steps (sequential mode), the spec
+        applies each step's modification in order and the top-level
+        modification is the first step's."""
+        modification = (steps[0]["modification"] if steps
+                        else self._ui_modification(mod, rerun_cell_indices))
         benchmark_file_info = {"benchmarkFileName": nb_to_modify_name, "benchmarkFileDir": nb_to_modify_dir}
         config = {"modification": modification, "file": benchmark_file_info,
                   "downloadReactivePath": save_reactive_result_to,
                   "downloadInitialPath": save_initial_result_to,
                   "dataDirectory": data_directory,
                   "supportingScripts": supporting_scripts or []}
+        if steps:
+            config["steps"] = steps
         with open(self.mod_config_file, "w") as f:
             json.dump(config, f, indent=4)
         return config
     
+    @staticmethod
+    def _ui_modification(mod, rerun_cell_indices: list = None) -> dict:
+        # cellIndex is the ABSOLUTE JupyterLab cell index (markdown included),
+        # which is what the Galata helpers in the UI spec address by. op tells
+        # the spec whether to edit in place, insert, or delete the cell.
+        # rerunCellIndices (absolute indices, ascending) is the python3 baseline's
+        # explicit rerun set; only that spec reads it, reactive specs ignore it.
+        return {"op": mod.op, "cellIndex": mod.abs_idx, "source": mod.source,
+                "rerunCellIndices": rerun_cell_indices or []}
+
     def _stage_oversize_data(self, oversize_deps: list[dict]) -> None:
         """Hardlink over-HTTP-cap data dependencies into the server working dir.
 
@@ -282,17 +413,22 @@ class BenchmarkRunner:
     # Bound the UI run above the 20-min Playwright per-test timeout (+ up to 2-min
     # webServer startup) so a stuck run fails loudly instead of freezing forever.
     ui_run_timeout_s = 25 * 60
+    # Sequential mode: one Playwright test runs every step; the spec allows
+    # 20 min per step.
+    ui_step_timeout_s = 20 * 60
+    ui_startup_timeout_s = 5 * 60
 
-    def _run_ui_to_execute_modifications(self) -> None:
+    def _run_ui_to_execute_modifications(self, timeout_s: int = None) -> None:
         script_path = "./ui/run_ui.sh"
         # Inherit the parent's stdout/stderr (no capture) so the Playwright/[UI] output
         # streams live into the run log; a hang is then visible instead of silent.
+        timeout_s = timeout_s or self.ui_run_timeout_s
         try:
             subprocess.run([script_path, self.playwright_config_path],
-                           check=True, timeout=self.ui_run_timeout_s)
+                           check=True, timeout=timeout_s)
         except subprocess.TimeoutExpired:
             print(f"=== [RUN] ERROR: {script_path} timed out after "
-                  f"{self.ui_run_timeout_s}s (config {self.playwright_config_path})")
+                  f"{timeout_s}s (config {self.playwright_config_path})")
         except subprocess.CalledProcessError as e:
             print(f"=== [RUN] ERROR: {script_path} exited {e.returncode}")
     

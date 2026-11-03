@@ -2,14 +2,15 @@
 
 The python3 baseline cannot compute which cells a modification would cascade to,
 so that set is maintained by hand in the results sheet's column D (keyed by the
-column-A step label). This reads it live from the same Google Apps Script web app
-that scripts/tosheet.py writes to (its doGet returns {column A -> column D}), so
+column-A step label). This reads it live from a Google Apps Script web app
+(its doGet returns {column A -> column D}), so
 column D can be edited in the sheet without a CSV download/upload/rerun cycle.
 """
 import json
 import urllib.request
 
-# Keep in sync with scripts/tosheet.py WEB_APP_URL (same Apps Script deployment).
+# Older deployment: serves the micro-benchmark rows but not the osdi-eval tab's ICSE2025
+# rows; for those pass --rerun-sheet-url with scripts/tosheet.py's WEB_APP_URL.
 WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzMGyhMt6tbL50Knc-W4dhFl6m8TzdO-NltJElCM_DUh8sTU9jbvn1N1hHqRPlMccU7/exec"
 
 
