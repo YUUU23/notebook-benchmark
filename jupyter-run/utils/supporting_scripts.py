@@ -144,7 +144,9 @@ def find_data_dependencies(
     nb_dir_path = Path(nb_dir).resolve()
     suite_root = nb_dir_path.parent  # allow ../dataset style, but no higher
     run_dir = Path.cwd().resolve()
-    exclude_resolved = {str(Path(p).resolve()) for p in (exclude or set())}
+    # Paths are normalized without following symlinks, so a linked folder beside the
+    # notebook (../data -> elsewhere) keeps its place relative to the notebook.
+    exclude_resolved = {os.path.normpath(os.path.abspath(p)) for p in (exclude or set())}
 
     # Collect candidate referenced paths.
     candidates: list[Path] = []
@@ -164,7 +166,7 @@ def find_data_dependencies(
             # Path-ish: has a separator or a filename extension.
             if "/" not in s and "." not in os.path.basename(s):
                 continue
-            cand = (nb_dir_path / s).resolve()
+            cand = Path(os.path.normpath(nb_dir_path / s))
             if str(cand) in seen_cand or not cand.exists():
                 continue
             # Must stay within the suite dir and not be the working dir itself.
@@ -216,7 +218,8 @@ def find_data_dependencies(
                 # Too big for the per-file HTTP upload the spec does; hand the
                 # whole dir back for filesystem (hardlink) staging into the
                 # server working dir instead (see BenchmarkRunner._stage_oversize_data).
-                oversize_out.append({"sourcePath": str(cand), "targetRelPath": rel})
+                # real path: `cp -al` would copy a symlink itself instead of hardlinking
+                oversize_out.append({"sourcePath": str(cand.resolve()), "targetRelPath": rel})
                 print(
                     f"=== [RUN] data dependency {rel!r} ({len(files)} files, "
                     f"{total / 1e6:.0f}MB) over HTTP-upload cap -- filesystem-staging"
@@ -278,7 +281,8 @@ def find_supporting_scripts(nb_json: dict, nb_dir: str) -> list[dict]:
             continue
         source = "".join(cell.get("source", []))
         for rel in _extract_sys_path_dirs(source):
-            candidate = (nb_dir_path / rel).resolve()
+            # not following symlinks (see find_data_dependencies)
+            candidate = Path(os.path.normpath(nb_dir_path / rel))
             # Never upload the suite root or an ancestor. `sys.path.append("..")`
             # resolves to nb_dir's parent -- the whole benchmark suite -- so
             # staging it would upload every sibling benchmark and its multi-GB
