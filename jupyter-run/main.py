@@ -154,10 +154,16 @@ def main():
                         help="apply each benchmark's modifications one after another in one "
                              "session (diff of m<k> against the base, applied on top of the "
                              "earlier ones) instead of each one separately against the base")
+    parser.add_argument("--chained", action="store_true",
+                        help="with --sequential: each m<k> is already the whole notebook after "
+                             "k changes (one cell away from m<k-1>), so it is run as step k "
+                             "as is instead of being composed from its diff against the base")
     parser.add_argument("--rerun-sheet-url", type=str, default=WEB_APP_URL,
                         help="Apps Script /exec URL to pull the python3 baseline rerun "
                              "set (results-sheet column D) from; only used for the python3 kernel")
     args = parser.parse_args()
+    if args.chained and not args.sequential:
+        parser.error("--chained requires --sequential")
     
     if args.config == None: 
         print("path to config directory not received.", parser.print_help())
@@ -227,7 +233,8 @@ def main():
                         continue
                     try:
                         b.run_sequential(steps[0][0], [m for _, m in steps], labels, data_directory,
-                                         [rerun_sets.get(label) for label in labels])
+                                         [rerun_sets.get(label) for label in labels],
+                                         chained=args.chained)
                     except Exception as e:
                         print(f"Failed to run benchamrk {name} sequentially, {e}")
                     b.reap_kernels()

@@ -91,11 +91,14 @@ class BenchmarkRunner:
 
     def run_sequential(self, nb_original: str, nb_modified_list: list[str],
                        step_labels: list[str], data_directory: str,
-                       rerun_sets: list = None) -> None:
+                       rerun_sets: list = None, chained: bool = False) -> None:
         """Apply every modification in one live session, one after another.
 
         Each modified notebook's change against nb_original is applied on top of
-        the previous ones (compose_modifications); the UI runs the original once,
+        the previous ones (compose_modifications); with chained, each modified
+        notebook already is the notebook after that step and is used as is
+        (detect_modification against the previous step then fails unless it
+        changes exactly one cell). The UI runs the original once,
         then applies each step and waits for its cascade without rerunning the
         notebook in between. Prints one RUNNING/COMPLETE block per step label,
         each with that step's METRICS, reran cells and output diff against a
@@ -107,9 +110,9 @@ class BenchmarkRunner:
                                               kernel_config=self.kernel_spec)
         base_name = nb_original_manager.nb_file_name
         base_stem = base_name[: -len(".ipynb")]
-        composed = compose_modifications(
-            nb_original_manager.nb_json,
-            [NotebookManager(nb_path=p).nb_json for p in nb_modified_list])
+        mod_jsons = [NotebookManager(nb_path=p).nb_json for p in nb_modified_list]
+        composed = (mod_jsons if chained
+                    else compose_modifications(nb_original_manager.nb_json, mod_jsons))
         # Composed notebooks sit next to the original so its relative paths
         # resolve when the output diff runs them; the leading dot keeps the
         # benchmark discovery in main.py from treating them as notebooks.
